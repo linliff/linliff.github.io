@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+<script>
+    (function(){
+        if(''){
+            if (prompt('密码！') !== ''){
+                alert('wrong passwaor');
+                history.back();
+            }
+        }
+    })();
+</script>
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/libs/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/libs/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="短篇, 博客" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="项目需求需要将自己的APP常驻后台运行，于是需要更加深入的学习一下保活知识，在此做一下总结 Android 进程优先级如果需要保证我们的应用所在进程存活，那么我们就应该先了解一下Android系统中进程的分类。在Android中，进程依据重要性被分为5级，越高级的进程越重要，在内存不够回收进程时也会越晚被回收： 1.前台进程（Foreground process）：指用户当前操作必须的进程。一般来">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android进程保活总结">
+<meta property="og:url" content="http://yoursite.com/year/01/13/Android进程保活总结/index.html">
+<meta property="og:site_name" content="一个短篇">
+<meta property="og:description" content="项目需求需要将自己的APP常驻后台运行，于是需要更加深入的学习一下保活知识，在此做一下总结 Android 进程优先级如果需要保证我们的应用所在进程存活，那么我们就应该先了解一下Android系统中进程的分类。在Android中，进程依据重要性被分为5级，越高级的进程越重要，在内存不够回收进程时也会越晚被回收： 1.前台进程（Foreground process）：指用户当前操作必须的进程。一般来">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://img-blog.csdn.net/20170424154419042?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvc3VwZXJ4bGNy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
+<meta property="og:updated_time" content="2018-05-13T02:51:42.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android进程保活总结">
+<meta name="twitter:description" content="项目需求需要将自己的APP常驻后台运行，于是需要更加深入的学习一下保活知识，在此做一下总结 Android 进程优先级如果需要保证我们的应用所在进程存活，那么我们就应该先了解一下Android系统中进程的分类。在Android中，进程依据重要性被分为5级，越高级的进程越重要，在内存不够回收进程时也会越晚被回收： 1.前台进程（Foreground process）：指用户当前操作必须的进程。一般来">
+<meta name="twitter:image" content="https://img-blog.csdn.net/20170424154419042?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvc3VwZXJ4bGNy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.3',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/year/01/13/Android进程保活总结/"/>
+
+
+
+
+
+  <title>Android进程保活总结 | 一个短篇</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">一个短篇</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/year/01/13/Android进程保活总结/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="linlif">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/logo.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="一个短篇">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android进程保活总结</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-01-13T10:18:13+08:00">
+                2017-01-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>项目需求需要将自己的APP常驻后台运行，于是需要更加深入的学习一下保活知识，在此做一下总结</p>
+<h2 id="Android-进程优先级"><a href="#Android-进程优先级" class="headerlink" title="Android 进程优先级"></a>Android 进程优先级</h2><p>如果需要保证我们的应用所在进程存活，那么我们就应该先了解一下Android系统中进程的分类。<br>在Android中，进程依据重要性被分为5级，越高级的进程越重要，在内存不够回收进程时也会越晚被回收：</p>
+<p>1.前台进程（Foreground process）：指用户当前操作必须的进程。一般来说，系统中仅存在极少的前台进程，而且它们会到最后才被回收掉。拥有以下特征的进程被视为前台进程：</p>
+<ul>
+<li>拥有Activity运行在屏幕最前端的进程。（已调用Activity的onResume方法）</li>
+<li>拥有正在运行的BroadcastReceiver的进程。（已调用BroadcastReceiver的onReceive方法）</li>
+<li>拥有正在执行的Service的回调方法的进程。（Service的onCreate、onStart、onDestroy方法）</li>
+</ul>
+<p>2.可见进程（Visible process）：正在执行某些用户可见操作的进程。当杀死这些进程时，用户会有一定的影响。拥有以下特征的进程被视为可见进程：</p>
+<ul>
+<li>拥有可视的，但不是在前台的Activity。（已调用onPause方法）（当另一个个Activity设置为dialog模式时可能出现这种情况）</li>
+<li>拥有一个前台Service。（通过用startForeground）</li>
+<li>拥有系统关键特性的Service，如动态壁纸、输入法等服务。</li>
+</ul>
+<p>3.服务进程（Service process）：拥有一个正在运行的Service的进程。通常这种进程都是不可见的，会在运行较长的时候后考虑降级回收掉。</p>
+<p>4.后台进程（Background process）：这是一种对用户体验没有直接影响的进程，系统会在需要内存的时候随时回收这种进程，这种进程通常会持有一个已调用onStop方法的Activity。</p>
+<p>5.空进程（Empty process）：不含任何活动应用组件的进程。保留这种进程的的唯一目的是用作缓存，以缩短下次在其中运行组件所需的启动时间。 为使总体系统资源在进程缓存和底层内核缓存之间保持平衡，系统往往会终止这些进程。</p>
+<p>更多详细的进程优先级内容可以参考Android官方文档：<br><a href="https://developer.android.com/guide/topics/processes/process-lifecycle.html" target="_blank" rel="noopener">https://developer.android.com/guide/topics/processes/process-lifecycle.html</a></p>
+<p><a href="https://developer.android.com/guide/components/processes-and-threads.html" target="_blank" rel="noopener">https://developer.android.com/guide/components/processes-and-threads.html</a></p>
+<h2 id="Android-进程回收策略"><a href="#Android-进程回收策略" class="headerlink" title="Android 进程回收策略"></a>Android 进程回收策略</h2><p>众所周知，Android是基于Linux系统的。在Android进程回收策略中，Android进程与Linux进程根据OOM_ADJ阈值进行区分：</p>
+<ul>
+<li>OOM_ADJ &gt;= 4：比较容易被杀死的进程</li>
+<li>OOM_ADJ 0 ~ 3：不容易被杀死的进程</li>
+<li>OOM_ADJ &lt; 0 ：纯Linux进程，非Android进程</li>
+</ul>
+<p>当Android系统察觉设备内存不足时，会按照阈值从大到小杀死进程。</p>
+<p>具体的oom_adj值的意义我们可以查看AOSP中的com.android.server.am.ProcessList 文件：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br></pre></td><td class="code"><pre><span class="line">/** </span><br><span class="line"> * Activity manager code dealing with processes. </span><br><span class="line"> */  </span><br><span class="line">final class ProcessList &#123;  </span><br><span class="line">    ...  </span><br><span class="line">  </span><br><span class="line">    // OOM adjustments for processes in various states:  </span><br><span class="line">  </span><br><span class="line">    // Adjustment used in certain places where we don&apos;t know it yet.  </span><br><span class="line">    // (Generally this is something that is going to be cached, but we  </span><br><span class="line">    // don&apos;t know the exact value in the cached range to assign yet.)  </span><br><span class="line">    // 未知进程，通常是用作缓存  </span><br><span class="line">    static final int UNKNOWN_ADJ = 16;  </span><br><span class="line">  </span><br><span class="line">    // This is a process only hosting activities that are not visible,  </span><br><span class="line">    // so it can be killed without any disruption.  </span><br><span class="line">    // 拥有不可视的Activity的进程，可以不影响影响用户的情况下杀掉  </span><br><span class="line">    static final int CACHED_APP_MAX_ADJ = 15;  </span><br><span class="line">    static final int CACHED_APP_MIN_ADJ = 9;  </span><br><span class="line">  </span><br><span class="line">    // The B list of SERVICE_ADJ -- these are the old and decrepit  </span><br><span class="line">    // services that aren&apos;t as shiny and interesting as the ones in the A list.  </span><br><span class="line">    // 一些旧的服务进程  </span><br><span class="line">    static final int SERVICE_B_ADJ = 8;  </span><br><span class="line">  </span><br><span class="line">    // This is the process of the previous application that the user was in.  </span><br><span class="line">    // This process is kept above other things, because it is very common to  </span><br><span class="line">    // switch back to the previous app.  This is important both for recent  </span><br><span class="line">    // task switch (toggling between the two top recent apps) as well as normal  </span><br><span class="line">    // UI flow such as clicking on a URI in the e-mail app to view in the browser,  </span><br><span class="line">    // and then pressing back to return to e-mail.  </span><br><span class="line">    // 用户使用的前一个进程  </span><br><span class="line">    static final int PREVIOUS_APP_ADJ = 7;  </span><br><span class="line">  </span><br><span class="line">    // This is a process holding the home application -- we want to try  </span><br><span class="line">    // avoiding killing it, even if it would normally be in the background,  </span><br><span class="line">    // because the user interacts with it so much.  </span><br><span class="line">    // 主界面进程  </span><br><span class="line">    static final int HOME_APP_ADJ = 6;  </span><br><span class="line">  </span><br><span class="line">    // This is a process holding an application service -- killing it will not  </span><br><span class="line">    // have much of an impact as far as the user is concerned.  </span><br><span class="line">    // 持有应用服务的进程  </span><br><span class="line">    static final int SERVICE_ADJ = 5;  </span><br><span class="line">  </span><br><span class="line">    // This is a process with a heavy-weight application.  It is in the  </span><br><span class="line">    // background, but we want to try to avoid killing it.  Value set in  </span><br><span class="line">    // system/rootdir/init.rc on startup.  </span><br><span class="line">    // 重量级应用进程  </span><br><span class="line">    static final int HEAVY_WEIGHT_APP_ADJ = 4;  </span><br><span class="line">  </span><br><span class="line">    // This is a process currently hosting a backup operation.  Killing it  </span><br><span class="line">    // is not entirely fatal but is generally a bad idea.  </span><br><span class="line">    // 执行备份操作的进程  </span><br><span class="line">    static final int BACKUP_APP_ADJ = 3;  </span><br><span class="line">  </span><br><span class="line">    // This is a process only hosting components that are perceptible to the  </span><br><span class="line">    // user, and we really want to avoid killing them, but they are not  </span><br><span class="line">    // immediately visible. An example is background music playback.  </span><br><span class="line">    // 拥有用户可感知组件的进程  </span><br><span class="line">    static final int PERCEPTIBLE_APP_ADJ = 2;  </span><br><span class="line">  </span><br><span class="line">    // This is a process only hosting activities that are visible to the  </span><br><span class="line">    // user, so we&apos;d prefer they don&apos;t disappear.  </span><br><span class="line">    // 拥有用户仅可见、不可交互的Activity的进程  </span><br><span class="line">    static final int VISIBLE_APP_ADJ = 1;  </span><br><span class="line">  </span><br><span class="line">    // This is the process running the current foreground app.  We&apos;d really  </span><br><span class="line">    // rather not kill it!  </span><br><span class="line">    // 前台运行的进程  </span><br><span class="line">    static final int FOREGROUND_APP_ADJ = 0;  </span><br><span class="line">  </span><br><span class="line">    // This is a system persistent process, such as telephony.  Definitely  </span><br><span class="line">    // don&apos;t want to kill it, but doing so is not completely fatal.  </span><br><span class="line">    // 系统常驻进程  </span><br><span class="line">    static final int PERSISTENT_PROC_ADJ = -12;  </span><br><span class="line">  </span><br><span class="line">    // The system process runs at the default adjustment.  </span><br><span class="line">    // 系统进程  </span><br><span class="line">    static final int SYSTEM_ADJ = -16;  </span><br><span class="line">  </span><br><span class="line">    // Special code for native processes that are not being managed by the system (so  </span><br><span class="line">    // don&apos;t have an oom adj assigned by the system).  </span><br><span class="line">    // 为native进程保留，他们不被系统管理  </span><br><span class="line">    static final int NATIVE_ADJ = -17;  </span><br><span class="line">  </span><br><span class="line">    ...  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="Android-进程被杀死情况"><a href="#Android-进程被杀死情况" class="headerlink" title="Android 进程被杀死情况"></a>Android 进程被杀死情况</h2><p>一般来说，Android进程被杀死有以下几种情况：</p>
+<ul>
+<li>触发系统进程管理机制回收（Lowmemorykiller）：这种方法会按照阈值从大到小进行清理</li>
+<li>被没有进行Root的第三方应用杀死（使用killBackgroundProcess方法）：这种方法只能杀死OOM_ADJ为4以上的进程</li>
+<li>被进行Root的第三方应用杀死（使用force-stop或者kill）：理论上来说可以杀死所有进程，但一般只会清理非系统关键进程和非前台可见进程</li>
+<li>厂商的杀进程功能（force-stop或者kill）：理论上来说可以杀死所有进程，包括Linux原生进程</li>
+<li>用户主动“强行停止”进程（force-stop）：只能停用第三方和非system/phone进程应用（停用system进程应用会造成Android系统重启）</li>
+</ul>
+<h2 id="Android-进程保活思路"><a href="#Android-进程保活思路" class="headerlink" title="Android 进程保活思路"></a>Android 进程保活思路</h2><p>在了解完Android进程的优先级与Android进程的回收策略后，我们保活Android进程的思路就有了两方面：</p>
+<ul>
+<li>通过提升Android进程优先级，使得进程更难以被回收</li>
+<li>通过某些特殊的机制，在进程死后将其拉活</li>
+</ul>
+<h3 id="提升Android进程的优先级"><a href="#提升Android进程的优先级" class="headerlink" title="提升Android进程的优先级"></a>提升Android进程的优先级</h3><h4 id="利用Activity提升进程等级"><a href="#利用Activity提升进程等级" class="headerlink" title="利用Activity提升进程等级"></a>利用Activity提升进程等级</h4><p>在某些启用后台服务场景中，为了防止我们的应用被第三方应用或系统管理工具在锁屏后为省电而被杀死，我们可以通过启动一像素大小的界面来提升进程等级，让进程等级从后台进程提升到前台进程。</p>
+<p>1.像素Activity：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">public class OnePixelActivity extends Activity &#123;  </span><br><span class="line">  </span><br><span class="line">    private static final String TAG = &quot;MyLog&quot;;  </span><br><span class="line">  </span><br><span class="line">    public static OnePixelActivity instance = null;  </span><br><span class="line">  </span><br><span class="line">    @Override  </span><br><span class="line">    protected void onCreate(@Nullable Bundle savedInstanceState) &#123;  </span><br><span class="line">        super.onCreate(savedInstanceState);  </span><br><span class="line">        setContentView(R.layout.activity_one_pixel);  </span><br><span class="line">        Window window = getWindow();  </span><br><span class="line">        // 放在左上角  </span><br><span class="line">        window.setGravity(Gravity.START | Gravity.TOP);  </span><br><span class="line">        WindowManager.LayoutParams layoutParams = window.getAttributes();  </span><br><span class="line">        // 宽高为1px  </span><br><span class="line">        layoutParams.width = 1;  </span><br><span class="line">        layoutParams.height = 1;  </span><br><span class="line">        // 起始坐标  </span><br><span class="line">        layoutParams.x = 0;  </span><br><span class="line">        layoutParams.y = 0;  </span><br><span class="line">        window.setAttributes(layoutParams);  </span><br><span class="line">        instance = this;  </span><br><span class="line">        Log.d(TAG, &quot;activity onCreate&quot;);  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">    @Override  </span><br><span class="line">    protected void onDestroy() &#123;  </span><br><span class="line">        instance = null;  </span><br><span class="line">        Log.d(TAG, &quot;activity onDestroy&quot;);  </span><br><span class="line">        super.onDestroy();  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>2.编写广播接收器监听锁屏和解锁action：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">public class ScreenBroadcastReceiver extends BroadcastReceiver &#123;  </span><br><span class="line">  </span><br><span class="line">    private static final String TAG = &quot;MyLog&quot;;  </span><br><span class="line">  </span><br><span class="line">    @Override  </span><br><span class="line">    public void onReceive(Context context, Intent intent) &#123;  </span><br><span class="line">        String action = intent.getAction();  </span><br><span class="line">        switch (action) &#123;  </span><br><span class="line">            case Intent.ACTION_SCREEN_ON: &#123; //  </span><br><span class="line">                Log.d(TAG, &quot;screen_on&quot;);  </span><br><span class="line">                // 关闭一像素Activity  </span><br><span class="line">                if (OnePixelActivity.instance != null) &#123;  </span><br><span class="line">                    OnePixelActivity.instance.finish();  </span><br><span class="line">                &#125;  </span><br><span class="line">                break;  </span><br><span class="line">            &#125;  </span><br><span class="line">            case Intent.ACTION_SCREEN_OFF: &#123;  </span><br><span class="line">                Log.d(TAG, &quot;screen_off&quot;);  </span><br><span class="line">                // 开启一像素Activity  </span><br><span class="line">                Intent activityIntent = new Intent(context, OnePixelActivity.class);  </span><br><span class="line">                activityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);  </span><br><span class="line">                context.startActivity(activityIntent);  </span><br><span class="line">                break;  </span><br><span class="line">            &#125;  </span><br><span class="line">            default:  </span><br><span class="line">                break;  </span><br><span class="line">        &#125;  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="利用Notification提升权限"><a href="#利用Notification提升权限" class="headerlink" title="利用Notification提升权限"></a>利用Notification提升权限</h3><p>与第一种方法相似，这种方法也适用于Service在后台提供服务的场景。由于没有Activity的缘故，我们Service所在进程的oom_adj值通常是较高的，进程等级较低，容易被系统回收内存时清理掉。这时我们可以通过startForeground方法，把我们的服务提升为前台服务，提高进程的等级。但提升为前台服务必须绑定一个相应的Notification，这是我们不愿意看到的。此时我们可以先使用一个Fake Service来绑定某一个Notification，然后利用相同的id绑定我们真正的Service，然后关闭我们的Fake Service，此时我们的Notification会随着我们的Fake Service一齐关闭，但我们真正的Service仍依然处于前台运行状态，进程等级就得到了相应的提升。</p>
+<p>FakeService代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">public class FakeService extends Service &#123;  </span><br><span class="line">  </span><br><span class="line">    private static final String TAG = &quot;MyLog&quot;;  </span><br><span class="line">  </span><br><span class="line">    public static FakeService instance = null;  </span><br><span class="line">  </span><br><span class="line">    @Nullable  </span><br><span class="line">    @Override  </span><br><span class="line">    public IBinder onBind(Intent intent) &#123;  </span><br><span class="line">        return null;  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">    @Override  </span><br><span class="line">    public void onCreate() &#123;  </span><br><span class="line">        super.onCreate();  </span><br><span class="line">        Log.d(TAG, &quot;fake service onCreate&quot;);  </span><br><span class="line">        // 保存实例  </span><br><span class="line">        instance = this;  </span><br><span class="line">        // 开启服务前台运行  </span><br><span class="line">        Notification.Builder builder = new Notification.Builder(this);  </span><br><span class="line">        builder.setSmallIcon(R.mipmap.ic_launcher)  </span><br><span class="line">                .setContentTitle(&quot;fake&quot;)  </span><br><span class="line">                .setContentText(&quot;I am fake&quot;)  </span><br><span class="line">                .setWhen(System.currentTimeMillis());  </span><br><span class="line">        startForeground(1, builder.build());  </span><br><span class="line">        // 开启真正工作的Service  </span><br><span class="line">        Intent intent = new Intent(this, WorkService.class);  </span><br><span class="line">        startService(intent);  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">    @Override  </span><br><span class="line">    public void onDestroy() &#123;  </span><br><span class="line">        Log.d(TAG, &quot;fake service onDestroy&quot;);  </span><br><span class="line">        // 清除实例  </span><br><span class="line">        instance = null;  </span><br><span class="line">        // 关闭Notification  </span><br><span class="line">        stopForeground(true);  </span><br><span class="line">        super.onDestroy();  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>WorkService（工作的Service）代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">public class WorkService extends Service &#123;  </span><br><span class="line">  </span><br><span class="line">    private static final String TAG = &quot;MyLog&quot;;  </span><br><span class="line">  </span><br><span class="line">    @Nullable  </span><br><span class="line">    @Override  </span><br><span class="line">    public IBinder onBind(Intent intent) &#123;  </span><br><span class="line">        return null;  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">    @Override  </span><br><span class="line">    public void onCreate() &#123;  </span><br><span class="line">        super.onCreate();  </span><br><span class="line">        Log.d(TAG, &quot;work service onCreate&quot;);  </span><br><span class="line">        // 开启服务前台运行，id与FakeService相同均为1  </span><br><span class="line">        Notification.Builder builder = new Notification.Builder(this);  </span><br><span class="line">        builder.setSmallIcon(R.mipmap.ic_launcher)  </span><br><span class="line">                .setContentTitle(&quot;fake&quot;)  </span><br><span class="line">                .setContentText(&quot;I am fake&quot;)  </span><br><span class="line">                .setWhen(System.currentTimeMillis());  </span><br><span class="line">        startForeground(1, builder.build());  </span><br><span class="line">        // 关闭FakeService，关闭Notification  </span><br><span class="line">        FakeService.instance.stopSelf();  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">    @Override  </span><br><span class="line">    public void onDestroy() &#123;  </span><br><span class="line">        Log.d(TAG, &quot;work service onDestroy&quot;);  </span><br><span class="line">        super.onDestroy();  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="在Android进程死后进行拉活"><a href="#在Android进程死后进行拉活" class="headerlink" title="在Android进程死后进行拉活"></a>在Android进程死后进行拉活</h3><p>对于Android进程的保活，除了使我们的进程更难以被杀死外，我们还可以通过某些方法在我们的进程被杀死后将其救活。</p>
+<h4 id="利用系统广播拉活"><a href="#利用系统广播拉活" class="headerlink" title="利用系统广播拉活"></a>利用系统广播拉活</h4><p>我们可以在Manifest中注册广播接收器监听系统广播，在接收到广播时查看我们的进程是否被回收，如果被回收则进行自启。<br>不过需要注意的是，并非所有广播都能被Manifest注册的广播接收器接收到，有些类似于SCREEN_ON等广播只有通过Context.registerReceiver方法注册的广播接收器才能接收到，具体的我们可以查看Android官方的文档说明。</p>
+<p>该方法的缺陷也很明显：首先，广播接收器被管理软件、系统软件通过“自启管理”等功能禁用的场景无法接收到广播，从而无法自启；其次，这种方法也无法保证进程挂掉后立即拉活。</p>
+<h4 id="利用第三方应用广播拉活"><a href="#利用第三方应用广播拉活" class="headerlink" title="利用第三方应用广播拉活"></a>利用第三方应用广播拉活</h4><p>这种方法与利用系统广播拉活类似，我们通过反编译第三方的热门应用，监听外发广播拉活我们的进程。</p>
+<p>不过该方法也有缺陷：首先，能了解到有什么外发广播取决于我们反编译应用的多少；其次，在这些应用更新版本后，外发广播可能会取消掉，因此并不是特别可靠</p>
+<h3 id="利用系统Service机制拉活"><a href="#利用系统Service机制拉活" class="headerlink" title="利用系统Service机制拉活"></a>利用系统Service机制拉活</h3><p>当我们使用Service时，可以通过重写onStartCommand方法的返回值来保证我们的进程被杀死后重启。总的来说，返回值有以下4个：</p>
+<ul>
+<li>返回START_NOT_STICKY时，我们的Service所在进程被杀死后将不会被重启。</li>
+<li>返回START_REDELIVER_INTENT时，我们得Service所在进程被杀死后，系统将会重启我们的Service，并且在调用onStartCommand方法时，会发送最后传送的Intent。</li>
+<li>返回START_STICKY时，如果我们的Service所在进程被杀死了，系统会自动重启我们的Service，不过在onStartCommand方法中有可能会传输null的Intent参数。</li>
+<li>START_STICKY_COMPATIBILITY与START_STICKY类似，是其兼容的版本，该参数并不保证onStartCommand方法会被调用。</li>
+</ul>
+<h4 id="利用Native进程拉活"><a href="#利用Native进程拉活" class="headerlink" title="利用Native进程拉活"></a>利用Native进程拉活</h4><p>这种方法原理是：利用Linux中的fork机制创建一个Native进程，在Native进程中监控主进程的存活，当主进程挂掉后，在Native进程中立即对主进程进行拉活</p>
+<p>这种方法具有几项挑战：</p>
+<ul>
+<li>Native进程如何感知主进程的死亡：利用文件锁，而非轮询来判断主进程是否死亡，有利于性能</li>
+<li>Native进程如何拉活主进程：通过am命令进行拉活，并指定“–include-stopped-packages”参数来拉活主进程处于force-stop状态的情况</li>
+<li>如何保证Native进程的唯一：设计成C/S模式，主进程与Native进程通过Localsocket进行通信</li>
+</ul>
+<p>推荐两篇学习资料<br><a href="http://blog.csdn.net/marswin89/article/details/50899838" target="_blank" rel="noopener">Android 进程常驻（3）—-native保活5.0以下方案推演过程以及代码详述</a><br><a href="http://blog.csdn.net/marswin89/article/details/50916631" target="_blank" rel="noopener">Android 进程常驻（4）—-native保活5.0以上方案推演过程以及代码详述</a></p>
+<h4 id="利用JobScheduler机制拉活"><a href="#利用JobScheduler机制拉活" class="headerlink" title="利用JobScheduler机制拉活"></a>利用JobScheduler机制拉活</h4><p>JobService和JobScheduler是Android5.0（API 21）引入的新API，我们可以通过该机制来拉活我们的Service所在进程。</p>
+<p>首先我们通过继承JobService类来实现自己的Service，记得重写onStartJob和onStopJob方法。然后我们在onCreate方法里面通过JobScheduler来调度我们的Service，值得注意的是需要把参数设置为Persisted：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">public class MyJobService extends JobService &#123;  </span><br><span class="line">  </span><br><span class="line">    private static final String TAG = &quot;MyLog&quot;;  </span><br><span class="line">  </span><br><span class="line">    @Override  </span><br><span class="line">    public void onCreate() &#123;  </span><br><span class="line">        super.onCreate();  </span><br><span class="line">        Log.d(TAG, &quot;onCreate&quot;);  </span><br><span class="line">        JobInfo.Builder builder = new JobInfo.Builder(1, new ComponentName(this, MyJobService.class));  </span><br><span class="line">        // 设置执行延迟  </span><br><span class="line">        builder.setOverrideDeadline(0);  </span><br><span class="line">        // 设置持续运行  </span><br><span class="line">        builder.setPersisted(true);  </span><br><span class="line">        JobScheduler jobScheduler = (JobScheduler) this.getSystemService(Context.JOB_SCHEDULER_SERVICE);  </span><br><span class="line">        jobScheduler.schedule(builder.build());  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">    @Override  </span><br><span class="line">    public boolean onStartJob(JobParameters params) &#123;  </span><br><span class="line">        Log.d(TAG, &quot;onStartJob&quot;);  </span><br><span class="line">        return false;  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">    @Override  </span><br><span class="line">    public boolean onStopJob(JobParameters params) &#123;  </span><br><span class="line">        return false;  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>配置Mainfiest:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;service</span><br><span class="line"></span><br><span class="line">android:name=&quot;.MyService&quot;</span><br><span class="line"></span><br><span class="line">android:permission=&quot;android.permission.BIND_JOB_SERVICE&quot;</span><br><span class="line"></span><br><span class="line">/&gt;</span><br></pre></td></tr></table></figure></p>
+<p>该方法依然有它的缺陷：<br>首先，JobService只适用于Android5.0以上的系统；其次，当进程被force-stop指令杀死后，JobService依旧无法拉活进程。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>最后附上一张图来总结上述Android 进程保活的内容：<br><img src="https://img-blog.csdn.net/20170424154419042?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvc3VwZXJ4bGNy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="avatar"></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/year/01/13/Android-SQLite的基本使用/" rel="next" title="Android SQLite的基本使用">
+                <i class="fa fa-chevron-left"></i> Android SQLite的基本使用
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/year/03/01/Android原型设计与屏幕适配/" rel="prev" title="Android原型设计与屏幕适配">
+                Android原型设计与屏幕适配 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/logo.jpg"
+                alt="linlif" />
+            
+              <p class="site-author-name" itemprop="name">linlif</p>
+              <p class="site-description motion-element" itemprop="description">晚是全世界的晚，安是你的。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Android-进程优先级"><span class="nav-text">Android 进程优先级</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Android-进程回收策略"><span class="nav-text">Android 进程回收策略</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Android-进程被杀死情况"><span class="nav-text">Android 进程被杀死情况</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Android-进程保活思路"><span class="nav-text">Android 进程保活思路</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#提升Android进程的优先级"><span class="nav-text">提升Android进程的优先级</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#利用Activity提升进程等级"><span class="nav-text">利用Activity提升进程等级</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#利用Notification提升权限"><span class="nav-text">利用Notification提升权限</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在Android进程死后进行拉活"><span class="nav-text">在Android进程死后进行拉活</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#利用系统广播拉活"><span class="nav-text">利用系统广播拉活</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#利用第三方应用广播拉活"><span class="nav-text">利用第三方应用广播拉活</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#利用系统Service机制拉活"><span class="nav-text">利用系统Service机制拉活</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#利用Native进程拉活"><span class="nav-text">利用Native进程拉活</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#利用JobScheduler机制拉活"><span class="nav-text">利用JobScheduler机制拉活</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">linlif</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/libs/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/libs/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/libs/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/libs/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/libs/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/libs/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/libs/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+<script>
+    (function(){
+        if(''){
+            if (prompt('密码！') !== ''){
+                alert('wrong passwaor');
+                history.back();
+            }
+        }
+    })();
+</script>
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/libs/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/libs/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="短篇, 博客" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="首先附上完整的官方 API 概览地址 一、系统接口相关1.新的 StrictMode 检测程序2.JobScheduler 改进3.其他   缓存数据 内容提供程序分页 内容刷新请求 自定义数据存储 findViewById() 签名变更  1、新的 StrictMode 检测程序Android 8.0 添加了三个新的 StrictMode 检测程序，帮助识别应用可能出现的错误： detectUn">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android 8.0 新特性：API 概览">
+<meta property="og:url" content="http://yoursite.com/year/03/01/Android-8-0-新特性：API/index.html">
+<meta property="og:site_name" content="一个短篇">
+<meta property="og:description" content="首先附上完整的官方 API 概览地址 一、系统接口相关1.新的 StrictMode 检测程序2.JobScheduler 改进3.其他   缓存数据 内容提供程序分页 内容刷新请求 自定义数据存储 findViewById() 签名变更  1、新的 StrictMode 检测程序Android 8.0 添加了三个新的 StrictMode 检测程序，帮助识别应用可能出现的错误： detectUn">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-03-25T18:28:46.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android 8.0 新特性：API 概览">
+<meta name="twitter:description" content="首先附上完整的官方 API 概览地址 一、系统接口相关1.新的 StrictMode 检测程序2.JobScheduler 改进3.其他   缓存数据 内容提供程序分页 内容刷新请求 自定义数据存储 findViewById() 签名变更  1、新的 StrictMode 检测程序Android 8.0 添加了三个新的 StrictMode 检测程序，帮助识别应用可能出现的错误： detectUn">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.3',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/year/03/01/Android-8-0-新特性：API/"/>
+
+
+
+
+
+  <title>Android 8.0 新特性：API 概览 | 一个短篇</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">一个短篇</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/year/03/01/Android-8-0-新特性：API/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="linlif">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/logo.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="一个短篇">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android 8.0 新特性：API 概览</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-01T18:29:07+08:00">
+                2018-03-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>首先附上<a href="https://developer.android.google.cn/about/versions/oreo/android-8.0.html" target="_blank" rel="noopener">完整的官方 API 概览地址</a></p>
+<h2 id="一、系统接口相关"><a href="#一、系统接口相关" class="headerlink" title="一、系统接口相关"></a>一、系统接口相关</h2><p>1.新的 StrictMode 检测程序<br>2.JobScheduler 改进<br>3.其他 </p>
+<ul>
+<li>缓存数据</li>
+<li>内容提供程序分页</li>
+<li>内容刷新请求</li>
+<li>自定义数据存储</li>
+<li>findViewById() 签名变更</li>
+</ul>
+<h3 id="1、新的-StrictMode-检测程序"><a href="#1、新的-StrictMode-检测程序" class="headerlink" title="1、新的 StrictMode 检测程序"></a>1、新的 StrictMode 检测程序</h3><h4 id="Android-8-0-添加了三个新的-StrictMode-检测程序，帮助识别应用可能出现的错误："><a href="#Android-8-0-添加了三个新的-StrictMode-检测程序，帮助识别应用可能出现的错误：" class="headerlink" title="Android 8.0 添加了三个新的 StrictMode 检测程序，帮助识别应用可能出现的错误："></a>Android 8.0 添加了三个新的 StrictMode 检测程序，帮助识别应用可能出现的错误：</h4><ul>
+<li><code>detectUnbufferedIo()</code>将检测您的应用何时读取或写入未缓冲的数据，这可能极大影响性能。</li>
+<li><code>detectContentUriWithoutPermission()</code> 将检测您的应用在其外部启动 Activity 时何时意外忘记向其他应用授予权限。</li>
+<li><code>detectUntaggedSockets()</code> 将检测您的应用何时使用网络流量，而不使用 <code>setThreadStatsTag(int)</code> 将流量标记用于调试目的。</li>
+</ul>
+<h3 id="2、JobScheduler-改进"><a href="#2、JobScheduler-改进" class="headerlink" title="2、JobScheduler 改进"></a>2、JobScheduler 改进</h3><p>Android 8.0 引入了对 JobScheduler 的多项改进。由于您通常可以使用计划作业替代现在受限的后台服务或隐式广播接收器，这些改进可以让您的应用更轻松地符合新的后台执行限制。</p>
+<p>JobScheduler 的更新包括：</p>
+<ul>
+<li>您现在可以将工作队列与计划作业关联。要将一个工作项添加到作业的队列中，请调用 <code>JobScheduler.enqueue()</code>。当作业运行时，它可以将待定工作从队列中剥离并进行处理。这种功能可以处理之前需要启动后台服务（尤其是实现 <code>IntentService</code> 的服务）的许多用例。</li>
+<li>您现在可以通过调用 <code>JobInfo.Builder.setClipData()</code> 的方式将 <code>ClipData</code> 与作业关联。利用此选项，您可以将 URI 权限授予与作业关联，类似于这些权限传递到 <code>Context.startService()</code> 的方式。您也可以将 URI 权限授予用于工作队列上的 intent。</li>
+<li>计划作业现在支持多个新的约束条件： <ul>
+<li><code>JobInfo.isRequireStorageNotLow()</code><br>如果设备的可用存储空间非常低，作业将不会运行。</li>
+<li><code>JobInfo.isRequireBatteryNotLow()</code><br>如果电池电量等于或低于临界阈值，作业将不会运行；临界阈值是指设备显示 Low battery warning 系统对话框的电量。</li>
+<li><code>NETWORK_TYPE_METERED</code><br>作业需要一个按流量计费的网络连接，比如大多数移动数据网络数据套餐。</li>
+</ul>
+</li>
+</ul>
+<h3 id="3、其他"><a href="#3、其他" class="headerlink" title="3、其他"></a>3、其他</h3><h4 id="缓存数据"><a href="#缓存数据" class="headerlink" title="缓存数据"></a>缓存数据</h4><p>Android 8.0 优化了缓存数据的导航和行为。现在，每个应用均获得一定的磁盘空间配额，用于存储 getCacheQuotaBytes(UUID) 返回的缓存数据。<br>当系统需要释放磁盘空间时，将开始从超过配额最多的应用中删除缓存文件。因此，如果将您的缓存数据量始终保持低于配额的水平，则在必须清除系统中的某些文件时，您的缓存文件将能坚持到最后。系统在决定删除您的应用中的哪些缓存文件时，将首先考虑删除最旧的文件（由修改时间确定）。</p>
+<h4 id="内容提供程序分页"><a href="#内容提供程序分页" class="headerlink" title="内容提供程序分页"></a>内容提供程序分页</h4><p>我们已更新内容提供程序以支持加载大型数据集，每次加载一页。例如，一个具有大量图像的照片应用可查询要在页面中显示的数据的子集。内容提供程序返回的每个结果页面由一个 Cursor 对象表示。客户端和提供程序必须实现分页才能利用此功能。</p>
+<h4 id="内容刷新请求"><a href="#内容刷新请求" class="headerlink" title="内容刷新请求"></a>内容刷新请求</h4><p>现在，ContentProvider 和 ContentResolver 类均包含 refresh() 函数，这样，客户端可以更轻松地知道所请求的信息是否为最新信息。<br>您可以扩展 ContentProvider 以添加自定义的内容刷新逻辑。请务必重写 refresh() 函数，以返回 true，告知提供程序的客户端您已尝试自行刷新数据。</p>
+<h4 id="自定义数据存储"><a href="#自定义数据存储" class="headerlink" title="自定义数据存储"></a>自定义数据存储</h4><p>Android 8.0 允许您为首选项提供自定义数据存储，如果您的应用将首选项存储在云或本地数据库中，或者如果首选项特定于某个设备，此功能会非常有用。</p>
+<h4 id="findViewById-签名变更"><a href="#findViewById-签名变更" class="headerlink" title="findViewById() 签名变更"></a><code>findViewById()</code> 签名变更</h4><p>现在，<code>findViewById()</code> 函数的全部实例均返回 T，而不是 View。</p>
+<h2 id="二、功能相关"><a href="#二、功能相关" class="headerlink" title="二、功能相关"></a>二、功能相关</h2><ul>
+<li>通知渠道 — Notification Channels</li>
+<li>画中画模式 — PIP</li>
+<li>自适应图标 — Adaptive Icons</li>
+<li>固定快捷方式和小部件 — Pinning shortcuts</li>
+<li>自动填充 - Autofill Framework</li>
+<li>Font 资源 XML：可以下载和配置字体</li>
+</ul>
+<h3 id="1、通知渠道-—-Notification-Channels"><a href="#1、通知渠道-—-Notification-Channels" class="headerlink" title="1、通知渠道 — Notification Channels"></a>1、通知渠道 — Notification Channels</h3><p>通知渠道是由应用自行定义的通知内容类别，借助渠道，开发者可以让用户对不同种类的通知进行精细控制，用户可以单独拦截或更改每个渠道的行为，而不是统一管理应用的所有通知。</p>
+<p>创建通知渠道的步骤：</p>
+<ul>
+<li>创建 NotificationChannel 对象，并设置应用内唯一的通知 ID。</li>
+<li>配置通知渠道的属性，比如提示声音等。</li>
+<li>在 NotificationManager 中注册通知渠道对象。</li>
+</ul>
+<h3 id="2、画中画模式-—-PIP"><a href="#2、画中画模式-—-PIP" class="headerlink" title="2、画中画模式 — PIP"></a>2、画中画模式 — PIP</h3><p>Android O 现已支持 Activity 的画中画模式。PIP 是一种多窗口显示模式，多用于视频播放，即你可以一边发微信一边看视频。</p>
+<h4 id="关于生命周期"><a href="#关于生命周期" class="headerlink" title="关于生命周期"></a>关于生命周期</h4><p>PIP 模式不会改变 Activity 的生命周期。在指定时间只有最近与用户交互过的 Activity 为活动状态。 该 Activity 将被视为顶级 Activity。 所有其他 Activity 虽然可见，但均处于暂停状态。当一个 Activity 处于 PIP 模式时，其实它是出在暂停状态，但其内容会继续展示。</p>
+<h4 id="API变更"><a href="#API变更" class="headerlink" title="API变更"></a>API变更</h4><p>在 Android O 中新增 PictureInPictureArgs 对象来指明你的 Activity 在 PIP 模式中的属性，比如长宽比等。<br>Android O 还新增了以下方法来支持 PIP。</p>
+<ul>
+<li><code>Activity.enterPictureInPictureMode(PictureInPictureArgs args)</code>：将Activity置于 PIP 模式之下。</li>
+<li><code>Activity.setPictureInPictureArgs()</code>：用于更新 Activity 在 PIP 模式下的设置。如果 Activity 正处于 PIP 模式之下，那么更改的属性将立即生效。</li>
+</ul>
+<h3 id="3、自适应图标-—-Adaptive-Icons"><a href="#3、自适应图标-—-Adaptive-Icons" class="headerlink" title="3、自适应图标 — Adaptive Icons"></a>3、自适应图标 — Adaptive Icons</h3><p>Android 的屏幕适配一直以来都折磨着不少的开发者。为了帮助开发者更好的与设备 UI 集成，Android O 支持创建自适应图标，系统可以基于设备选择的蒙版将这些图标显示为不同形状。系统还将实现与图标的自动交互，并在启动器、快捷方式、设置、共享对话框以及概览屏幕中使用它们。</p>
+<h3 id="4、固定快捷方式和小部件-—-Pinning-shortcuts"><a href="#4、固定快捷方式和小部件-—-Pinning-shortcuts" class="headerlink" title="4、固定快捷方式和小部件 — Pinning shortcuts"></a>4、固定快捷方式和小部件 — Pinning shortcuts</h3><p>Pinning shortcuts 是一个比 APP shortcuts 更小的快捷方式，放置于桌面上，用于更快速的打开某一 APP 的某单一任务。Pinning shortcuts 在桌面上可呈现不同的图标显示。</p>
+<h3 id="5、其他特性介绍"><a href="#5、其他特性介绍" class="headerlink" title="5、其他特性介绍"></a>5、其他特性介绍</h3><p>1.增加了 Autofill Framework，方便用户在不同 APP 之间填写信息。<br>2.开放 android.permission.ANSWER_PHONE_CALLS，以后在自己的 APP 里也可以对来电做响应。<br>3.键盘导航(Keyboard navigation):在Android O 里我们致力于打造更可靠可预测的model for “arrow” 和 “tab”导航,有利于开发者和使用者。<br>4.AAudio API for Pro Audio:AAudio 是一个新的native API.主要是为那些高性能低延时API设计的。<br>5.WebView 增强:Android N里我们介绍了一个可选的多进程mode,在Android O里,我们默认开启了多进程提供apiAPI to let your app handle errors and crashes来处理错误和异常,来增强安全和稳定性.作为长远的安全考虑,你应该让你的app去验证google的不安全url列表 verify URLs through Google Safe Browsing。<br>6.Connectivity:对于audio的最终保真度来说,Android O现在同样支持High-quality的蓝牙audio codecs<br>7.Font 资源 XML: Fonts 格式 Android O 已经完全支持了,</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/year/01/16/Android启动过程解析/" rel="next" title="Android启动过程解析">
+                <i class="fa fa-chevron-left"></i> Android启动过程解析
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/year/03/03/Android-8-0-新特性：行为变更/" rel="prev" title="Android 8.0 新特性：行为变更">
+                Android 8.0 新特性：行为变更 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/logo.jpg"
+                alt="linlif" />
+            
+              <p class="site-author-name" itemprop="name">linlif</p>
+              <p class="site-description motion-element" itemprop="description">晚是全世界的晚，安是你的。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、系统接口相关"><span class="nav-text">一、系统接口相关</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、新的-StrictMode-检测程序"><span class="nav-text">1、新的 StrictMode 检测程序</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Android-8-0-添加了三个新的-StrictMode-检测程序，帮助识别应用可能出现的错误："><span class="nav-text">Android 8.0 添加了三个新的 StrictMode 检测程序，帮助识别应用可能出现的错误：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、JobScheduler-改进"><span class="nav-text">2、JobScheduler 改进</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、其他"><span class="nav-text">3、其他</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#缓存数据"><span class="nav-text">缓存数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#内容提供程序分页"><span class="nav-text">内容提供程序分页</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#内容刷新请求"><span class="nav-text">内容刷新请求</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#自定义数据存储"><span class="nav-text">自定义数据存储</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#findViewById-签名变更"><span class="nav-text">findViewById() 签名变更</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、功能相关"><span class="nav-text">二、功能相关</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、通知渠道-—-Notification-Channels"><span class="nav-text">1、通知渠道 — Notification Channels</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、画中画模式-—-PIP"><span class="nav-text">2、画中画模式 — PIP</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#关于生命周期"><span class="nav-text">关于生命周期</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#API变更"><span class="nav-text">API变更</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、自适应图标-—-Adaptive-Icons"><span class="nav-text">3、自适应图标 — Adaptive Icons</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4、固定快捷方式和小部件-—-Pinning-shortcuts"><span class="nav-text">4、固定快捷方式和小部件 — Pinning shortcuts</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5、其他特性介绍"><span class="nav-text">5、其他特性介绍</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">linlif</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/libs/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/libs/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/libs/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/libs/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/libs/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/libs/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/libs/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

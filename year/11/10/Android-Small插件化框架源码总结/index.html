@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+<script>
+    (function(){
+        if(''){
+            if (prompt('密码！') !== ''){
+                alert('wrong passwaor');
+                history.back();
+            }
+        }
+    })();
+</script>
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/libs/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/libs/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="短篇, 博客" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="概述Small是一个写得非常简洁的插件化框架，工程源码位置:https://github.com/wequick/Small插件化的方案，说到底要解决的核心问题只有三个：  插件类的加载  这个问题的解决和其它插件化框架的解决方法差不多。Android的类是由DexClassLoader加载的，通过反射可以将插件包动态加载进去。Small的gradle插件生成的是.so包，在初始化的时候会通过.s">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android Small插件化框架源码总结">
+<meta property="og:url" content="http://yoursite.com/year/11/10/Android-Small插件化框架源码总结/index.html">
+<meta property="og:site_name" content="一个短篇">
+<meta property="og:description" content="概述Small是一个写得非常简洁的插件化框架，工程源码位置:https://github.com/wequick/Small插件化的方案，说到底要解决的核心问题只有三个：  插件类的加载  这个问题的解决和其它插件化框架的解决方法差不多。Android的类是由DexClassLoader加载的，通过反射可以将插件包动态加载进去。Small的gradle插件生成的是.so包，在初始化的时候会通过.s">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-05-13T02:14:10.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android Small插件化框架源码总结">
+<meta name="twitter:description" content="概述Small是一个写得非常简洁的插件化框架，工程源码位置:https://github.com/wequick/Small插件化的方案，说到底要解决的核心问题只有三个：  插件类的加载  这个问题的解决和其它插件化框架的解决方法差不多。Android的类是由DexClassLoader加载的，通过反射可以将插件包动态加载进去。Small的gradle插件生成的是.so包，在初始化的时候会通过.s">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.3',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/year/11/10/Android-Small插件化框架源码总结/"/>
+
+
+
+
+
+  <title>Android Small插件化框架源码总结 | 一个短篇</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">一个短篇</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/year/11/10/Android-Small插件化框架源码总结/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="linlif">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/logo.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="一个短篇">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android Small插件化框架源码总结</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-10T22:46:16+08:00">
+                2017-11-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>Small是一个写得非常简洁的插件化框架，工程源码位置:<a href="https://github.com/wequick/Small" target="_blank" rel="noopener">https://github.com/wequick/Small</a><br>插件化的方案，说到底要解决的核心问题只有三个：</p>
+<ul>
+<li>插件类的加载</li>
+</ul>
+<p>这个问题的解决和其它插件化框架的解决方法差不多。Android的类是由DexClassLoader加载的，通过反射可以将插件包动态加载进去。Small的gradle插件生成的是.so包，在初始化的时候会通过.so文件生成.zip文件，再由.zip文件生成一个dex元素，反射添加到宿主类加载器的dexPathList里。</p>
+<ul>
+<li>插件资源的处理</li>
+</ul>
+<p>这里各插件化框架解决办法一般有两种想法：一是插件间不共享资源访问，办法就是每个插件生成一个AssertManager来访问它自己的资源，这样就不会存在资源id冲突的问题；另一种是大家都共用一个AssetManager，这样插件的资源是共享的，可以相互访问，但是要解决资源id冲突的问题。Small采用的是后者，通过修改aapt的生成产物解决了资源id冲突问题，由于共享资源访问，可以做到极小或者根本没有资源冗余，从而减小插件包的大小；</p>
+<ul>
+<li>Activity注册和生命周期问题</li>
+</ul>
+<p>大部分插件化框架解决办法都是采用在宿主工程里预先注册Activity占坑，然后通过占坑Activity将生命周期回调传回给插件Activity的方式。Small的处理大概就是，在宿主工程里预先注册几个Activity占坑，Instrumentation启动Activity时导向已注册的Activity，但是在Instrumentation生成Activity实例时(newActivity方法）通过真实的类生成。Activity的启动是在Instrumentation里实现的，用InstrumentationWrapper类继承Instrumentation，并且通过反射将ActivityThread里的mInstrumentation实例替换掉。</p>
+<h2 id="Small的初始化"><a href="#Small的初始化" class="headerlink" title="Small的初始化"></a>Small的初始化</h2><p>Small类：提供操作Bundle的静态方法<br>Bundle类: 加载组件，用类加载器把.so文件加载进来，解析bundle.json配置文件<br>Launcher ：用于启动宿主activity或插件activity</p>
+<p>Small的初始化过程，从setUp方法开始</p>
+<h3 id="初始化流程"><a href="#初始化流程" class="headerlink" title="初始化流程"></a>初始化流程</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">public static void setUp(Context context, Bundle.OnLoadListener listener) &#123;</span><br><span class="line">        Context appContext = context.getApplicationContext();</span><br><span class="line">        sContext = appContext;</span><br><span class="line">        saveActivityClasses(appContext);</span><br><span class="line">        LocalBroadcastManager.getInstance(appContext).registerReceiver(new OpenUriReceiver(),</span><br><span class="line">                new IntentFilter(EVENT_OPENURI));</span><br><span class="line">        //判断宿主版本</span><br><span class="line">        int backupHostVersion = getHostVersionCode();</span><br><span class="line">        int currHostVersion = 0;</span><br><span class="line">        try &#123;</span><br><span class="line">            PackageInfo pi = appContext.getPackageManager().getPackageInfo(</span><br><span class="line">                    appContext.getPackageName(), 0);</span><br><span class="line">            currHostVersion = pi.versionCode;</span><br><span class="line">        &#125; catch (PackageManager.NameNotFoundException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        if (backupHostVersion != currHostVersion) &#123;</span><br><span class="line">            sIsNewHostApp = true;</span><br><span class="line">            setHostVersionCode(currHostVersion);</span><br><span class="line">            clearAppCache(appContext);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            sIsNewHostApp = false;</span><br><span class="line">        &#125;</span><br><span class="line">        // Register default bundle launchers</span><br><span class="line">        registerLauncher(new ActivityLauncher());</span><br><span class="line">        registerLauncher(new ApkBundleLauncher());</span><br><span class="line">        registerLauncher(new WebBundleLauncher());</span><br><span class="line">        //初始化bundle</span><br><span class="line">        Bundle.setupLaunchers(context);</span><br><span class="line">        // Load bundles</span><br><span class="line">        Bundle.loadLaunchableBundles(listener);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>主要做了以下这些事：</p>
+<ul>
+<li>记录host中注册的activity，用hashmap存起来，对应saveActivityClasses方法</li>
+<li>注册bundle launcher并初始化</li>
+<li>解析bundle.json文件</li>
+</ul>
+<h3 id="bundle-launcher的初始化"><a href="#bundle-launcher的初始化" class="headerlink" title="bundle launcher的初始化"></a>bundle launcher的初始化</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public static void setupLaunchers(Context context) &#123;</span><br><span class="line">        if (sBundleLaunchers == null) return;</span><br><span class="line">        for (BundleLauncher launcher : sBundleLaunchers) &#123;</span><br><span class="line">            launcher.setUp(context);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>只有ApkBundleLauncher重写了setUp方法，该方法注入instrumentation，为解决Activity的启动和生命周期问题做准备。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">    public void setUp(Context context) &#123;</span><br><span class="line">        super.setUp(context);</span><br><span class="line">        // Inject instrumentation</span><br><span class="line">        if (sHostInstrumentation == null) &#123;</span><br><span class="line">            try &#123;</span><br><span class="line">                final Class&lt;?&gt; activityThreadClass = Class.forName(&quot;android.app.ActivityThread&quot;);</span><br><span class="line">                final Method method = activityThreadClass.getMethod(&quot;currentActivityThread&quot;);</span><br><span class="line">                Object thread = method.invoke(null, (Object[]) null);</span><br><span class="line">                Field field = activityThreadClass.getDeclaredField(&quot;mInstrumentation&quot;);</span><br><span class="line">                field.setAccessible(true);</span><br><span class="line">                sHostInstrumentation = (Instrumentation) field.get(thread);</span><br><span class="line">                Instrumentation wrapper = new InstrumentationWrapper();</span><br><span class="line">                field.set(thread, wrapper);</span><br><span class="line"></span><br><span class="line">                if (context instanceof Activity) &#123;</span><br><span class="line">                    field = Activity.class.getDeclaredField(&quot;mInstrumentation&quot;);</span><br><span class="line">                    field.setAccessible(true);</span><br><span class="line">                    field.set(context, wrapper);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; catch (Exception ignored) &#123;</span><br><span class="line">                ignored.printStackTrace();</span><br><span class="line">                // Usually, cannot reach here</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="解析bundle-json文件，加载bundle"><a href="#解析bundle-json文件，加载bundle" class="headerlink" title="解析bundle.json文件，加载bundle"></a>解析bundle.json文件，加载bundle</h3><p>bundle.json用于配置插件的路由，实现了Activity的url化，使插件间可以互相访问</p>
+<p>这是bundle.json文件的一个样例<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;version&quot;: &quot;1.0.0&quot;,</span><br><span class="line">  &quot;bundles&quot;: [</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;uri&quot;: &quot;lib.utils&quot;,</span><br><span class="line">      &quot;pkg&quot;: &quot;net.wequick.example.small.lib.utils&quot;</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;uri&quot;: &quot;main&quot;,</span><br><span class="line">      &quot;pkg&quot;: &quot;net.wequick.example.small.app.main&quot;</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;uri&quot;: &quot;home&quot;,</span><br><span class="line">      &quot;pkg&quot;: &quot;net.wequick.example.small.app.home&quot;</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;uri&quot;: &quot;message&quot;,</span><br><span class="line">      &quot;pkg&quot;: &quot;net.wequick.example.small.app.message&quot;</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;uri&quot;: &quot;find&quot;,</span><br><span class="line">      &quot;pkg&quot;: &quot;net.wequick.example.small.app.find&quot;</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;uri&quot;: &quot;mine&quot;,</span><br><span class="line">      &quot;pkg&quot;: &quot;net.wequick.example.small.app.mine&quot;</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;uri&quot;: &quot;detail&quot;,</span><br><span class="line">      &quot;pkg&quot;: &quot;net.wequick.example.small.app.detail&quot;,</span><br><span class="line">      &quot;rules&quot;: &#123;</span><br><span class="line">        &quot;page1&quot;: &quot;.TestActivity&quot;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;uri&quot;: &quot;about&quot;,</span><br><span class="line">      &quot;pkg&quot;: &quot;net.wequick.example.small.web.about&quot;</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>解析文件的过程比较简单，读取文件，解析为json<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line">     * Load bundles from manifest</span><br><span class="line">     */</span><br><span class="line">    public static void loadLaunchableBundles(OnLoadListener listener) &#123;</span><br><span class="line">        mListener = listener;</span><br><span class="line">        Context context = Small.getContext();</span><br><span class="line">        // Read manifest file</span><br><span class="line">        File manifestFile = new File(context.getFilesDir(), BUNDLE_MANIFEST_NAME);</span><br><span class="line">        manifestFile.delete();</span><br><span class="line">        String manifestJson;</span><br><span class="line">        if (!manifestFile.exists()) &#123;</span><br><span class="line">            // Copy asset to files</span><br><span class="line">            try &#123;</span><br><span class="line">                InputStream is = context.getAssets().open(BUNDLE_MANIFEST_NAME);</span><br><span class="line">                int size = is.available();</span><br><span class="line">                byte[] buffer = new byte[size];</span><br><span class="line">                is.read(buffer);</span><br><span class="line">                is.close();</span><br><span class="line"></span><br><span class="line">                manifestFile.createNewFile();</span><br><span class="line">                FileOutputStream os = new FileOutputStream(manifestFile);</span><br><span class="line">                os.write(buffer);</span><br><span class="line">                os.close();</span><br><span class="line"></span><br><span class="line">                manifestJson = new String(buffer, 0, size);</span><br><span class="line">            &#125; catch (IOException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">                return;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            try &#123;</span><br><span class="line">                BufferedReader br = new BufferedReader(new FileReader(manifestFile));</span><br><span class="line">                StringBuilder sb = new StringBuilder();</span><br><span class="line">                String line;</span><br><span class="line">                while ((line = br.readLine()) != null) &#123;</span><br><span class="line">                    sb.append(line);</span><br><span class="line">                &#125;</span><br><span class="line">                manifestJson = sb.toString();</span><br><span class="line">            &#125; catch (FileNotFoundException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">                return;</span><br><span class="line">            &#125; catch (IOException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">                return;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        // Parse manifest file</span><br><span class="line">        try &#123;</span><br><span class="line">            JSONObject jsonObject = new JSONObject(manifestJson);</span><br><span class="line">            String version = jsonObject.getString(&quot;version&quot;);</span><br><span class="line">            loadManifest(version, jsonObject);</span><br><span class="line">        &#125; catch (JSONException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="加载bundle"><a href="#加载bundle" class="headerlink" title="加载bundle"></a>加载bundle</h3><p>1.用.so文件生成dex文件，通过反射添加到类加载器的dexElements里面去<br>2.一个bundle对应一个.so文件，加载bundle的过程就是用PackageManager把.so文件包含的信息读取出来，将.so的activityInfo读出来，存到一个hashmap里。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">public static boolean expandDexPathList(ClassLoader cl, String dexPath,</span><br><span class="line">                                     String libraryPath, String optDexPath) &#123;</span><br><span class="line">        try &#123;</span><br><span class="line">            File pkg = new File(dexPath);</span><br><span class="line">            DexFile dexFile = DexFile.loadDex(dexPath, optDexPath, 0);  //.so加载成DexFile</span><br><span class="line">            Object element = makeDexElement(pkg, dexFile);    //反射生成DexPathList的Element</span><br><span class="line">            fillDexPathList(cl, element);  //添加到DexPathList里</span><br><span class="line">        &#125; catch (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">            return false;</span><br><span class="line">        &#125;</span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line">     * Make dex element</span><br><span class="line">     * @see &lt;a href=&quot;https://android.googlesource.com/platform/libcore-snapshot/+/ics-mr1/dalvik/src/main/java/dalvik/system/DexPathList.java&quot;&gt;DexPathList.java&lt;/a&gt;</span><br><span class="line">     * @param pkg archive android package with any file extensions</span><br><span class="line">     * @param dexFile</span><br><span class="line">     * @return dalvik.system.DexPathList$Element</span><br><span class="line">     */</span><br><span class="line">    private static Object makeDexElement(File pkg, DexFile dexFile) throws Exception &#123;</span><br><span class="line">        if (sDexElementClass == null) &#123;</span><br><span class="line">            sDexElementClass = Class.forName(&quot;dalvik.system.DexPathList$Element&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">        if (sDexElementConstructor == null) &#123;</span><br><span class="line">            sDexElementConstructor = sDexElementClass.getConstructors()[0];</span><br><span class="line">        &#125;</span><br><span class="line">        Class&lt;?&gt;[] types = sDexElementConstructor.getParameterTypes();</span><br><span class="line">        switch (types.length) &#123;</span><br><span class="line">            case 3:</span><br><span class="line">                if (types[1].equals(ZipFile.class)) &#123;</span><br><span class="line">                    // Element(File apk, ZipFile zip, DexFile dex)</span><br><span class="line">                    ZipFile zip = new ZipFile(pkg);</span><br><span class="line">                    return sDexElementConstructor.newInstance(pkg, zip, dexFile);</span><br><span class="line">                &#125; else &#123;</span><br><span class="line">                    // Element(File apk, File zip, DexFile dex)</span><br><span class="line">                    return sDexElementConstructor.newInstance(pkg, pkg, dexFile);</span><br><span class="line">                &#125;</span><br><span class="line">            case 4:</span><br><span class="line">            default:</span><br><span class="line">                // Element(File apk, boolean isDir, File zip, DexFile dex)</span><br><span class="line">                return sDexElementConstructor.newInstance(pkg, false, pkg, dexFile);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">private static void fillDexPathList(ClassLoader cl, Object element)</span><br><span class="line">            throws NoSuchFieldException, IllegalAccessException &#123;</span><br><span class="line">        if (sPathListField == null) &#123;</span><br><span class="line">            sPathListField = getDeclaredField(DexClassLoader.class.getSuperclass(), &quot;pathList&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">        Object pathList = sPathListField.get(cl);</span><br><span class="line">        if (sDexElementsField == null) &#123;</span><br><span class="line">            sDexElementsField = getDeclaredField(pathList.getClass(), &quot;dexElements&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">        expandArray(pathList, sDexElementsField, new Object[]&#123;element&#125;, true);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>Small的初始化和启动流程可以总结为以下：</p>
+<h3 id="load流程"><a href="#load流程" class="headerlink" title="load流程"></a>load流程</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Small.setup   --&gt;   Bundle.setupLaunchers   (调用各BundleLauncher的setUp，其中ApkBundleLauncher的setUp会替换掉ActivityThread的mInstrumentation成员变量)  --&gt;Bundle.loadLaunchableBundles（解析bundle.json，并加载bundle）--&gt;Bundle.loadManifest(读取了bundle.json) --&gt; Bundle.loadBundles  ( 开启异步线程进行加载)</span><br><span class="line">异步线程里面的流程：</span><br><span class="line">--&gt;Bundle.prepareForLaunch--&gt;遍历ActivityLauncher，WebBundleLauncher，ApkBundleLauncher，调用它们的BundleLauncher.resolveBundle方法寻找合适的BundleLauncher解析插件包；--&gt;BundleLauncher.preloadBundle(主要是判断能否加载)  --&gt;BundleLauncher.loadBundle（正真的加载解析动作）</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">除了直接使用的三个BundleLauncher类（ActivityLauncher，WebBundleLauncher，ApkBundleLauncher），还有两个中间类，SoBundleLauncher 和AssetBundleLauncher，</span><br><span class="line">其中SoBundleLauncher主要是提供了一个preloadBundle函数实现，里面实现了按支持的type与package名对比，快速判断此BundleLauncher能否解析此插件；校验插件签名是否合法来确定是否要解析次插件；AssetBundleLauncher从SoBundleLauncher继承，干了WebBundleLauncher 要做的loadBundle大部分的活。</span><br></pre></td></tr></table></figure>
+<h3 id="界面启动流程"><a href="#界面启动流程" class="headerlink" title="界面启动流程"></a>界面启动流程</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Small.openUri --&gt; Bundle.getLaunchableBundle --&gt;Bundle.matchesRule(通过uri匹配合适的bundle) --&gt; Bundle.launchFrom--&gt;ApkBundleLauncher.launchBundle--&gt;ApkBundleLauncher.prelaunchBundle--&gt;BundleLauncher.launchBundle-&gt;Activity.startActivityForResult --&gt;ApkBundleLauncher.InstrumentationWrapper.execStartActivity--》ApkBundleLauncher.InstrumentationWrapper.wrapIntent（将插件activity类保存在intent的category中，同时将intent的component里面的类替换为host 中声明的占位Activity，以通过ActivityManager的检查）--》ApkBundleLauncher.InstrumentationWrapper.newActivity(取出intent中的插件activity类，并实例化返回，用于接收生命周期回调) --》ApkBundleLauncher.InstrumentationWrapper.callActivityOnCreate（加入插件apk到AssertManager中，用于读取插件资源，应用插件Theme）</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/year/10/31/Activity和Fragment生命周期详解/" rel="next" title="Activity Fragment生命周期总结详解及Activity启动模式总结">
+                <i class="fa fa-chevron-left"></i> Activity Fragment生命周期总结详解及Activity启动模式总结
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/year/11/30/JAVA反射简介/" rel="prev" title="JAVA反射简介以及在Android中的使用">
+                JAVA反射简介以及在Android中的使用 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/logo.jpg"
+                alt="linlif" />
+            
+              <p class="site-author-name" itemprop="name">linlif</p>
+              <p class="site-description motion-element" itemprop="description">晚是全世界的晚，安是你的。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概述"><span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Small的初始化"><span class="nav-text">Small的初始化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#初始化流程"><span class="nav-text">初始化流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bundle-launcher的初始化"><span class="nav-text">bundle launcher的初始化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解析bundle-json文件，加载bundle"><span class="nav-text">解析bundle.json文件，加载bundle</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#加载bundle"><span class="nav-text">加载bundle</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-text">总结</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#load流程"><span class="nav-text">load流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#界面启动流程"><span class="nav-text">界面启动流程</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">linlif</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/libs/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/libs/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/libs/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/libs/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/libs/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/libs/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/libs/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

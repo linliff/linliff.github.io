@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+<script>
+    (function(){
+        if(''){
+            if (prompt('密码！') !== ''){
+                alert('wrong passwaor');
+                history.back();
+            }
+        }
+    })();
+</script>
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/libs/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/libs/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="短篇, 博客" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="在Android的开发过程中会遇到数据传递或者通讯的需求，在同一个应用内可以通过LocalBroadcastManager intent传递对象，或者通过读写sp或者数据库达到效果。但在跨应用的场景下，情况就会复杂点，针对不同的情况需要不同的方案，下面总结一下我在实际开发中跨应用数据传递、分享的几个解决方案。 通过广播发送intent作为Android的四大组件之一，广播(Broadcast)机制">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android跨进程、跨APP传递数据通信解决方案">
+<meta property="og:url" content="http://yoursite.com/year/12/30/Android跨进程通信方案总结/index.html">
+<meta property="og:site_name" content="一个短篇">
+<meta property="og:description" content="在Android的开发过程中会遇到数据传递或者通讯的需求，在同一个应用内可以通过LocalBroadcastManager intent传递对象，或者通过读写sp或者数据库达到效果。但在跨应用的场景下，情况就会复杂点，针对不同的情况需要不同的方案，下面总结一下我在实际开发中跨应用数据传递、分享的几个解决方案。 通过广播发送intent作为Android的四大组件之一，广播(Broadcast)机制">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-03-06T18:28:30.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android跨进程、跨APP传递数据通信解决方案">
+<meta name="twitter:description" content="在Android的开发过程中会遇到数据传递或者通讯的需求，在同一个应用内可以通过LocalBroadcastManager intent传递对象，或者通过读写sp或者数据库达到效果。但在跨应用的场景下，情况就会复杂点，针对不同的情况需要不同的方案，下面总结一下我在实际开发中跨应用数据传递、分享的几个解决方案。 通过广播发送intent作为Android的四大组件之一，广播(Broadcast)机制">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.3',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/year/12/30/Android跨进程通信方案总结/"/>
+
+
+
+
+
+  <title>Android跨进程、跨APP传递数据通信解决方案 | 一个短篇</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">一个短篇</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/year/12/30/Android跨进程通信方案总结/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="linlif">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/logo.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="一个短篇">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android跨进程、跨APP传递数据通信解决方案</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-30T10:53:02+08:00">
+                2017-12-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在Android的开发过程中会遇到数据传递或者通讯的需求，在同一个应用内可以通过LocalBroadcastManager intent传递对象，或者通过读写sp或者数据库达到效果。但在跨应用的场景下，情况就会复杂点，针对不同的情况需要不同的方案，下面总结一下我在实际开发中跨应用数据传递、分享的几个解决方案。</p>
+<h3 id="通过广播发送intent"><a href="#通过广播发送intent" class="headerlink" title="通过广播发送intent"></a>通过广播发送intent</h3><p>作为Android的四大组件之一，广播(Broadcast)机制可以用于进程/线程间通信，分为广播发送和广播接收两个过程，需要注意的是，跨进程通信时需要在manifest注册广播时加上<code>android:exported=&quot;true&quot;</code>的属性。<br>例子就很简单了：</p>
+<h4 id="广播接收类："><a href="#广播接收类：" class="headerlink" title="广播接收类："></a>广播接收类：</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public class MyBroadcastReceiver extends BroadcastReceiver &#123;</span><br><span class="line">       @Override</span><br><span class="line">       public void onReceive(Context context, Intent intent) &#123;</span><br><span class="line">           if (intent == null) return;</span><br><span class="line">           int eventType = intent.getIntExtra(&quot;key&quot;, 0);</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<h4 id="两种注册方式"><a href="#两种注册方式" class="headerlink" title="两种注册方式"></a>两种注册方式</h4><p>1，静态注册广播：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;receiver</span><br><span class="line">      android:name=&quot;.MyBroadcastReceiver&quot;</span><br><span class="line">      android:enabled=&quot;true&quot;</span><br><span class="line">      android:exported=&quot;true&quot;&gt;</span><br><span class="line">      &lt;intent-filter&gt;</span><br><span class="line">          &lt;!-- 自定义广播 for test --&gt;</span><br><span class="line">          &lt;action android:name=&quot;android.intent.action.test&quot;/&gt;</span><br><span class="line">      &lt;/intent-filter&gt;</span><br><span class="line">  &lt;/receiver&gt;</span><br></pre></td></tr></table></figure></p>
+<p>2，动态注册广播：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">MyBroadcastReceiver mBroadcastReceiver2 = new MyBroadcastReceiver();</span><br><span class="line">            IntentFilter filter = new IntentFilter();</span><br><span class="line">            filter.addAction(&quot;android.intent.action.test&quot;);</span><br><span class="line">            context.registerReceiver(mBroadcastReceiver, filter);</span><br></pre></td></tr></table></figure></p>
+<h4 id="发送广播"><a href="#发送广播" class="headerlink" title="发送广播"></a>发送广播</h4><p>发送广播跟正常使用一样：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Intent intent = new Intent(&quot;android.intent.action.test&quot;);</span><br><span class="line">intent.putExtra(&quot;key&quot; , 6);</span><br><span class="line">context.sendBroadcast(intent);</span><br></pre></td></tr></table></figure></p>
+<p>PS:在实际使用中，这种全局的广播并不能保证action一定唯一，所以最好对传递的数据做好加密处理。关于广播的深入了解，可以看另外一篇文章</p>
+<h3 id="通过FileObserver共享数据"><a href="#通过FileObserver共享数据" class="headerlink" title="通过FileObserver共享数据"></a>通过FileObserver共享数据</h3><p>FileObserver类是一个用于监听文件访问、创建、修改、删除、移动等操作的监听器。<br>具体应用场景可以这样：在跨应用通信中时，应用A去读写一个公共目录下的文件，写下需要传递的数据，应用B通过注册公共文件的FileObserver监听，通过文件的不同状态去做读取数据之类的操作。<br>具体使用如下：</p>
+<h4 id="应用A写入文件"><a href="#应用A写入文件" class="headerlink" title="应用A写入文件"></a>应用A写入文件</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">private void handleTopName() &#123;</span><br><span class="line">        if (isPrivateFileExist()) &#123;</span><br><span class="line">            try &#123;</span><br><span class="line">                final String test = &quot;test&quot;;//字符串根据场景不提变化</span><br><span class="line">                if (obFile.canWrite()) &#123;</span><br><span class="line">                    try &#123;</span><br><span class="line">                        filePrint(test);</span><br><span class="line">                    &#125; catch (IOException e) &#123;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; catch (Exception e) &#123;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">//向已创建的文件中写入数据 - 覆写方式</span><br><span class="line">private void filePrint(String str) throws IOException &#123;</span><br><span class="line">    FileWriter fw = null;</span><br><span class="line">    BufferedWriter bw = null;</span><br><span class="line"></span><br><span class="line">    fw = new FileWriter(obFile, false);</span><br><span class="line">    // 创建FileWriter对象，用来写入字符流</span><br><span class="line">    bw = new BufferedWriter(fw); //将缓冲对文件的输出</span><br><span class="line">    bw.write(str); //写入文件</span><br><span class="line">    bw.newLine();</span><br><span class="line">    bw.flush();</span><br><span class="line">    bw.close();</span><br><span class="line">    fw.close();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">    </span><br><span class="line">private boolean isPrivateFileExist() &#123;</span><br><span class="line">        File obFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + FILE_PATH + FILE_NAME);</span><br><span class="line">        if (!obFile.exists()) &#123;</span><br><span class="line">            File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + FILE_PATH);</span><br><span class="line">            boolean isDirExist;</span><br><span class="line">            isDirExist = dir.exists() || dir.mkdirs();</span><br><span class="line">            if (isDirExist) &#123;</span><br><span class="line">                try &#123;</span><br><span class="line">                    boolean createFile = obFile.createNewFile();</span><br><span class="line">                    if (createFile) &#123;</span><br><span class="line">                        return true;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125; catch (IOException e) &#123;</span><br><span class="line">                &#125;</span><br><span class="line">                return false;</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                return false;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            return true;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h4 id="应用B通过FileObserver监听文件变化"><a href="#应用B通过FileObserver监听文件变化" class="headerlink" title="应用B通过FileObserver监听文件变化"></a>应用B通过FileObserver监听文件变化</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">private File obFile;</span><br><span class="line">private MFileObserver mFileObserver;</span><br><span class="line">  //读取文件</span><br><span class="line">    public void readFile() &#123;</span><br><span class="line">        obFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + FILE_PATH + FILE_NAME);</span><br><span class="line">        if (!obFile.exists())&#123;</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">        mFileObserver = new MFileObserver(obFile.getAbsolutePath());</span><br><span class="line">        mFileObserver.startWatching();</span><br><span class="line">    &#125;</span><br><span class="line">   private class MFileObserver extends FileObserver &#123;</span><br><span class="line">        MFileObserver(String path) &#123;</span><br><span class="line">            super(path, FileObserver.ALL_EVENTS);</span><br><span class="line">        &#125;</span><br><span class="line">        @Override</span><br><span class="line">        public void onEvent(int event, final String path) &#123;</span><br><span class="line">            // CLOSE_WRITE 表示最新结果更新完成，读取一次</span><br><span class="line">            switch (event) &#123;</span><br><span class="line">                case FileObserver.CLOSE_WRITE:</span><br><span class="line">                    fileRead();</span><br><span class="line">                    break;</span><br><span class="line">                case FileObserver.DELETE:</span><br><span class="line">                    break;</span><br><span class="line">                case FileObserver.DELETE_SELF:</span><br><span class="line">                    break;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    private  void fileRead() &#123;</span><br><span class="line">        if (obFile.canRead()) &#123;</span><br><span class="line">            StringBuffer sb = new StringBuffer();</span><br><span class="line">            try &#123;</span><br><span class="line">                FileInputStream fis = new FileInputStream(obFile);</span><br><span class="line">                int c;</span><br><span class="line">                while ((c = fis.read()) != -1) &#123;</span><br><span class="line">                    sb.append((char) c);</span><br><span class="line">                &#125;</span><br><span class="line">                fis.close();</span><br><span class="line">            &#125; catch (FileNotFoundException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125; catch (IOException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">            String content = sb.toString().trim();</span><br><span class="line">            mFileObserver.stopWatching();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>此外扩展一下FileObserver对其他事件的监听：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">常量名</th>
+<th style="text-align:center">对应事件</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">ACCESS</td>
+<td style="text-align:center">打开文件后读取文件的操作</td>
+</tr>
+<tr>
+<td style="text-align:left">ALL_EVENTS</td>
+<td style="text-align:center">事件列表中的所有事件</td>
+</tr>
+<tr>
+<td style="text-align:left">ATTRIB</td>
+<td style="text-align:center">未明操作</td>
+</tr>
+<tr>
+<td style="text-align:left">CLOSE_NOWRITE</td>
+<td style="text-align:center">只读文件被关闭</td>
+</tr>
+<tr>
+<td style="text-align:left">CLOSE_WRITE</td>
+<td style="text-align:center">读写文件被编辑并关闭</td>
+</tr>
+<tr>
+<td style="text-align:left">CREATE</td>
+<td style="text-align:center">文件被创建创建</td>
+</tr>
+<tr>
+<td style="text-align:left">DELETE</td>
+<td style="text-align:center">文件被删除</td>
+</tr>
+<tr>
+<td style="text-align:left">DELETE_SELF</td>
+<td style="text-align:center">自删除事件</td>
+</tr>
+<tr>
+<td style="text-align:left">MODIFY</td>
+<td style="text-align:center">文件被修改</td>
+</tr>
+<tr>
+<td style="text-align:left">MOVED_FROM</td>
+<td style="text-align:center">移出事件</td>
+</tr>
+<tr>
+<td style="text-align:left">MOVED_TO</td>
+<td style="text-align:center">移入事件</td>
+</tr>
+<tr>
+<td style="text-align:left">MOVE_SELF</td>
+<td style="text-align:center">自移动事件</td>
+</tr>
+<tr>
+<td style="text-align:left">OPEN</td>
+<td style="text-align:center">文件被打开</td>
+</tr>
+</tbody>
+</table>
+<p>具体其他使用可以参考官方文档：<br><a href="https://developer.android.google.cn/reference/android/os/FileObserver.html" target="_blank" rel="noopener">https://developer.android.google.cn/reference/android/os/FileObserver.html</a></p>
+<h3 id="通过socket传输数据"><a href="#通过socket传输数据" class="headerlink" title="通过socket传输数据"></a>通过socket传输数据</h3><p>Socket又称套接字，在程序内部提供了与外界通信的端口，即端口通信。使用Socket可以将应用程序添加到网络中，与处于同一网络中的其他应用程序进行通信。简单来说，Socket提供了程序内部与外界通信的端口并为通信双方的提供了数据传输通道。<br>根据不同的的底层协议，Socket的实现是多样化的,这里只使用到了TCP/IP协议的通信。TCP／IP协议交互提供了套接字(Socket)接口。应用层可以和传输层通过Socket接口，区分来自不同应用程序进程或网络连接的通信，实现数据传输的并发服务。</p>
+<p>一下是在实际项目使用中通过Socket传输文件的简易代码。</p>
+<h4 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h4><p>ClientManager用于管理客户端Socket的开启和关闭，以及处理回调。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br></pre></td><td class="code"><pre><span class="line">public class ClientManager &#123;</span><br><span class="line"></span><br><span class="line">    private FileClient mFileClient;</span><br><span class="line">    private String mHost = &quot;localhost&quot;;</span><br><span class="line">    private int[] mPorts = &#123;10086,11021,12345,17418,25014&#125;;</span><br><span class="line">    private int mPort = mPorts[0];</span><br><span class="line">    private String mFilePath = &quot;&quot;;</span><br><span class="line">    private int select;</span><br><span class="line">    private void resetPortAndStart()&#123;</span><br><span class="line">        select ++;</span><br><span class="line">        int length = mPorts.length;</span><br><span class="line">        if (select &gt;= length)&#123;</span><br><span class="line">            quit();</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">        mPort = mPorts[select];</span><br><span class="line">        actionUploadFile();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void actionUploadFile() &#123;</span><br><span class="line">        SingleThreadUtils.execute(new Runnable() &#123;</span><br><span class="line"></span><br><span class="line">            @Override</span><br><span class="line">            public void run() &#123;</span><br><span class="line">                quit();</span><br><span class="line">                mFileClient = new FileClient(mHost, mPort);</span><br><span class="line">                mFileClient.upload(mFilePath, new ProcessListener() &#123;</span><br><span class="line">                    @Override</span><br><span class="line">                    public void onLocalFileDoNotExist(String filePath) &#123;</span><br><span class="line">                        quit();</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    @Override</span><br><span class="line">                    public void onServerNotResponse(String protocolCode) &#123;</span><br><span class="line">                        if (ProtocolCode.AUTHENTICATION_RESPONSE_CODE.equals(protocolCode))&#123;</span><br><span class="line">                            resetPortAndStart();</span><br><span class="line">                        &#125;else if (ProtocolCode.FILE_MESSAGE_RESPONSE_CODE.equals(protocolCode))&#123;</span><br><span class="line">                            quit();</span><br><span class="line">                        &#125;else &#123;</span><br><span class="line">                            quit();</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    @Override</span><br><span class="line">                    public void onServerErrorResponse(String protocolCode) &#123;</span><br><span class="line">                        if (ProtocolCode.AUTHENTICATION_RESPONSE_CODE.equals(protocolCode))&#123;</span><br><span class="line">                            resetPortAndStart();</span><br><span class="line">                        &#125;else if (ProtocolCode.FILE_MESSAGE_RESPONSE_CODE.equals(protocolCode))&#123;</span><br><span class="line">                            quit();</span><br><span class="line">                        &#125;else&#123;</span><br><span class="line">                            quit();</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    @Override</span><br><span class="line">                    public void onAuthResult(boolean result) &#123;</span><br><span class="line">                        if(result)&#123;</span><br><span class="line"></span><br><span class="line">                        &#125;else &#123;</span><br><span class="line">                            resetPortAndStart();</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    @Override</span><br><span class="line">                    public void onServerCanReadSdcardFile(String path) &#123;</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    @Override</span><br><span class="line">                    public void onException(Exception e) &#123;</span><br><span class="line">                        if (e instanceof ConnectException)&#123;</span><br><span class="line">                            resetPortAndStart();</span><br><span class="line">                        &#125;else &#123;</span><br><span class="line">                            quit();</span><br><span class="line">                        &#125;</span><br><span class="line">                        e.printStackTrace();</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private void quit()&#123;</span><br><span class="line">        if (mFileClient != null) &#123;</span><br><span class="line">            mFileClient.quit();</span><br><span class="line">            mFileClient = null;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>ClientWork用于处理Socket传输逻辑业务。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br></pre></td><td class="code"><pre><span class="line">public class ClientWork &#123;</span><br><span class="line"></span><br><span class="line">	private String host;</span><br><span class="line">	private int port;</span><br><span class="line">	private Socket socket;</span><br><span class="line"></span><br><span class="line">	OutputStream outStream;</span><br><span class="line">	PushbackInputStream inStream;</span><br><span class="line">	</span><br><span class="line">	public FileClient(String host, int port) &#123;</span><br><span class="line">		this.host = host;</span><br><span class="line">		this.port = port;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public void upload(String path, ProcessListener listener) &#123;</span><br><span class="line">		try &#123;</span><br><span class="line">			File f = new File(path);</span><br><span class="line">			if (!f.exists()) &#123;</span><br><span class="line">				//本地文件不存在</span><br><span class="line">				if (listener != null)&#123;</span><br><span class="line">					listener.onLocalFileDoNotExist(path);</span><br><span class="line">				&#125;</span><br><span class="line">				return;</span><br><span class="line">			&#125;</span><br><span class="line">			if (socket == null) &#123;</span><br><span class="line">				socket = new Socket(host, port);</span><br><span class="line">				socket.setSoTimeout(10*1000);</span><br><span class="line">			&#125;</span><br><span class="line">			//发送</span><br><span class="line">			outStream = socket.getOutputStream();</span><br><span class="line">			//接收</span><br><span class="line">			inStream = new PushbackInputStream(socket.getInputStream());</span><br><span class="line">			//身份验证</span><br><span class="line">			String authMsg = ProtocolCode.C_AUTHENTICATION_CODE + ProtocolCode.SEPARATOR + ProtocolCode.MESSAGE_AUTHENTICATION + &quot;\r\n&quot;;</span><br><span class="line">			outStream.write(authMsg.getBytes());</span><br><span class="line">			String response = StreamUtils.readLine(inStream);</span><br><span class="line">			if (responseIsNull(response))&#123;</span><br><span class="line">				//服务端没响应身份验证</span><br><span class="line">				if (listener != null)&#123;</span><br><span class="line">					listener.onServerNotResponse(ProtocolCode.AUTHENTICATION_RESPONSE_CODE);</span><br><span class="line">				&#125;</span><br><span class="line">				return;</span><br><span class="line">			&#125;</span><br><span class="line">			if(responseCodeIsCorrect(response,ProtocolCode.S_AUTHENTICATION_CODE)) &#123;</span><br><span class="line">				if (resultSuccess(response)) &#123;</span><br><span class="line">					//身份验证成功</span><br><span class="line">					if (listener != null)&#123;</span><br><span class="line">						listener.onAuthResult(true);</span><br><span class="line">					&#125;</span><br><span class="line">					//文件信息</span><br><span class="line">					String fileMsg = ProtocolCode.C_FILE_MESSAGE_JSON_CODE + ProtocolCode.SEPARATOR + f.getAbsolutePath();</span><br><span class="line">					outStream.write(fileMsg.getBytes());</span><br><span class="line">					response = StreamUtils.readLine(inStream);</span><br><span class="line">					if (responseIsNull(response)) &#123;</span><br><span class="line">						//服务端没响应文件信息</span><br><span class="line">						if (listener != null)&#123;</span><br><span class="line">							listener.onServerNotResponse(ProtocolCode.FILE_MESSAGE_RESPONSE_CODE);</span><br><span class="line">						&#125;</span><br><span class="line">						return;</span><br><span class="line">					&#125;</span><br><span class="line">					if(responseCodeIsCorrect(response,ProtocolCode.S_CAN_READ_PATH_CODE))&#123;</span><br><span class="line">						if (listener != null)&#123;</span><br><span class="line">							listener.onServerCanReadSdcardFile(path);</span><br><span class="line">						&#125;</span><br><span class="line">					&#125;else &#123;</span><br><span class="line">						//文件信息返回码不对</span><br><span class="line">						if (listener != null) &#123;</span><br><span class="line">							listener.onServerErrorResponse(ProtocolCode.FILE_MESSAGE_RESPONSE_CODE);</span><br><span class="line">						&#125;</span><br><span class="line">					&#125;</span><br><span class="line"></span><br><span class="line">				&#125;else &#123;</span><br><span class="line">					//身份验证失败</span><br><span class="line">					if (listener != null)&#123;</span><br><span class="line">						listener.onAuthResult(false);</span><br><span class="line">					&#125;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;else &#123;</span><br><span class="line">				//身份验证返回码不对</span><br><span class="line">				if (listener != null)&#123;</span><br><span class="line">					listener.onServerErrorResponse(ProtocolCode.AUTHENTICATION_RESPONSE_CODE);</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125; catch (Exception e) &#123;</span><br><span class="line">			if (listener != null) &#123;</span><br><span class="line">				listener.onException(e);</span><br><span class="line">			&#125;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public void quit() &#123;</span><br><span class="line">		if (socket != null) &#123;</span><br><span class="line">			try &#123;</span><br><span class="line">				if (socket.getOutputStream() != null) &#123;</span><br><span class="line">					socket.getOutputStream().close();</span><br><span class="line">				&#125;</span><br><span class="line">				if (socket.getInputStream() != null) &#123;</span><br><span class="line">					socket.getInputStream().close();</span><br><span class="line">				&#125;</span><br><span class="line">				socket.close();</span><br><span class="line">			&#125; catch (Exception e) &#123;</span><br><span class="line">				// e.printStackTrace();</span><br><span class="line">				socket = null;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	private boolean resultSuccess(String response)&#123;</span><br><span class="line">		String success = splitResponseOne(response);</span><br><span class="line">		return TextUtils.equals(ProtocolCode.MESSAGE_SUCCESS,success);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	private boolean responseIsNull(String response)&#123;</span><br><span class="line">		return TextUtils.isEmpty(response);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	private boolean responseCodeIsCorrect(String response, String code)&#123;</span><br><span class="line">		return response.startsWith(code);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	private String splitResponseOne(String response)&#123;</span><br><span class="line">		String[] authSplit = response.split(ProtocolCode.SEPARATOR);</span><br><span class="line">		if (authSplit.length != 2)&#123;</span><br><span class="line">			return null;</span><br><span class="line">		&#125;</span><br><span class="line">		return authSplit[1];</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>ProcessListener客户端回调接口<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">public interface ProcessListener &#123;</span><br><span class="line">	/**</span><br><span class="line">	 * 本地文件不存在</span><br><span class="line">	 * @param filePath 文件路径</span><br><span class="line">     */</span><br><span class="line">	void onLocalFileDoNotExist(String filePath);</span><br><span class="line"></span><br><span class="line">	/**</span><br><span class="line">	 * 服务端没响应（身份验证、文件信息、传输结果）</span><br><span class="line">	 * @param protocolCode 协议码</span><br><span class="line">     */</span><br><span class="line">	void onServerNotResponse(String protocolCode);</span><br><span class="line"></span><br><span class="line">	/**</span><br><span class="line">	 * 服务端响应错误（身份验证、文件信息、传输结果）</span><br><span class="line">	 * @param protocolCode 协议码</span><br><span class="line">     */</span><br><span class="line">	void onServerErrorResponse(String protocolCode);</span><br><span class="line"></span><br><span class="line">	/**</span><br><span class="line">	 * 身份验证响应结果</span><br><span class="line">	 * @param result 结果</span><br><span class="line">     */</span><br><span class="line">	void onAuthResult(boolean result);</span><br><span class="line"></span><br><span class="line">	/**</span><br><span class="line">	 * 服务器可以读文件</span><br><span class="line">	 * @param path</span><br><span class="line">     */</span><br><span class="line">	void onServerCanReadSdcardFile(String path);</span><br><span class="line"></span><br><span class="line">	/**</span><br><span class="line">	 * 发生异常</span><br><span class="line">	 * @param e 异常信息</span><br><span class="line">     */</span><br><span class="line">	void onException(Exception e);</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="服务端"><a href="#服务端" class="headerlink" title="服务端"></a>服务端</h4><p>ServerManager控制启动和停止Socket接收服务。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br></pre></td><td class="code"><pre><span class="line">public class ServerManager &#123;</span><br><span class="line"></span><br><span class="line">	private ServerSocket mServerSocket;</span><br><span class="line">	/** &#123;@link FileServer&#125;的运行端口 */</span><br><span class="line">	private int mPort;</span><br><span class="line">	/** 接收到的文件的保存路径 */</span><br><span class="line">	private String mFileSavePath;</span><br><span class="line">	/** 线程池 */</span><br><span class="line">	private ExecutorService mExecutorService;</span><br><span class="line">	/** 标志&#123;@link FileServer&#125; 运行状态 */</span><br><span class="line">	private boolean isQuit = true;</span><br><span class="line">	private Thread mServerThread;</span><br><span class="line">	/**为防止端口占用准备的端口列表**/</span><br><span class="line">	private final int[] mPorts = &#123;10086,11021,12345,17418,25014&#125;;</span><br><span class="line">	/**正在使用的端口序号**/</span><br><span class="line">	private int select;</span><br><span class="line">	private Context context;</span><br><span class="line"></span><br><span class="line">	public FileServer(Context context) &#123;</span><br><span class="line">		this.mPort = mPorts[0];</span><br><span class="line">		this.context = context;</span><br><span class="line">		// 创建线程池：池数量 = CPU核数 * 50</span><br><span class="line">		mExecutorService = Executors.newFixedThreadPool(</span><br><span class="line">				Runtime.getRuntime().availableProcessors() * 50</span><br><span class="line">				);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	public void setFileSavePath(String mFileSavePath) &#123;</span><br><span class="line">		this.mFileSavePath = mFileSavePath;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	private void resetPortAndStart()&#123;</span><br><span class="line">		select++;</span><br><span class="line">		int length = mPorts.length;</span><br><span class="line">		if (select &gt;= length)&#123;</span><br><span class="line">			return;</span><br><span class="line">		&#125;</span><br><span class="line">		mPort = mPorts[select];</span><br><span class="line">		start();</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	/**</span><br><span class="line">	 * 启动Server</span><br><span class="line">	 */</span><br><span class="line">	public void start() &#123;</span><br><span class="line">		if (!isQuit) &#123;</span><br><span class="line">			return;</span><br><span class="line">		&#125;</span><br><span class="line">		try &#123;</span><br><span class="line">			mServerSocket = new ServerSocket(mPort);</span><br><span class="line">			isQuit = false;</span><br><span class="line">		&#125; catch (BindException e)&#123;</span><br><span class="line">			isQuit = true;</span><br><span class="line">			resetPortAndStart();</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;catch (IOException e) &#123;</span><br><span class="line">			isQuit = true;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		if (isQuit)&#123;</span><br><span class="line">			return;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		mServerThread = new Thread(new Runnable() &#123;</span><br><span class="line">			</span><br><span class="line">			public void run() &#123;</span><br><span class="line">				// 不断接收Socket请求</span><br><span class="line">				while (!isQuit) &#123;</span><br><span class="line">					Socket socket;</span><br><span class="line">					try &#123;</span><br><span class="line">						// 接受客户端请求</span><br><span class="line">						socket = mServerSocket.accept();</span><br><span class="line">						socket.setSoTimeout(3*1000);</span><br><span class="line">						// 将请求放入线程池处理</span><br><span class="line">						FileClientTask fileClientTask = new FileClientTask(socket);</span><br><span class="line">						mExecutorService.execute(fileClientTask);</span><br><span class="line">					&#125; catch (IOException e) &#123;</span><br><span class="line">						e.printStackTrace();</span><br><span class="line">					&#125;</span><br><span class="line">				&#125;</span><br><span class="line">				shutdownNow();</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;);</span><br><span class="line">		mServerThread.start();</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public void stop() &#123;</span><br><span class="line">		if (isQuit) &#123;</span><br><span class="line">			return;</span><br><span class="line">		&#125;</span><br><span class="line">		isQuit = true;</span><br><span class="line">		shutdownNow();</span><br><span class="line">		if (mServerThread != null) &#123;</span><br><span class="line">			try &#123;</span><br><span class="line">				mServerThread.stop();</span><br><span class="line">			&#125; catch (Exception e) &#123;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	private void shutdownNow() &#123;</span><br><span class="line">		if (!mExecutorService.isShutdown()) &#123;</span><br><span class="line">			mExecutorService.shutdownNow();</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>ServicetTask处理和客户端的传输过程。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br></pre></td><td class="code"><pre><span class="line">public class ServicetTask implements Runnable &#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    private Socket socket;</span><br><span class="line"></span><br><span class="line">    public FileClientTask(Socket socket) &#123;</span><br><span class="line">        this.socket = socket;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void run() &#123;</span><br><span class="line">        PushbackInputStream inStream = null;</span><br><span class="line">        OutputStream outStream = null;</span><br><span class="line">        try &#123;</span><br><span class="line">            //接收</span><br><span class="line">            inStream = new PushbackInputStream(socket.getInputStream());</span><br><span class="line">            //发送</span><br><span class="line">            outStream = socket.getOutputStream();</span><br><span class="line">            // 处理客户端请求头</span><br><span class="line">            String head = StreamUtils.readLine(inStream);</span><br><span class="line">            String result = splitResponseOne(head, ProtocolCode.C_AUTHENTICATION_CODE);</span><br><span class="line">            if (result != null) &#123;</span><br><span class="line">                //收到身份验证信息</span><br><span class="line">                if (TextUtils.equals(ProtocolCode.MESSAGE_AUTHENTICATION, result)) &#123;</span><br><span class="line">                    //身份验证成功</span><br><span class="line">                    String authResponse = ProtocolCode.AUTHENTICATION_SUCCESS_MESSAGE + &quot;\r\n&quot;;</span><br><span class="line">                    outStream.write(authResponse.getBytes());</span><br><span class="line">                    head = StreamUtils.readLine(inStream);</span><br><span class="line">                    //收到文件信息</span><br><span class="line">                    result = splitResponseOne(head, ProtocolCode.C_FILE_MESSAGE_JSON_CODE);</span><br><span class="line">                    if (result != null) &#123;</span><br><span class="line">                        String filePath = result;</span><br><span class="line"></span><br><span class="line">                        //TODO 进行文件操作（文件读写权限判断）</span><br><span class="line">                        String s = ProtocolCode.S_CAN_READ_PATH_CODE + ProtocolCode.SEPARATOR + &quot;\r\n&quot;;</span><br><span class="line">                        outStream.write(s.getBytes());</span><br><span class="line">                    &#125; else &#123;</span><br><span class="line">                        //文件信息为空 或者 文件信息码不对</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125; else &#123;</span><br><span class="line">                    //身份验证失败</span><br><span class="line">                    String s = ProtocolCode.AUTHENTICATION_FAILURE_MESSAGE + &quot;\r\n&quot;;</span><br><span class="line">                    outStream.write(s.getBytes());</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                //身份验证信息为空 或者 身份验证码不对</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125; catch (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; finally &#123;</span><br><span class="line">            if (outStream != null) &#123;</span><br><span class="line">                try &#123;</span><br><span class="line">                    outStream.close();</span><br><span class="line">                &#125; catch (IOException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">            &#125;</span><br><span class="line">            if (inStream != null) &#123;</span><br><span class="line">                try &#123;</span><br><span class="line">                    inStream.close();</span><br><span class="line">                &#125; catch (IOException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">            &#125;</span><br><span class="line">            if (socket != null) &#123;</span><br><span class="line">                try &#123;</span><br><span class="line">                    socket.close();</span><br><span class="line">                &#125; catch (IOException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125; finally &#123;</span><br><span class="line">                    socket = null;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private String splitResponseOne(String msg, String code) &#123;</span><br><span class="line">        if (TextUtils.isEmpty(msg)) &#123;</span><br><span class="line">            return null;</span><br><span class="line">        &#125;</span><br><span class="line">        if (!msg.startsWith(code)) &#123;</span><br><span class="line">            return null;</span><br><span class="line">        &#125;</span><br><span class="line">        String[] authSplit = msg.split(&quot;##&quot;);</span><br><span class="line">        if (authSplit.length != 2) &#123;</span><br><span class="line">            return null;</span><br><span class="line">        &#125;</span><br><span class="line">        return authSplit[1];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>共用数据状态标识：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">public class ProtocolCode &#123;</span><br><span class="line">    public static final String AUTHENTICATION_RESPONSE_CODE     = &quot;00&quot;;</span><br><span class="line">    public static final String C_AUTHENTICATION_CODE            = &quot;01&quot;;</span><br><span class="line">    public static final String S_AUTHENTICATION_CODE            = &quot;02&quot;;</span><br><span class="line"></span><br><span class="line">    public static final String FILE_MESSAGE_RESPONSE_CODE       = &quot;10&quot;;</span><br><span class="line">    public static final String C_FILE_MESSAGE_JSON_CODE         = &quot;11&quot;;</span><br><span class="line">    public static final String S_CAN_READ_PATH_CODE             = &quot;12&quot;;</span><br><span class="line"></span><br><span class="line">    public static final String SEPARATOR                        = &quot;##&quot;;</span><br><span class="line"></span><br><span class="line">    public static final String MESSAGE_AUTHENTICATION           = &quot;hello_service&quot;;</span><br><span class="line"></span><br><span class="line">    public static final String MESSAGE_SUCCESS                  = &quot;success&quot;;</span><br><span class="line">    public static final String MESSAGE_FAILURE                  = &quot;failure&quot;;</span><br><span class="line"></span><br><span class="line">    public static final String AUTHENTICATION_SUCCESS_MESSAGE   = S_AUTHENTICATION_CODE + SEPARATOR + MESSAGE_SUCCESS;</span><br><span class="line">    public static final String AUTHENTICATION_FAILURE_MESSAGE   = S_AUTHENTICATION_CODE + SEPARATOR + MESSAGE_FAILURE;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>关于Socket有兴趣的可以移步看一下我写的Socket简易的聊天程序: <a href="&#x6d;&#97;&#x69;&#108;&#x74;&#x6f;&#x3a;&#x67;&#x69;&#x74;&#64;&#103;&#105;&#x74;&#104;&#x75;&#x62;&#x2e;&#99;&#x6f;&#109;&#58;&#x6c;&#x69;&#x6e;&#x78;&#x69;&#x61;&#111;&#x78;&#x69;&#97;&#x6f;&#x6c;&#105;&#110;&#47;&#x41;&#110;&#100;&#x72;&#111;&#105;&#100;&#x53;&#111;&#99;&#107;&#101;&#116;&#67;&#104;&#x61;&#x74;&#x2e;&#103;&#105;&#116;">&#x67;&#x69;&#x74;&#64;&#103;&#105;&#x74;&#104;&#x75;&#x62;&#x2e;&#99;&#x6f;&#109;&#58;&#x6c;&#x69;&#x6e;&#x78;&#x69;&#x61;&#111;&#x78;&#x69;&#97;&#x6f;&#x6c;&#105;&#110;&#47;&#x41;&#110;&#100;&#x72;&#111;&#105;&#100;&#x53;&#111;&#99;&#107;&#101;&#116;&#67;&#104;&#x61;&#x74;&#x2e;&#103;&#105;&#116;</a></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>Android跨进程以及跨应用的通信方式简单介绍这三种，当然还有aidl等其他方式，以后也会慢慢补充进来。大家可以在自己的实际开发中选择适合自己的方案</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/year/12/23/jenkins打包/" rel="next" title="jenkins远程自动打包、多渠道打包">
+                <i class="fa fa-chevron-left"></i> jenkins远程自动打包、多渠道打包
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/year/01/06/《Android移动性能实战》笔记/" rel="prev" title="《Android移动性能实战》笔记">
+                《Android移动性能实战》笔记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/logo.jpg"
+                alt="linlif" />
+            
+              <p class="site-author-name" itemprop="name">linlif</p>
+              <p class="site-description motion-element" itemprop="description">晚是全世界的晚，安是你的。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#通过广播发送intent"><span class="nav-text">通过广播发送intent</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#广播接收类："><span class="nav-text">广播接收类：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#两种注册方式"><span class="nav-text">两种注册方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#发送广播"><span class="nav-text">发送广播</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#通过FileObserver共享数据"><span class="nav-text">通过FileObserver共享数据</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#应用A写入文件"><span class="nav-text">应用A写入文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#应用B通过FileObserver监听文件变化"><span class="nav-text">应用B通过FileObserver监听文件变化</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#通过socket传输数据"><span class="nav-text">通过socket传输数据</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#客户端"><span class="nav-text">客户端</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#服务端"><span class="nav-text">服务端</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">linlif</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/libs/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/libs/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/libs/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/libs/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/libs/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/libs/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/libs/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

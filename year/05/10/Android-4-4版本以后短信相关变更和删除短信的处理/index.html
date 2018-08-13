@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+<script>
+    (function(){
+        if(''){
+            if (prompt('密码！') !== ''){
+                alert('wrong passwaor');
+                history.back();
+            }
+        }
+    })();
+</script>
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/libs/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/libs/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="短篇, 博客" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="1，短信应用相关变更4.4之前  新接收短信广播 SMS_RECEIVED_ACTION 为有序广播。任意应用可接到该广播并中止其继续传播。中止后优先级低的短信应用和系统短信服务将不知道新短信到达，从而不写进数据库。这样就做到了拦截（其实很多恶意应用也这么干）。 任意应用都可以操作短信数据库，包括新建（含伪造收件箱和发件箱短信）、修改（含篡改历史短信）、删除。 任意应用都可以发送短信和彩信，但默认">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android 4.4版本以后短信相关变更和删除短信的处理">
+<meta property="og:url" content="http://yoursite.com/year/05/10/Android-4-4版本以后短信相关变更和删除短信的处理/index.html">
+<meta property="og:site_name" content="一个短篇">
+<meta property="og:description" content="1，短信应用相关变更4.4之前  新接收短信广播 SMS_RECEIVED_ACTION 为有序广播。任意应用可接到该广播并中止其继续传播。中止后优先级低的短信应用和系统短信服务将不知道新短信到达，从而不写进数据库。这样就做到了拦截（其实很多恶意应用也这么干）。 任意应用都可以操作短信数据库，包括新建（含伪造收件箱和发件箱短信）、修改（含篡改历史短信）、删除。 任意应用都可以发送短信和彩信，但默认">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-07-08T17:47:20.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android 4.4版本以后短信相关变更和删除短信的处理">
+<meta name="twitter:description" content="1，短信应用相关变更4.4之前  新接收短信广播 SMS_RECEIVED_ACTION 为有序广播。任意应用可接到该广播并中止其继续传播。中止后优先级低的短信应用和系统短信服务将不知道新短信到达，从而不写进数据库。这样就做到了拦截（其实很多恶意应用也这么干）。 任意应用都可以操作短信数据库，包括新建（含伪造收件箱和发件箱短信）、修改（含篡改历史短信）、删除。 任意应用都可以发送短信和彩信，但默认">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.3',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/year/05/10/Android-4-4版本以后短信相关变更和删除短信的处理/"/>
+
+
+
+
+
+  <title>Android 4.4版本以后短信相关变更和删除短信的处理 | 一个短篇</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">一个短篇</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/year/05/10/Android-4-4版本以后短信相关变更和删除短信的处理/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="linlif">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/logo.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="一个短篇">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android 4.4版本以后短信相关变更和删除短信的处理</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-10T10:39:04+08:00">
+                2018-05-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="1，短信应用相关变更"><a href="#1，短信应用相关变更" class="headerlink" title="1，短信应用相关变更"></a>1，短信应用相关变更</h2><p>4.4之前</p>
+<ul>
+<li>新接收短信广播 SMS_RECEIVED_ACTION 为有序广播。任意应用可接到该广播并中止其继续传播。中止后优先级低的短信应用和系统短信服务将不知道新短信到达，从而不写进数据库。这样就做到了拦截（其实很多恶意应用也这么干）。</li>
+<li>任意应用都可以操作短信数据库，包括新建（含伪造收件箱和发件箱短信）、修改（含篡改历史短信）、删除。</li>
+<li>任意应用都可以发送短信和彩信，但默认不写进短信数据库，除非应用手动存入，否则用户是看不到的。</li>
+</ul>
+<p>4.4 及之后：</p>
+<ul>
+<li>设立默认短信应用机制，成为默认短信后的应用将全面接管（替代）系统短信服务。与设置默认浏览器类似，成为默认短信应用需要向用户申请。</li>
+<li>新接收短信广播 SMS_RECEIVED_ACTION 更改为无序广播，增加只有默认短信应用能够接收的广播 SMS_DELIVER_ACTION和WAP_PUSH_DELIVER_ACTION 。二者的不同在于，当默认短信应用收到 SMS_DELIVER_ACTION 时它要负责将其存入数据库。任意应用仍然可以接收到 SMS_RECEIVED_ACTION 广播但不能将其中止。因此所有的应用和系统短信服务都可以接收到新短信，没有应用能够再用中止广播的方式拦截短信。</li>
+<li>只有默认短信应用可以操作短信数据库，包括新建（含伪造收件箱和发件箱短信）、修改（含篡改历史短信）和删除。其它应用只能读取短信数据库。默认短信应用需要在发送短信、收到新短信之后手动写入系统短信数据库，否则其它应用将读取不到该条短信。默认短信应用可以通过控制不写入数据库的方式拦截短信。</li>
+<li>任意应用仍然都可以发送短信，但默认短信应用以外的应用发短信的接口底层改为调用系统短信服务，而不再直接调用驱动通信，因此其所发短信会被系统短信服务自动转存数据库。此外，只有默认短信应用可以发送彩信。</li>
+</ul>
+<h2 id="2，非默认短信应用删除短信操作处理"><a href="#2，非默认短信应用删除短信操作处理" class="headerlink" title="2，非默认短信应用删除短信操作处理"></a>2，非默认短信应用删除短信操作处理</h2><p>由于上面的变更，android 4.4之后非默认的短信应用就没有办法删除短信了。即使在xml中配置了短信的读写权限，同时也不会有报错或其他提示。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">public void deleteSMS() &#123;</span><br><span class="line">        try &#123;</span><br><span class="line">            ContentResolver CR = getContentResolver();</span><br><span class="line">            // Query SMS</span><br><span class="line">            Uri uriSms = Uri.parse(&quot;content://sms/inbox&quot;);</span><br><span class="line">            Cursor c = CR.query(uriSms, new String[] &#123; &quot;_id&quot;, &quot;thread_id&quot; &#125;,</span><br><span class="line">                    null, null, null);</span><br><span class="line">            if (null != c &amp;&amp; c.moveToFirst()) &#123;</span><br><span class="line">                do &#123;</span><br><span class="line">                    // Delete SMS</span><br><span class="line">                    long threadId = c.getLong(1);</span><br><span class="line">                    int result = CR.delete(Uri</span><br><span class="line">                            .parse(&quot;content://sms/conversations/&quot; + threadId),</span><br><span class="line">                            null, null);</span><br><span class="line">                    Log.d(&quot;deleteSMS&quot;, &quot;threadId:: &quot; + threadId + &quot;  result::&quot;</span><br><span class="line">                            + result);</span><br><span class="line">                &#125; while (c.moveToNext());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; catch (Exception e) &#123;</span><br><span class="line">            Log.d(&quot;deleteSMS&quot;, &quot;Exception:: &quot; + e);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>但通过打印可以看到上述代码的result是等于0的，即没有删除掉短信。</p>
+<p>通过查看资料得知这个是因为在：/frameworks/base/services/java/com/android/server/AppOpsService.java中android系统添加了权限检查的函数。<br>检查用户设定权限的函数是：checkOperation() 和 noteOperation()，区别是 checkOperation() 只是检查 Operation 的情况，noteOperation() 还会记录访问时间等信息，代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">public int checkOperation(int code, int uid, String packageName) &#123;</span><br><span class="line">    verifyIncomingUid(uid);</span><br><span class="line">    verifyIncomingOp(code);</span><br><span class="line">    synchronized (this) &#123;</span><br><span class="line">        Op op = getOpLocked(AppOpsManager.opToSwitch(code), uid, packageName, false);</span><br><span class="line">        if (op == null) &#123;</span><br><span class="line">            return AppOpsManager.MODE_ALLOWED;</span><br><span class="line">        &#125;</span><br><span class="line">        return op.mode;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@Override</span><br><span class="line">public int noteOperation(int code, int uid, String packageName) &#123;</span><br><span class="line">    verifyIncomingUid(uid);</span><br><span class="line">    verifyIncomingOp(code);</span><br><span class="line">    synchronized (this) &#123;</span><br><span class="line">        Ops ops = getOpsLocked(uid, packageName, true);</span><br><span class="line">        if (ops == null) &#123;</span><br><span class="line">            if (DEBUG) Log.d(TAG, &quot;noteOperation: no op for code &quot; + code + &quot; uid &quot; + uid</span><br><span class="line">                    + &quot; package &quot; + packageName);</span><br><span class="line">            return AppOpsManager.MODE_IGNORED;</span><br><span class="line">        &#125;</span><br><span class="line">        Op op = getOpLocked(ops, code, true);</span><br><span class="line">        if (op.duration == -1) &#123;</span><br><span class="line">            Slog.w(TAG, &quot;Noting op not finished: uid &quot; + uid + &quot; pkg &quot; + packageName</span><br><span class="line">                    + &quot; code &quot; + code + &quot; time=&quot; + op.time + &quot; duration=&quot; + op.duration);</span><br><span class="line">        &#125;</span><br><span class="line">        op.duration = 0;</span><br><span class="line">        final int switchCode = AppOpsManager.opToSwitch(code);</span><br><span class="line">        final Op switchOp = switchCode != code ? getOpLocked(ops, switchCode, true) : op;</span><br><span class="line">        if (switchOp.mode != AppOpsManager.MODE_ALLOWED) &#123;</span><br><span class="line">            if (DEBUG) Log.d(TAG, &quot;noteOperation: reject #&quot; + op.mode + &quot; for code &quot;</span><br><span class="line">                    + switchCode + &quot; (&quot; + code + &quot;) uid &quot; + uid + &quot; package &quot; + packageName);</span><br><span class="line">            op.rejectTime = System.currentTimeMillis();</span><br><span class="line">            return switchOp.mode;</span><br><span class="line">        &#125;</span><br><span class="line">        if (DEBUG) Log.d(TAG, &quot;noteOperation: allowing code &quot; + code + &quot; uid &quot; + uid</span><br><span class="line">                + &quot; package &quot; + packageName);</span><br><span class="line">        op.time = System.currentTimeMillis();</span><br><span class="line">        op.rejectTime = 0;</span><br><span class="line">        return AppOpsManager.MODE_ALLOWED;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>然后在ContentProvider可以找到如下代码就是对应用删除短信的权限进行检查<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">      public int delete(String callingPkg, Uri uri, String selection, String[] selectionArgs) &#123;</span><br><span class="line">          validateIncomingUri(uri);</span><br><span class="line">          uri = getUriWithoutUserId(uri);</span><br><span class="line">          if (enforceWritePermission(callingPkg, uri) != AppOpsManager.MODE_ALLOWED) &#123;</span><br><span class="line">              return 0;</span><br><span class="line">          &#125;</span><br><span class="line">          final String original = setCallingPackage(callingPkg);</span><br><span class="line">          try &#123;</span><br><span class="line">              return ContentProvider.this.delete(uri, selection, selectionArgs);</span><br><span class="line">          &#125; finally &#123;</span><br><span class="line">              setCallingPackage(original);</span><br><span class="line">          &#125;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">　　　　private int enforceWritePermission(String callingPkg, Uri uri) throws SecurityException &#123;</span><br><span class="line">          enforceWritePermissionInner(uri);</span><br><span class="line">          if (mWriteOp != AppOpsManager.OP_NONE) &#123;</span><br><span class="line">              return mAppOpsManager.noteOp(mWriteOp, Binder.getCallingUid(), callingPkg);</span><br><span class="line">          &#125;</span><br><span class="line">          return AppOpsManager.MODE_ALLOWED;</span><br><span class="line">      &#125;</span><br></pre></td></tr></table></figure></p>
+<p>不过幸运的是在AppOpsService.java中也提供了修改权限的接口：修改某个 App 的某项权限的函数是 setMode()，其中就是修改成员变量 mUidOps。mUidOps 是一个List 保存了某个package对应的所有权限的mode (允许，忽略)，具体代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">public void setMode(int code, int uid, String packageName, int mode) &#123;</span><br><span class="line">    verifyIncomingUid(uid);</span><br><span class="line">    verifyIncomingOp(code);</span><br><span class="line">    ArrayList&lt;Callback&gt; repCbs = null;</span><br><span class="line">    code = AppOpsManager.opToSwitch(code);</span><br><span class="line">    synchronized (this) &#123;</span><br><span class="line">        Op op = getOpLocked(code, uid, packageName, true);</span><br><span class="line">        if (op != null) &#123;</span><br><span class="line">            if (op.mode != mode) &#123;</span><br><span class="line">                op.mode = mode;</span><br><span class="line">                ArrayList&lt;Callback&gt; cbs = mOpModeWatchers.get(code);</span><br><span class="line">                if (cbs != null) &#123;</span><br><span class="line">                    if (repCbs == null) &#123;</span><br><span class="line">                        repCbs = new ArrayList&lt;Callback&gt;();</span><br><span class="line">                    &#125;</span><br><span class="line">                    repCbs.addAll(cbs);</span><br><span class="line">                &#125;</span><br><span class="line">                cbs = mPackageModeWatchers.get(packageName);</span><br><span class="line">                if (cbs != null) &#123;</span><br><span class="line">                    if (repCbs == null) &#123;</span><br><span class="line">                        repCbs = new ArrayList&lt;Callback&gt;();</span><br><span class="line">                    &#125;</span><br><span class="line">                    repCbs.addAll(cbs);</span><br><span class="line">                &#125;</span><br><span class="line">                if (mode == AppOpsManager.MODE_ALLOWED) &#123;</span><br><span class="line">                    // If going into the default mode, prune this op</span><br><span class="line">                    // if there is nothing else interesting in it.</span><br><span class="line">                    if (op.time == 0 &amp;&amp; op.rejectTime == 0) &#123;</span><br><span class="line">                        Ops ops = getOpsLocked(uid, packageName, false);</span><br><span class="line">                        if (ops != null) &#123;</span><br><span class="line">                            ops.remove(op.op);</span><br><span class="line">                            if (ops.size() &lt;= 0) &#123;</span><br><span class="line">                                HashMap&lt;String, Ops&gt; pkgOps = mUidOps.get(uid);</span><br><span class="line">                                if (pkgOps != null) &#123;</span><br><span class="line">                                    pkgOps.remove(ops.packageName);</span><br><span class="line">                                    if (pkgOps.size() &lt;= 0) &#123;</span><br><span class="line">                                        mUidOps.remove(uid);</span><br><span class="line">                                    &#125;</span><br><span class="line">                                &#125;</span><br><span class="line">                            &#125;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                scheduleWriteNowLocked();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    if (repCbs != null) &#123;</span><br><span class="line">        for (int i=0; i&lt;repCbs.size(); i++) &#123;</span><br><span class="line">            try &#123;</span><br><span class="line">                repCbs.get(i).mCallback.opChanged(code, packageName);</span><br><span class="line">            &#125; catch (RemoteException e) &#123;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>AppOpsManager 是一个管理类来和 AppOpsService 通信，两者关联起来的代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line">* Common implementation of Context API, which provides the base</span><br><span class="line">* context object for Activity and other application components.</span><br><span class="line">*/</span><br><span class="line">class ContextImpl extends Context &#123;</span><br><span class="line"></span><br><span class="line">　　registerService(APP_OPS_SERVICE, new ServiceFetcher() &#123;</span><br><span class="line">　　　　public Object createService(ContextImpl ctx) &#123;</span><br><span class="line">　　　　IBinder b = ServiceManager.getService(APP_OPS_SERVICE);</span><br><span class="line">　　　　IAppOpsService service = IAppOpsService.Stub.asInterface(b);</span><br><span class="line">　　　　return new AppOpsManager(ctx, service);</span><br><span class="line">　　&#125;&#125;);</span><br><span class="line"></span><br><span class="line">  .....</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>他的函数实现比较简单，重点是把控制转移到 AppOpsService 就可以了。例如 noteOperation() 和 setMode() 在 AppOpsManager 里面调用他们的函数是 noteOp() 和 setMode()，代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">public int noteOp(int op, int uid, String packageName) &#123;</span><br><span class="line">    try &#123;</span><br><span class="line">        int mode = mService.noteOperation(op, uid, packageName);</span><br><span class="line">        if (mode == MODE_ERRORED) &#123;</span><br><span class="line">            throw new SecurityException(&quot;Operation not allowed&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">        return mode;</span><br><span class="line">    &#125; catch (RemoteException e) &#123;</span><br><span class="line">    &#125;</span><br><span class="line">    return MODE_IGNORED;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public void setMode(int code, int uid, String packageName, int mode) &#123;</span><br><span class="line">    try &#123;</span><br><span class="line">        mService.setMode(code, uid, packageName, mode);</span><br><span class="line">    &#125; catch (RemoteException e) &#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>以下是反射代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br></pre></td><td class="code"><pre><span class="line">public final class SmsWriteOpUtil &#123;</span><br><span class="line">    private static final int OP_WRITE_SMS = 15;</span><br><span class="line"></span><br><span class="line">    public static boolean isWriteEnabled(Context context) &#123;</span><br><span class="line">        int uid = getUid(context);</span><br><span class="line">        Object opRes = checkOp(context, OP_WRITE_SMS, uid);</span><br><span class="line"></span><br><span class="line">        if (opRes instanceof Integer) &#123;</span><br><span class="line">            return (Integer) opRes == AppOpsManager.MODE_ALLOWED;</span><br><span class="line">        &#125;</span><br><span class="line">        return false;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static boolean setWriteEnabled(Context context, boolean enabled) &#123;</span><br><span class="line">        int uid = getUid(context);</span><br><span class="line">        int mode = enabled ? AppOpsManager.MODE_ALLOWED</span><br><span class="line">                : AppOpsManager.MODE_IGNORED;</span><br><span class="line"></span><br><span class="line">        return setMode(context, OP_WRITE_SMS, uid, mode);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private static Object checkOp(Context context, int code, int uid) &#123;</span><br><span class="line">        AppOpsManager appOpsManager = (AppOpsManager) context</span><br><span class="line">                .getSystemService(Context.APP_OPS_SERVICE);</span><br><span class="line">        Class appOpsManagerClass = appOpsManager.getClass();</span><br><span class="line"></span><br><span class="line">        try &#123;</span><br><span class="line">            Class[] types = new Class[3];</span><br><span class="line">            types[0] = Integer.TYPE;</span><br><span class="line">            types[1] = Integer.TYPE;</span><br><span class="line">            types[2] = String.class;</span><br><span class="line">            Method checkOpMethod = appOpsManagerClass.getMethod(&quot;checkOp&quot;,</span><br><span class="line">                    types);</span><br><span class="line"></span><br><span class="line">            Object[] args = new Object[3];</span><br><span class="line">            args[0] = Integer.valueOf(code);</span><br><span class="line">            args[1] = Integer.valueOf(uid);</span><br><span class="line">            args[2] = context.getPackageName();</span><br><span class="line">            Object result = checkOpMethod.invoke(appOpsManager, args);</span><br><span class="line"></span><br><span class="line">            return result;</span><br><span class="line">        &#125; catch (NoSuchMethodException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; catch (InvocationTargetException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; catch (IllegalAccessException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        return null;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private static boolean setMode(Context context, int code, int uid, int mode) &#123;</span><br><span class="line">        AppOpsManager appOpsManager = (AppOpsManager) context</span><br><span class="line">                .getSystemService(Context.APP_OPS_SERVICE);</span><br><span class="line">        Class appOpsManagerClass = appOpsManager.getClass();</span><br><span class="line"></span><br><span class="line">        try &#123;</span><br><span class="line">            Class[] types = new Class[4];</span><br><span class="line">            types[0] = Integer.TYPE;</span><br><span class="line">            types[1] = Integer.TYPE;</span><br><span class="line">            types[2] = String.class;</span><br><span class="line">            types[3] = Integer.TYPE;</span><br><span class="line">            Method setModeMethod = appOpsManagerClass.getMethod(&quot;setMode&quot;,</span><br><span class="line">                    types);</span><br><span class="line"></span><br><span class="line">            Object[] args = new Object[4];</span><br><span class="line">            args[0] = Integer.valueOf(code);</span><br><span class="line">            args[1] = Integer.valueOf(uid);</span><br><span class="line">            args[2] = context.getPackageName();</span><br><span class="line">            args[3] = Integer.valueOf(mode);</span><br><span class="line">            setModeMethod.invoke(appOpsManager, args);</span><br><span class="line"></span><br><span class="line">            return true;</span><br><span class="line">        &#125; catch (NoSuchMethodException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; catch (InvocationTargetException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; catch (IllegalAccessException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        return false;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private static int getUid(Context context) &#123;</span><br><span class="line">        try &#123;</span><br><span class="line">            int uid = context.getPackageManager().getApplicationInfo(</span><br><span class="line">                    context.getPackageName(), PackageManager.GET_SERVICES).uid;</span><br><span class="line"></span><br><span class="line">            return uid;</span><br><span class="line">        &#125; catch (PackageManager.NameNotFoundException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">            return 0;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>需要注意的是在普通应用中反射<code>setMode</code>和<code>checkOp</code>是无效的，也就是没权限。而在我实际项目中的业务是需要在setting进程删除短信，则会生效。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/year/04/30/Android-自定义lint检测代码/" rel="next" title="Android 自定义lint检测代码">
+                <i class="fa fa-chevron-left"></i> Android 自定义lint检测代码
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/logo.jpg"
+                alt="linlif" />
+            
+              <p class="site-author-name" itemprop="name">linlif</p>
+              <p class="site-description motion-element" itemprop="description">晚是全世界的晚，安是你的。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1，短信应用相关变更"><span class="nav-text">1，短信应用相关变更</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2，非默认短信应用删除短信操作处理"><span class="nav-text">2，非默认短信应用删除短信操作处理</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">linlif</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/libs/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/libs/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/libs/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/libs/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/libs/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/libs/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/libs/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

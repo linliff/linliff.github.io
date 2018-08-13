@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+<script>
+    (function(){
+        if(''){
+            if (prompt('密码！') !== ''){
+                alert('wrong passwaor');
+                history.back();
+            }
+        }
+    })();
+</script>
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/libs/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/libs/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="短篇, 博客" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="1.ContentProvider简介ContentProvider是什么？ContentProvider（内容提供者）是Android的四大组件之一，管理android以结构化方式存放的数据，以相对安全的方式封装数据（表）并且提供简易的处理机制和统一的访问接口供其他程序调用。　 　　 　　Android的数据存储方式总共有五种，分别是：Shared Preferences、网络存储、文件存储、外">
+<meta property="og:type" content="article">
+<meta property="og:title" content="自定义ContentProvider总结">
+<meta property="og:url" content="http://yoursite.com/year/03/10/自定义ContentProvider总结/index.html">
+<meta property="og:site_name" content="一个短篇">
+<meta property="og:description" content="1.ContentProvider简介ContentProvider是什么？ContentProvider（内容提供者）是Android的四大组件之一，管理android以结构化方式存放的数据，以相对安全的方式封装数据（表）并且提供简易的处理机制和统一的访问接口供其他程序调用。　 　　 　　Android的数据存储方式总共有五种，分别是：Shared Preferences、网络存储、文件存储、外">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://camo.githubusercontent.com/1e138aeb9ce10fa4b788b18659fae3d8d29da73a/687474703a2f2f696d672e626c6f672e6373646e2e6e65742f3230313630353035313534333232303435">
+<meta property="og:updated_time" content="2018-05-10T09:47:20.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="自定义ContentProvider总结">
+<meta name="twitter:description" content="1.ContentProvider简介ContentProvider是什么？ContentProvider（内容提供者）是Android的四大组件之一，管理android以结构化方式存放的数据，以相对安全的方式封装数据（表）并且提供简易的处理机制和统一的访问接口供其他程序调用。　 　　 　　Android的数据存储方式总共有五种，分别是：Shared Preferences、网络存储、文件存储、外">
+<meta name="twitter:image" content="https://camo.githubusercontent.com/1e138aeb9ce10fa4b788b18659fae3d8d29da73a/687474703a2f2f696d672e626c6f672e6373646e2e6e65742f3230313630353035313534333232303435">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.3',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/year/03/10/自定义ContentProvider总结/"/>
+
+
+
+
+
+  <title>自定义ContentProvider总结 | 一个短篇</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">一个短篇</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/year/03/10/自定义ContentProvider总结/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="linlif">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/logo.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="一个短篇">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">自定义ContentProvider总结</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-10T17:46:16+08:00">
+                2018-03-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="1-ContentProvider简介"><a href="#1-ContentProvider简介" class="headerlink" title="1.ContentProvider简介"></a>1.ContentProvider简介</h2><h3 id="ContentProvider是什么？"><a href="#ContentProvider是什么？" class="headerlink" title="ContentProvider是什么？"></a>ContentProvider是什么？</h3><p>ContentProvider（内容提供者）是Android的四大组件之一，管理android以结构化方式存放的数据，以相对安全的方式封装数据（表）并且提供简易的处理机制和统一的访问接口供其他程序调用。　 　　 　　Android的数据存储方式总共有五种，分别是：Shared Preferences、网络存储、文件存储、外储存储、SQLite。但一般这些存储都只是在单独的一个应用程序之中达到一个数据的共享，有时候我们需要操作其他应用程序的一些数据，就会用到ContentProvider。而且Android为常见的一些数据提供了默认的ContentProvider（包括音频、视频、图片和通讯录等）。</p>
+<p>　　但注意ContentProvider它也只是一个中间人，真正操作的数据源可能是数据库，也可以是文件、xml或网络等其他存储方式。<br>对于什么情况下才会用到自定义的ContentProvider，官方文档的Dev Guide是这样描述的：</p>
+<h3 id="ContentProvider适用范围"><a href="#ContentProvider适用范围" class="headerlink" title="ContentProvider适用范围"></a>ContentProvider适用范围</h3><p>如果你想要提供以下的一种或几种特性的时候你才需要构造一个ContentProvider：</p>
+<ul>
+<li>你想要为其它的应用提供复杂的数据或者文件；</li>
+<li>你想允许用户从你的应用中拷贝复杂的数据到其它的应用中；</li>
+<li>你想要使用搜索框架来提供自定义的搜索策略。</li>
+</ul>
+<p>你完全不需要ContentProvider来调用一个SQLite数据库，如果这种调用完全在你自己的应用之中。</p>
+<p>也就是说，ContentProvider的作用是为别的应用调用本应用中的数据或者文件提供接口，而它也是唯一的跨应用数据传递的接口。如果仅仅是同一个应用中的数据传递，则完全没有必要使用到自定义的ContentProvider。</p>
+<p>另一方面，虽然ContentProvider也能组织文件数据或者SharedPreferences（其实也是文件数据）这种数据，但大多数情况下ContentProvider是作为SQLite数据库的调用接口来被继承的。其原因大概是在于重写的query()方法始终需要返回Cursor，而Cursor作为数据库数据的容器，并没有提供直接往Cursor中写入数据的方法。</p>
+<h2 id="２-URI"><a href="#２-URI" class="headerlink" title="２.URI"></a>２.URI</h2><p>　URL（统一资源标识符）代表要操作的数据，可以用来标识每个ContentProvider，这样你就可以通过指定的URI找到想要的ContentProvider,从中获取或修改数据。<br>　在Android中URI的格式如下图所示：<br>　<img src="https://camo.githubusercontent.com/1e138aeb9ce10fa4b788b18659fae3d8d29da73a/687474703a2f2f696d672e626c6f672e6373646e2e6e65742f3230313630353035313534333232303435" alt="avatar"></p>
+<ul>
+<li>A : schema，已经由Android所规定为：content://</li>
+<li>B : 主机名（Authority），是URI的授权部分，是唯一标识符，用来定位ContentProvider</li>
+<li>C : 指向一个对象集合，一般用表的名字，如果没有指定D部分，则返回全部记录。</li>
+<li>D : 指向特定的记录，这里表示操作user表id为7的记录。如果要操作user表中id为7的记录的name字段， D部分变为 /7/name即可。</li>
+</ul>
+<blockquote>
+<p>URI模式匹配通配符</p>
+<p>*：匹配的任意长度的任何有效字符的字符串。</p>
+<p>＃：匹配的任意长度的数字字符的字符串。</p>
+<p>如：</p>
+<p>content://com.example.app.provider/* 匹配provider的任何内容url</p>
+<p>content://com.example.app.provider/table3/# 匹配table3的所有行</p>
+</blockquote>
+<h3 id="MIME"><a href="#MIME" class="headerlink" title="MIME"></a>MIME</h3><p>MIME是指定某个扩展名的文件用一种应用程序来打开，就像你用浏览器查看PDF格式的文件，浏览器会选择合适的应用来打开一样。Android中的工作方式跟HTTP类似，ContentProvider会根据URI来返回MIME类型，ContentProvider会返回一个包含两部分的字符串。MIME类型一般包含两部分，如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">text/html text/css text/xml application/pdf</span><br></pre></td></tr></table></figure>
+<p>分为类型和子类型，Android遵循类似的约定来定义MIME类型，每个内容类型的Android MIME类型有两种形式：多条记录（集合）和单条记录。</p>
+<p>集合记录：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vnd.android.cursor.dir/自定义</span><br></pre></td></tr></table></figure></p>
+<p>单条记录：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vnd.android.cursor.item/自定义</span><br></pre></td></tr></table></figure></p>
+<p>vnd表示这些类型和子类型具有非标准的、供应商特定的形式。Android中类型已经固定好了，不能更改，只能区别是集合还是单条具体记录，子类型可以按照格式自己填写。 在使用Intent时，会用到MIME，根据Mimetype打开符合条件的活动。</p>
+<p>下面分别介绍Android系统提供了两个用于操作Uri的工具类：ContentUris和UriMatcher。</p>
+<h3 id="ContentUris"><a href="#ContentUris" class="headerlink" title="ContentUris"></a>ContentUris</h3><p>ontetnUris包含一个便利的函数withAppendedId()来向URI追加一个id。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Uri uri = Uri.parse(&quot;content://cn.scu.myprovider/user&quot;)</span><br><span class="line">Uri resultUri = ContentUris.withAppendedId(uri, 7); </span><br><span class="line">//生成后的Uri为：content://cn.scu.myprovider/user/7</span><br></pre></td></tr></table></figure>
+<p>同时提供parseId(uri)方法用于从URL中获取ID:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Uri uri = Uri.parse(&quot;content://cn.scu.myprovider/user/7&quot;)</span><br><span class="line">long personid = ContentUris.parseId(uri);</span><br></pre></td></tr></table></figure></p>
+<p>//获取的结果为:7
+　　</p>
+<h3 id="UriMatcher"><a href="#UriMatcher" class="headerlink" title="UriMatcher"></a>UriMatcher</h3><p>UriMatcher本质上是一个文本过滤器，用在contentProvider中帮助我们过滤，分辨出查询者想要查询哪个数据表。</p>
+<p>举例说明：</p>
+<ul>
+<li><p>第一步，初始化：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"> UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);</span><br><span class="line">//常量UriMatcher.NO_MATCH表示不匹配任何路径的返回码</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>第二步，注册需要的Uri： </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">//USER 和 USER_ID是两个int型数据</span><br><span class="line">matcher.addURI(&quot;cn.scu.myprovider&quot;, &quot;user&quot;, USER);</span><br><span class="line">matcher.addURI(&quot;cn.scu.myprovider&quot;, &quot;user/#&quot;,USER_ID);</span><br><span class="line">//如果match()方法匹配content://cn.scu.myprovider/user路径，返回匹配码为USER</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>第三部，与已经注册的Uri进行匹配:</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">/* </span><br><span class="line">     * 如果操作集合，则必须以vnd.android.cursor.dir开头 </span><br><span class="line">     * 如果操作非集合，则必须以vnd.android.cursor.item开头 </span><br><span class="line">     * */  </span><br><span class="line">    @Override  </span><br><span class="line">    public String getType(Uri uri) &#123;  </span><br><span class="line">    Uri uri = Uri.parse(&quot;content://&quot; + &quot;cn.scu.myprovider&quot; + &quot;/user&quot;);  </span><br><span class="line">        switch(matcher.match(uri))&#123;  </span><br><span class="line">        case USER:  </span><br><span class="line">            return &quot;vnd.android.cursor.dir/user&quot;;  </span><br><span class="line">        case USER_ID:  </span><br><span class="line">            return &quot;vnd.android.cursor.item/user&quot;;  </span><br><span class="line">        &#125;  </span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="ContentProvider的主要方法"><a href="#ContentProvider的主要方法" class="headerlink" title="ContentProvider的主要方法"></a>ContentProvider的主要方法</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">//ContentProvider创建后　或　打开系统后其它应用第一次访问该ContentProvider时调用。</span><br><span class="line">public boolean onCreate()</span><br><span class="line"></span><br><span class="line">//外部应用向ContentProvider中添加数据。</span><br><span class="line">public Uri insert(Uri uri, ContentValues values)</span><br><span class="line"></span><br><span class="line">//外部应用从ContentProvider删除数据。</span><br><span class="line">public int delete(Uri uri, String selection, String[] selectionArgs)</span><br><span class="line"></span><br><span class="line">//外部应用更新ContentProvider中的数据。</span><br><span class="line">public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs)：</span><br><span class="line"></span><br><span class="line">//供外部应用从ContentProvider中获取数据。 　</span><br><span class="line">public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder)　</span><br><span class="line"></span><br><span class="line">//该方法用于返回当前Url所代表数据的MIME类型。</span><br><span class="line">public String getType(Uri uri)</span><br></pre></td></tr></table></figure>
+<h2 id="ContentResolver"><a href="#ContentResolver" class="headerlink" title="ContentResolver"></a>ContentResolver</h2><p>ContentResolver通过URI来查询ContentProvider中提供的数据。除了URI以 外，还必须知道需要获取的数据段的名称，以及此数据段的数据类型。如果你需要获取一个特定的记录，你就必须知道当前记录的ID，也就是URI中D部分。</p>
+<p>ContentResolver 类提供了与ContentProvider类相同签名的四个方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public Uri insert(Uri uri, ContentValues values)　//添加</span><br><span class="line"></span><br><span class="line">public int delete(Uri uri, String selection, String[] selectionArgs)　//删除</span><br><span class="line"></span><br><span class="line">public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs)　//更新</span><br><span class="line"></span><br><span class="line">public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder)//获取</span><br></pre></td></tr></table></figure>
+<p>实例代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">ContentResolver resolver =  getContentResolver();</span><br><span class="line">Uri uri = Uri.parse(&quot;content://cn.scu.myprovider/user&quot;);</span><br><span class="line"></span><br><span class="line">//添加一条记录</span><br><span class="line">ContentValues values = new ContentValues();</span><br><span class="line">values.put(&quot;name&quot;, &quot;fanrunqi&quot;);</span><br><span class="line">values.put(&quot;age&quot;, 24);</span><br><span class="line">resolver.insert(uri, values);  </span><br><span class="line"></span><br><span class="line">//获取user表中所有记录</span><br><span class="line">Cursor cursor = resolver.query(uri, null, null, null, &quot;userid desc&quot;);</span><br><span class="line">while(cursor.moveToNext())&#123;</span><br><span class="line">   //操作</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//把id为1的记录的name字段值更改新为finch</span><br><span class="line">ContentValues updateValues = new ContentValues();</span><br><span class="line">updateValues.put(&quot;name&quot;, &quot;finch&quot;);</span><br><span class="line">Uri updateIdUri = ContentUris.withAppendedId(uri, 1);</span><br><span class="line">resolver.update(updateIdUri, updateValues, null, null);</span><br><span class="line"></span><br><span class="line">//删除id为2的记录</span><br><span class="line">Uri deleteIdUri = ContentUris.withAppendedId(uri, 2);</span><br><span class="line">resolver.delete(deleteIdUri, null, null);</span><br></pre></td></tr></table></figure></p>
+<h2 id="ContentObserver"><a href="#ContentObserver" class="headerlink" title="ContentObserver"></a>ContentObserver</h2><p>ContentObserver(内容观察者)，目的是观察特定Uri引起的数据库的变化，继而做一些相应的处理，它类似于数据库技术中的触发器(Trigger)，当ContentObserver所观察的Uri发生变化时，便会触发它。</p>
+<p>下面是使用内容观察者监听短信的例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">public class MainActivity extends Activity &#123;</span><br><span class="line"> </span><br><span class="line">    @Override</span><br><span class="line">    protected void onCreate(Bundle savedInstanceState) &#123;</span><br><span class="line">        super.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line">         </span><br><span class="line">//注册观察者Observser    </span><br><span class="line">this.getContentResolver().registerContentObserver(Uri.parse(&quot;content://sms&quot;),true,new SMSObserver(new Handler()));</span><br><span class="line"> </span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    private final class SMSObserver extends ContentObserver &#123;</span><br><span class="line"> </span><br><span class="line">        public SMSObserver(Handler handler) &#123;</span><br><span class="line">            super(handler);</span><br><span class="line"> </span><br><span class="line">        &#125;</span><br><span class="line"> </span><br><span class="line">     </span><br><span class="line">        @Override</span><br><span class="line">        public void onChange(boolean selfChange) &#123;</span><br><span class="line"> </span><br><span class="line"> Cursor cursor = MainActivity.this.getContentResolver().query(</span><br><span class="line">Uri.parse(&quot;content://sms/inbox&quot;), null, null, null, null);</span><br><span class="line"> </span><br><span class="line">            while (cursor.moveToNext()) &#123;</span><br><span class="line">                StringBuilder sb = new StringBuilder();</span><br><span class="line"> </span><br><span class="line">                sb.append(&quot;address=&quot;).append(</span><br><span class="line">                        cursor.getString(cursor.getColumnIndex(&quot;address&quot;)));</span><br><span class="line"> </span><br><span class="line">                sb.append(&quot;;subject=&quot;).append(</span><br><span class="line">                        cursor.getString(cursor.getColumnIndex(&quot;subject&quot;)));</span><br><span class="line"> </span><br><span class="line">                sb.append(&quot;;body=&quot;).append(</span><br><span class="line">                        cursor.getString(cursor.getColumnIndex(&quot;body&quot;)));</span><br><span class="line"> </span><br><span class="line">                sb.append(&quot;;time=&quot;).append(</span><br><span class="line">                        cursor.getLong(cursor.getColumnIndex(&quot;date&quot;)));</span><br><span class="line"> </span><br><span class="line">                System.out.println(&quot;--------has Receivered SMS::&quot; + sb.toString());</span><br><span class="line"> </span><br><span class="line">                 </span><br><span class="line">            &#125;</span><br><span class="line"> </span><br><span class="line">        &#125;</span><br><span class="line"> </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>同时可以在ContentProvider发生数据变化时调用 getContentResolver().notifyChange(uri, null)来通知注册在此URI上的访问者。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public class UserContentProvider extends ContentProvider &#123;</span><br><span class="line">   public Uri insert(Uri uri, ContentValues values) &#123;</span><br><span class="line">      db.insert(&quot;user&quot;, &quot;userid&quot;, values);</span><br><span class="line">      getContext().getContentResolver().notifyChange(uri, null);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="实际应用："><a href="#实际应用：" class="headerlink" title="实际应用："></a>实际应用：</h2><p>针对两个APP之间ContentProvider的使用可以参考这篇文章：<br><a href="https://blog.csdn.net/u012702547/article/details/50193087?locationNum=4&amp;fps=1" target="_blank" rel="noopener">https://blog.csdn.net/u012702547/article/details/50193087?locationNum=4&amp;fps=1</a></p>
+<h2 id="备注"><a href="#备注" class="headerlink" title="备注"></a>备注</h2><p>有很多人对ContentProvider中getType方法在实际中的使用不是很理解，这里贴一篇对它的实际使用例子：<br><a href="https://blog.csdn.net/u012702547/article/details/50193967" target="_blank" rel="noopener">https://blog.csdn.net/u012702547/article/details/50193967</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/year/03/03/Android-8-0-新特性：行为变更/" rel="next" title="Android 8.0 新特性：行为变更">
+                <i class="fa fa-chevron-left"></i> Android 8.0 新特性：行为变更
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/year/04/13/Android-View事件分发机制源码分析/" rel="prev" title="Android View事件分发机制源码分析">
+                Android View事件分发机制源码分析 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/logo.jpg"
+                alt="linlif" />
+            
+              <p class="site-author-name" itemprop="name">linlif</p>
+              <p class="site-description motion-element" itemprop="description">晚是全世界的晚，安是你的。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-ContentProvider简介"><span class="nav-text">1.ContentProvider简介</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ContentProvider是什么？"><span class="nav-text">ContentProvider是什么？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ContentProvider适用范围"><span class="nav-text">ContentProvider适用范围</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#２-URI"><span class="nav-text">２.URI</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MIME"><span class="nav-text">MIME</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ContentUris"><span class="nav-text">ContentUris</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#UriMatcher"><span class="nav-text">UriMatcher</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ContentProvider的主要方法"><span class="nav-text">ContentProvider的主要方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ContentResolver"><span class="nav-text">ContentResolver</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ContentObserver"><span class="nav-text">ContentObserver</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实际应用："><span class="nav-text">实际应用：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#备注"><span class="nav-text">备注</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">linlif</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/libs/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/libs/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/libs/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/libs/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/libs/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/libs/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/libs/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
