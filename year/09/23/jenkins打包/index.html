@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+<script>
+    (function(){
+        if(''){
+            if (prompt('密码！') !== ''){
+                alert('wrong passwaor');
+                history.back();
+            }
+        }
+    })();
+</script>
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/libs/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/libs/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="短篇, 博客" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Jenkins功能强大，可以使用它进行android项目的远程打包、多渠道打包工作，并且可以自动提交标签发送邮件。下面就介绍一下在实际项目中使用到的Jenkins自动打包教程。 Jenkins简介Jenkins是目前开源的应用中最广泛的持续集成工具，支持CI, CD。2.0开始支持Pipeline，使用基于Groovy的DSL，可以实现单个任务难以完成的复杂发布流程。其任何发布流程都可以表述为一段">
+<meta property="og:type" content="article">
+<meta property="og:title" content="jenkins远程自动打包、多渠道打包">
+<meta property="og:url" content="http://yoursite.com/year/09/23/jenkins打包/index.html">
+<meta property="og:site_name" content="一个短篇">
+<meta property="og:description" content="Jenkins功能强大，可以使用它进行android项目的远程打包、多渠道打包工作，并且可以自动提交标签发送邮件。下面就介绍一下在实际项目中使用到的Jenkins自动打包教程。 Jenkins简介Jenkins是目前开源的应用中最广泛的持续集成工具，支持CI, CD。2.0开始支持Pipeline，使用基于Groovy的DSL，可以实现单个任务难以完成的复杂发布流程。其任何发布流程都可以表述为一段">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/3.png">
+<meta property="og:image" content="https://img-blog.csdn.net/20170531110124090?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvYWl4aWFveWFuZzE2OA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/5.png">
+<meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/6.png">
+<meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/7.png">
+<meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/8.png">
+<meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/9.png">
+<meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/10.png">
+<meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/123.jpg">
+<meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/11.png">
+<meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/12.png">
+<meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/13.png">
+<meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/15.png">
+<meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/16.png">
+<meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/17.png">
+<meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/124.jpg">
+<meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/125.jpg">
+<meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/127.jpg">
+<meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/126.jpg">
+<meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/128.jpg">
+<meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/129.jpg">
+<meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/130.jpg">
+<meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/131.jpg">
+<meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/132.jpg">
+<meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/133.jpg">
+<meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/134.jpg">
+<meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/135.jpg">
+<meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/136.jpg">
+<meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/137.jpg">
+<meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/138.jpg">
+<meta property="og:updated_time" content="2018-12-05T09:29:12.705Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="jenkins远程自动打包、多渠道打包">
+<meta name="twitter:description" content="Jenkins功能强大，可以使用它进行android项目的远程打包、多渠道打包工作，并且可以自动提交标签发送邮件。下面就介绍一下在实际项目中使用到的Jenkins自动打包教程。 Jenkins简介Jenkins是目前开源的应用中最广泛的持续集成工具，支持CI, CD。2.0开始支持Pipeline，使用基于Groovy的DSL，可以实现单个任务难以完成的复杂发布流程。其任何发布流程都可以表述为一段">
+<meta name="twitter:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/3.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.3',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/year/09/23/jenkins打包/"/>
+
+
+
+
+
+  <title>jenkins远程自动打包、多渠道打包 | 一个短篇</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">一个短篇</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/year/09/23/jenkins打包/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="linlif">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/logo.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="一个短篇">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">jenkins远程自动打包、多渠道打包</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-23T14:18:58+08:00">
+                2018-09-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Jenkins功能强大，可以使用它进行android项目的远程打包、多渠道打包工作，并且可以自动提交标签发送邮件。<br>下面就介绍一下在实际项目中使用到的Jenkins自动打包教程。</p>
+<h3 id="Jenkins简介"><a href="#Jenkins简介" class="headerlink" title="Jenkins简介"></a>Jenkins简介</h3><p>Jenkins是目前开源的应用中最广泛的持续集成工具，支持CI, CD。2.0开始支持Pipeline，使用基于Groovy的DSL，可以实现单个任务难以完成的复杂发布流程。其任何发布流程都可以表述为一段Groovy脚本，并且Jenkins支持从代码库直接读取脚本，从而实现了实时或轮询打包的功能。</p>
+<p>Jenkins功能强大，在实际使用上可以使用它进行Android项目的远程打包、多渠道打包、自定义配置项打包等工作，并且可以自动发送附件邮件等功能，因为其支持shell脚本命令，所以也可以通过shell命令进行多种需求的操作。<br>下面就介绍一下在实际项目中使用到的Jenkins自动打包教程和相关功能拓展。</p>
+<h3 id="1，下载Jenkins"><a href="#1，下载Jenkins" class="headerlink" title="1，下载Jenkins"></a>1，下载Jenkins</h3><p>Jenkins官网下载地址： <a href="https://jenkins.io/download/" target="_blank" rel="noopener">https://jenkins.io/download/</a><br>根据自己的操作系统选择对应版本</p>
+<h3 id="2，安装Jenkins"><a href="#2，安装Jenkins" class="headerlink" title="2，安装Jenkins"></a>2，安装Jenkins</h3><p>点击下一步按照流程按照即可，不做赘述。</p>
+<h3 id="3，初始化Jenkins"><a href="#3，初始化Jenkins" class="headerlink" title="3，初始化Jenkins"></a>3，初始化Jenkins</h3><p>Jenkins安装成功后可以在本地访问 <a href="http://localhost:8080" target="_blank" rel="noopener">http://localhost:8080</a> </p>
+<h4 id="第一次初始化如图："><a href="#第一次初始化如图：" class="headerlink" title="第一次初始化如图："></a>第一次初始化如图：</h4><p><img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/3.png" alt="初始化"></p>
+<h4 id="解锁：安装提示路径打开文件，复制密码，点击继续"><a href="#解锁：安装提示路径打开文件，复制密码，点击继续" class="headerlink" title="解锁：安装提示路径打开文件，复制密码，点击继续"></a>解锁：安装提示路径打开文件，复制密码，点击继续</h4><p>按照弹框提示，找到该initialAdminPassword，填写Jenkins生成的key：<br><img src="https://img-blog.csdn.net/20170531110124090?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvYWl4aWFveWFuZzE2OA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="解锁"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">注：操作initialAdminPassword时的用户如果不是Jenkins用户可能会出现权限问题，需要处理下。</span><br></pre></td></tr></table></figure>
+<h4 id="插件选择"><a href="#插件选择" class="headerlink" title="插件选择"></a>插件选择</h4><p>推荐选择左边，安装官方推荐的插件，也可以选择右边只安装自己需要的插件。<br><img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/5.png" alt="选择插件"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">注：Android打包必须插件包括git插件，gradle插件，其他按自己情况安装。</span><br></pre></td></tr></table></figure>
+<h4 id="创建用户："><a href="#创建用户：" class="headerlink" title="创建用户："></a>创建用户：</h4><p>这个用户是下次访问 <a href="http://localhost:8080" target="_blank" rel="noopener">http://localhost:8080</a> 时需要登陆的用户名和密码<br><img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/6.png" alt="创建用户"></p>
+<h4 id="初始化完成，进入使用界面"><a href="#初始化完成，进入使用界面" class="headerlink" title="初始化完成，进入使用界面"></a>初始化完成，进入使用界面</h4><p><img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/7.png" alt="初始化完成"></p>
+<h3 id="4，配置Jenkins"><a href="#4，配置Jenkins" class="headerlink" title="4，配置Jenkins"></a>4，配置Jenkins</h3><p>进入Jenkins不需要先新建项目，首先把需要的环境配置好，具体需要配置的地方如下。<br>①系统设置<br>点击“系统管理”<br><img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/8.png" alt="系统设置"></p>
+<p>点击“系统设置”<br><img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/9.png" alt="系统设置"><br>找到“全局属性”，勾选“Environment variables”，然后配置环境变量（填写自己电脑上的对应的路径）</p>
+<p><img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/10.png" alt="全局属性"><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">注：最新版的Jenkins的jdk变量可以在全局工具配置里进行配置，如下图：</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/123.jpg" alt="系统设置"></p>
+<p>设置局域网访问地址：<br><img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/11.png" alt="设置局域网"></p>
+<p>设置通知邮件地址和内容格式<br><img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/12.png" alt="设置邮件"></p>
+<p>每封邮件都默认的内容<br><img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/13.png" alt="邮件默认"></p>
+<p>②全局安全配置Configure Global Security<br>默认的设置不变<br>点击“项目矩阵授权策略”可以对自己添加的用户进行权限设置<br><img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/15.png" alt="授权设置"></p>
+<p>③全局工具配置Global Tool Configuration<br>JDK 和 Git 保持默认设置<br>Gradle配置：<br>点击“新增Gradle”<br><img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/16.png" alt="gradle设置"></p>
+<p>填写自定义名称，然后选择自己需要的Gradle版本（可以新增多个版本的Gradle）<br><img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/17.png" alt="gradle设置"></p>
+<h3 id="5，创建打包项目"><a href="#5，创建打包项目" class="headerlink" title="5，创建打包项目"></a>5，创建打包项目</h3><p>新建任务<br><img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/124.jpg" alt="新建任务"></p>
+<p>选择任务类型<br><img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/125.jpg" alt="任务类型"></p>
+<p>勾选参数化构建过程<br><img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/127.jpg" alt="构建"></p>
+<p>参数化构建可以在编译前选择自己需要配置的选项，再利用这些选项实现不同类型的编译任务。<br>可选参数如下<br><img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/126.jpg" alt="构建参数"></p>
+<p>源码管理，勾选git<br><img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/128.jpg" alt="源码管理"><br>在URL处填写项目的git地址，下面一栏需要选择代码地址对于的账号。</p>
+<p>点击Add<br><img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/129.jpg" alt="账户add"></p>
+<p>使用Username with password 时，Username一栏填写代码地址的账户名，Password填写密码，其他默认。<br>在添加后返回，在Credentials一栏选择刚才添加的账号，如果提示红色的报警，说明没有验证通过。此时可以用另外一种方式再添加。<br>选择ssh验证，并在key的地方填写自己的私钥，添加后再返回选择自己的账号就OK了。<br><img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/130.jpg" alt="账户add"></p>
+<p>在Branches to build处填写要打包的分支</p>
+<p>在构建里选中 Invoke Gradle，然后选择自己在系统设置里配置的gradle版本，在Tasks栏下填写自己要编译的task名称（这里是先执行clean，再执行编译任务）<br><img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/131.jpg" alt="task"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">注：图中的$&#123;BUILD_TYPE&#125; 字段是读取前面配置项的值，在Jenkins的项目中，需要用到配置项的值的地方，都是以$&#123;XXX&#125;的格式使用，其本质是一个配置项的数据类型，在此为字符串形式</span><br></pre></td></tr></table></figure>
+<p>保存后返回，选择参数化构建<br><img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/132.jpg" alt="构建"></p>
+<p>选择要构建的任务，点击开始构建<br><img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/133.jpg" alt="开始构建"></p>
+<p>可以点击左方的小点看编译的日志<br><img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/134.jpg" alt="日志"></p>
+<p>Jenkins会先在git仓库拉下填写分支的最新代码到本地工作目录，然后执行代码中的gradle命令进行编译。当日志显示<code>BUILD SUCCESSFUL</code>则编译成功。<br><img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/135.jpg" alt="编译成功"></p>
+<p>可以到工作空间下找到自己编译好的apk</p>
+<p>至此就完成了一个最基本的自定义编译任务的Jenkins远程打包功能。</p>
+<h3 id="6，构建拓展"><a href="#6，构建拓展" class="headerlink" title="6，构建拓展"></a>6，构建拓展</h3><p>Jenkins支持shell脚本命令，所以可以通过shell去添加很多功能。</p>
+<p>在构建的栏目下选择<code>添加构建步骤</code>,选择<code>执行shell</code><br><img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/136.jpg" alt="shell"></p>
+<p>在shell里编写命令<br><img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/137.jpg" alt="shell"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">注：执行shell的窗口可以上下移动，在Invoke Gradle上面的话会在代码编译前执行，在下面则会在编译完成后执行。</span><br></pre></td></tr></table></figure>
+<p>通过这一点，可以在执行代码build前后去处理一些初始化，比如编译前拿到自定义配置项去替换代码里的内容，编译后通过git提交tag、通过curl去触发某些接口，可以无限拓展。</p>
+<h3 id="7，插件拓展"><a href="#7，插件拓展" class="headerlink" title="7，插件拓展"></a>7，插件拓展</h3><p>Jenkins的方便之处还在于它有很多插件可以使用。<br>比如可以下载fir的Jenkins插件，通过配置去把apk自动上传到fir上。<br><img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/138.jpg" alt="插件"></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>以上就是Jenkins在Android远程打包上的使用过程，主要写了环境的搭建和重要环节的配置。实际使用时需要配合这项目实际需求已经代码的构建情况去搭建一个最方便快捷的远程编译平台。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/year/05/10/Android-4-4版本以后短信相关变更和删除短信的处理/" rel="next" title="Android 4.4版本以后短信相关变更和删除短信的处理">
+                <i class="fa fa-chevron-left"></i> Android 4.4版本以后短信相关变更和删除短信的处理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/logo.jpg"
+                alt="linlif" />
+            
+              <p class="site-author-name" itemprop="name">linlif</p>
+              <p class="site-description motion-element" itemprop="description">晚是全世界的晚，安是你的。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Jenkins简介"><span class="nav-text">Jenkins简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1，下载Jenkins"><span class="nav-text">1，下载Jenkins</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2，安装Jenkins"><span class="nav-text">2，安装Jenkins</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3，初始化Jenkins"><span class="nav-text">3，初始化Jenkins</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#第一次初始化如图："><span class="nav-text">第一次初始化如图：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#解锁：安装提示路径打开文件，复制密码，点击继续"><span class="nav-text">解锁：安装提示路径打开文件，复制密码，点击继续</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#插件选择"><span class="nav-text">插件选择</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#创建用户："><span class="nav-text">创建用户：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#初始化完成，进入使用界面"><span class="nav-text">初始化完成，进入使用界面</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4，配置Jenkins"><span class="nav-text">4，配置Jenkins</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5，创建打包项目"><span class="nav-text">5，创建打包项目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6，构建拓展"><span class="nav-text">6，构建拓展</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7，插件拓展"><span class="nav-text">7，插件拓展</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">linlif</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/libs/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/libs/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/libs/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/libs/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/libs/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/libs/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/libs/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
