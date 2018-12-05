@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+<script>
+    (function(){
+        if(''){
+            if (prompt('密码！') !== ''){
+                alert('wrong passwaor');
+                history.back();
+            }
+        }
+    })();
+</script>
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/libs/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/libs/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="短篇, 博客" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="ConstraintLayout是Android Studio 2.2中主要的新增功能之一，也是Google在去年的I/O大会上重点宣传的一个功能。在渲染性能上有很多优势。具体可以看这篇文章：解析ConstraintLayout的性能优势 简介ConstraintLayout是集合了LinearLayout、RelativeLayout以及GridLayout所有特性的一种布局类型，在使用时上可以">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ConstraintLayout特性全方位解析">
+<meta property="og:url" content="http://yoursite.com/year/12/05/ConstraintLayout/index.html">
+<meta property="og:site_name" content="一个短篇">
+<meta property="og:description" content="ConstraintLayout是Android Studio 2.2中主要的新增功能之一，也是Google在去年的I/O大会上重点宣传的一个功能。在渲染性能上有很多优势。具体可以看这篇文章：解析ConstraintLayout的性能优势 简介ConstraintLayout是集合了LinearLayout、RelativeLayout以及GridLayout所有特性的一种布局类型，在使用时上可以">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout6.png">
+<meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout5.png">
+<meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout8.png">
+<meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout2.png">
+<meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout1.png">
+<meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout9.png">
+<meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout3.png">
+<meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout7.png">
+<meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout10.png">
+<meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout4.png">
+<meta property="og:updated_time" content="2018-12-05T09:37:23.182Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ConstraintLayout特性全方位解析">
+<meta name="twitter:description" content="ConstraintLayout是Android Studio 2.2中主要的新增功能之一，也是Google在去年的I/O大会上重点宣传的一个功能。在渲染性能上有很多优势。具体可以看这篇文章：解析ConstraintLayout的性能优势 简介ConstraintLayout是集合了LinearLayout、RelativeLayout以及GridLayout所有特性的一种布局类型，在使用时上可以">
+<meta name="twitter:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout6.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.3',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/year/12/05/ConstraintLayout/"/>
+
+
+
+
+
+  <title>ConstraintLayout特性全方位解析 | 一个短篇</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">一个短篇</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/year/12/05/ConstraintLayout/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="linlif">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/logo.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="一个短篇">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">ConstraintLayout特性全方位解析</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-05T17:31:27+08:00">
+                2018-12-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>ConstraintLayout是Android Studio 2.2中主要的新增功能之一，也是Google在去年的I/O大会上重点宣传的一个功能。在渲染性能上有很多优势。具体可以看这篇文章：<a href="https://mp.weixin.qq.com/s/gGR2itbY7hh9fo61SxaMQQ" target="_blank" rel="noopener">解析ConstraintLayout的性能优势</a></p>
+<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>ConstraintLayout是集合了LinearLayout、RelativeLayout以及GridLayout所有特性的一种布局类型，在使用时上可以极大的简化层级嵌套，提高性能。</p>
+<p>首先 ConstraintLayout 是一个 ViewGroup，支持到API level 9 ，默认左上角开始布局，可以理解为一个framelayout。</p>
+<p>下面介绍它的所有属性</p>
+<h2 id="相对属性"><a href="#相对属性" class="headerlink" title="相对属性"></a>相对属性</h2><ul>
+<li>layout_constraintLeft_toLeftOf</li>
+<li>layout_constraintLeft_toRightOf</li>
+<li>layout_constraintRight_toLeftOf</li>
+<li>layout_constraintRight_toRightOf</li>
+<li>layout_constraintTop_toTopOf</li>
+<li>layout_constraintTop_toBottomOf</li>
+<li>layout_constraintBottom_toTopOf</li>
+<li>layout_constraintBottom_toBottomOf</li>
+<li>layout_constraintBaseline_toBaselineOf</li>
+<li>layout_constraintStart_toEndOf</li>
+<li>layout_constraintStart_toStartOf</li>
+<li>layout_constraintEnd_toStartOf</li>
+<li>layout_constraintEnd_toEndOf</li>
+</ul>
+<p><img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout6.png" alt=""></p>
+<p>看图可以知道：<br><code>layout_constraintBaseline_toBaselineOf</code> 代表内容水平对齐，并不是真正的水平对齐。</p>
+<p>要实现整个控件的水平对齐可以相对于同一个控件同时使用：<br><code>layout_constraintTop_toTopOf</code>和<code>layout_constraintBottom_toBottomOf</code></p>
+<p>同时图片可以看出属性里的start和left是同一个意思，right和end同一个意思，在使用时效果也是一样的。</p>
+<h2 id="Margin属性"><a href="#Margin属性" class="headerlink" title="Margin属性"></a>Margin属性</h2><ul>
+<li>android:layout_marginStart</li>
+<li>android:layout_marginEnd</li>
+<li>android:layout_marginLeft</li>
+<li>android:layout_marginTop</li>
+<li>android:layout_marginRight</li>
+<li>android:layout_marginBottom</li>
+</ul>
+<p>Margin的属性是基于上面相对布局的基础上的，例：<br>设置了A控件的leftof于某个控件后，<code>layout_marginLeft</code>才会生效。</p>
+<p>需要注意的是<code>layout_marginStart</code>和<code>layout_marginLeft</code>同时存在时，系统会优先取<code>layout_marginStart</code>的值，且<code>layout_marginStart</code>只支持API17及以上版本。<em>**</em></p>
+<h2 id="goneMargin属性"><a href="#goneMargin属性" class="headerlink" title="goneMargin属性"></a>goneMargin属性</h2><p>当约束位置的目标控件的可见性为View.GONE时可以使用以下属性设置不同的相对距离</p>
+<ul>
+<li>layout_goneMarginStart</li>
+<li>layout_goneMarginEnd</li>
+<li>layout_goneMarginLeft</li>
+<li>layout_goneMarginTop</li>
+<li>layout_goneMarginRight</li>
+<li>layout_goneMarginBottom</li>
+</ul>
+<p><img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout5.png" alt=""></p>
+<p>例如：B距离A 10dp，C距离B 10dp，当B不显示时C出现在B的位置。<br>按照之前的逻辑是B和C在一个布局下，然后父布局距离A10dp。现在可是少一层包裹，C设置 <code>layout_goneMarginLeft</code> 10dp即可。<br>详细理解可以看下面的<strong>特殊的可见属性</strong></p>
+<h2 id="相对居中"><a href="#相对居中" class="headerlink" title="相对居中"></a>相对居中</h2><p>ConstraintLayout的相对居中使用简单<br>``</p>
+<p><android.support.constraint.constraintlayout ...=""><br>             &lt;Button android:id=”@+id/button” …<br>                 app:layout_constraintLeft_toLeftOf=”parent”<br>                 app:layout_constraintRight_toRightOf=”parent/&gt;<br>         &lt;/&gt;<br>         ``</android.support.constraint.constraintlayout></p>
+<p><img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout8.png" alt=""></p>
+<p>如果父布局的ConstraintLayout的宽度和A不同，则使用和<code>layout_constraintLeft_toLeftOf</code>和<code>layout_constraintRight_toRightOf</code>会使控件在相对控件的中间（水平居中和垂直居中同理）</p>
+<h2 id="相对距离按比例划分"><a href="#相对距离按比例划分" class="headerlink" title="相对距离按比例划分"></a>相对距离按比例划分</h2><ul>
+<li>layout_constraintHorizontal_bias</li>
+<li>layout_constraintVertical_bias</li>
+</ul>
+<p>例如:<br>``</p>
+<p><android.support.constraint.constraintlayout ...=""><br>             &lt;Button android:id=”@+id/button” …<br>                 app:layout_constraintHorizontal_bias=”0.3”<br>                 app:layout_constraintLeft_toLeftOf=”parent”<br>                 app:layout_constraintRight_toRightOf=”parent/&gt;<br>         &lt;/&gt;<br>         ``<br><img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout2.png" alt=""></android.support.constraint.constraintlayout></p>
+<p>A距离父布局左侧的距离是右侧的30%</p>
+<h2 id="中心点定位"><a href="#中心点定位" class="headerlink" title="中心点定位"></a>中心点定位</h2><ul>
+<li>layout_constraintCircle : 相对中心位置控件的id</li>
+<li>layout_constraintCircleRadius : 距其他控件中心位置的距离</li>
+<li>layout_constraintCircleAngle :中心位置的角度 0-360</li>
+</ul>
+<p>例如:</p>
+<p>``</p>
+<p><button android:id="@+id/buttonA" ...=""><br>  </button><button android:id="@+id/buttonB" ...="" app:layout_constraintcircle="@+id/buttonA" app:layout_constraintcircleradius="100dp" app:layout_constraintcircleangle="45"><br>``</button></p>
+<p> <img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout1.png" alt=""></p>
+<h2 id="特殊的可见属性"><a href="#特殊的可见属性" class="headerlink" title="特殊的可见属性"></a>特殊的可见属性</h2><p>设置了GONE的控件仍然是不可见的，但有两个特点：<br>· 在不居中，控件会被解析为一个点<br>· 如果它相对其他控件有设置，那么任何边距都会等于0</p>
+<p> <img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout9.png" alt=""></p>
+<h2 id="尺寸限制"><a href="#尺寸限制" class="headerlink" title="尺寸限制"></a>尺寸限制</h2><ul>
+<li>android:minWidth set the minimum width for the layout</li>
+<li>android:minHeight set the minimum height for the layout</li>
+<li>android:maxWidth set the maximum width for the layout</li>
+<li>android:maxHeight set the maximum height for the layout     </li>
+</ul>
+<p>当其尺寸设置为WRAP_CONTENT时，ConstraintLayout将使用这些最小和最大尺寸</p>
+<h3 id="控件约束"><a href="#控件约束" class="headerlink" title="控件约束"></a>控件约束</h3><p>可以通过以3种不同的方式设置<code>android：layout_width</code>和<code>android：layout_height</code>属性来指定控件的约束位置。<br>· 使用指定的值，如123dp<br>· 使用WRAP_CONTENT，它将要求窗口小部件计算自己的大小<br>· 使用0dp，相当于“MATCH_CONSTRAINT”</p>
+<p><img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout3.png" alt=""></p>
+<p>如上图，a为wrap_content，b为0dp，c为设置了margin和0dp</p>
+<p>注意：不建议对ConstraintLayout中的控件使用<code>MATCH_PARENT</code>。可以通过使用<code>MATCH_CONSTRAINT</code>来定义类似的属性，其中相应的左/右或上/下约束被设置为父布局。</p>
+<h3 id="WRAP-CONTENT：强制约束"><a href="#WRAP-CONTENT：强制约束" class="headerlink" title="WRAP_CONTENT：强制约束"></a>WRAP_CONTENT：强制约束</h3><p>在1.1之前的版本中设置为WRAP_CONTENT不会产生约束效果。添加以下相应的属性可以强制执行约束：</p>
+<ul>
+<li>app:layout_constrainedWidth=”true|false”</li>
+<li>app:layout_constrainedHeight=”true|false”</li>
+</ul>
+<h3 id="MATCH-CONSTRAINT"><a href="#MATCH-CONSTRAINT" class="headerlink" title="MATCH_CONSTRAINT"></a>MATCH_CONSTRAINT</h3><p>当控件设置为MATCH_CONSTRAINT时，默认行为是使结果大小占用所有可用空间。还有几个额外的修饰符：</p>
+<ul>
+<li>layout_constraintWidth_min and layout_constraintHeight_min : 设置最小尺寸</li>
+<li>layout_constraintWidth_max and layout_constraintHeight_max :设置最大尺寸</li>
+<li>layout_constraintWidth_percent and layout_constraintHeight_percent : 设置相对父布局的百分比</li>
+</ul>
+<h4 id="Min-and-Max"><a href="#Min-and-Max" class="headerlink" title="Min and Max"></a>Min and Max</h4><p>为min和max赋的值可以是dp，也可以是“wrap”（使用与WRAP_CONTENT相同的值）。</p>
+<h4 id="Percent-dimension-百分比"><a href="#Percent-dimension-百分比" class="headerlink" title="Percent dimension 百分比"></a>Percent dimension 百分比</h4><p>使用百分比需要以下设置<br>· 设置为<code>MATCH_CONSTRAINT</code><br>· 默认值设置为<code>app:layout_constraintWidth_default=&quot;percent&quot;</code>或者 <code>app:layout_constraintHeight_default=&quot;percent&quot;</code>（注意：这在1.1-beta1和1.1-beta2中是必需的，但如果定义了百分比属性，则在以下版本中不需要）<br><code>layout_constraintWidth_percent</code>或<code>layout_constraintHeight_percent</code>属性设置为0到1之间的值</p>
+<h4 id="Ratio-比例"><a href="#Ratio-比例" class="headerlink" title="Ratio 比例"></a>Ratio 比例</h4><p>可以将控件的布局大小为另一个大小的比率，需要将至少一个布局设置为0dp（即MATCH_CONSTRAINT），并将属性layout_constraintDimensionRatio设置为给定的比率。例如：<br><code>&lt;Button android:layout_width=&quot;wrap_content&quot;
+                   android:layout_height=&quot;0dp&quot;
+                   app:layout_constraintDimensionRatio=&quot;1:1&quot; /&gt;</code></p>
+<p>将按钮的高度设置为与其宽度相同。<br>比率可以设置为：<br>·  float值，表示宽度和高度之间的比率<br>·  <code>&quot;width:height”</code>形式的比例</p>
+<p>如果两个尺寸都设置为MATCH_CONSTRAINT（0dp），您也可以使用比率。在这种情况下，系统会设置满足所有约束的最大尺寸并保持指定的纵横比。要根据另一个特定边的尺寸约束一个特定边，可以预先附加W，“或H，分别约束宽度或高度。例如，如果一个维度受到两个目标的约束（例如，宽度为0dp并且以父布局为中心），则可以通过在前面添加字母W（用于约束宽度）或H（用于约束高度）来指示应该约束哪一侧。用逗号分隔：</p>
+<p>``</p>
+<p><button android:layout_width="0dp" android:layout_height="0dp" app:layout_constraintdimensionratio="H,16:9" app:layout_constraintbottom_tobottomof="parent" app:layout_constrainttop_totopof="parent"><br>       ``</button></p>
+<p>上面的button将按照16：9的比例设置按钮的高度，而按钮的宽度将匹配父布局。</p>
+<h2 id="Chains-链"><a href="#Chains-链" class="headerlink" title="Chains 链"></a>Chains 链</h2><p>链在单个轴（水平或垂直）上提供类似行的行为。另一个轴可以独立约束。</p>
+<h3 id="创建链："><a href="#创建链：" class="headerlink" title="创建链："></a>创建链：</h3><p>如果一组控件通过双向连接链接在一起，则它们被视为链（参见下图，显示最小链，具有两个小部件）。</p>
+<p><img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout7.png" alt=""></p>
+<h3 id="链的头部"><a href="#链的头部" class="headerlink" title="链的头部"></a>链的头部</h3><p>链由链的第一个元素（链的“头部”）上设置的属性控制</p>
+<p><img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout10.png" alt=""></p>
+<p>头部是水平链的最左侧控件，垂直链的最顶部控件。</p>
+<h3 id="链中的边距"><a href="#链中的边距" class="headerlink" title="链中的边距"></a>链中的边距</h3><p>如果在连接上指定了边距，则会考虑它们。在扩散链的情况下，将从分配的空间中扣除边距。</p>
+<h3 id="链的形式"><a href="#链的形式" class="headerlink" title="链的形式"></a>链的形式</h3><p>在链的第一个元素上设置属性<code>layout_constraintHorizontal_chainStyle</code>或<code>layout_constraintVertical_chainStyle</code>时，链的行为将根据指定的样式更改（默认为CHAIN_SPREAD）。</p>
+<ul>
+<li><code>CHAIN_SPREAD</code> — 元素将展开（默认样式）</li>
+<li>加权链 - 在<code>CHAIN_SPREAD</code>模式下，如果某些控件设置为<code>MATCH_CONSTRAINT</code>，它们将拆分可用空间</li>
+<li><code>CHAIN_SPREAD_INSIDE</code> – 类似，但链的端点不会散开</li>
+<li><code>CHAIN_PACKED</code> – 链的元素将被包装在一起。然后，子元素的水平或垂直偏差属性将影响打包元素的定位</li>
+</ul>
+<p><img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout4.png" alt=""></p>
+<h3 id="Weighted-chains-加权链"><a href="#Weighted-chains-加权链" class="headerlink" title="Weighted chains 加权链"></a>Weighted chains 加权链</h3><p>链的默认行为是在可用空间中平均分布元素。如果一个或多个元素使用MATCH_CONSTRAINT，则它们将使用可用的空白空间（在它们之间平均分配）。<code>ayout_constraintHorizontal_weight</code>和<code>layout_constraintVertical_weight</code>属性将控制如何使用<code>MATCH_CONSTRAINT</code>在元素之间分配空间。例如，在使用<code>MATCH_CONSTRAINT</code>的包含两个元素的链上，第一个元素使用权重2，第二个元素使用权重1，第一个元素占用的空间将是第二个元素占用的空间的两倍。</p>
+<h3 id="Margins-和-chains-在-1-1版本"><a href="#Margins-和-chains-在-1-1版本" class="headerlink" title="Margins 和 chains(在 1.1版本)"></a>Margins 和 chains(在 1.1版本)</h3><p>在链中的元素上使用边距时，边距是相加的。例如，在水平链上，如果一个元素定义了10dp的右边距而下一个元素定义了5dp的左边距，则这两个元素之间产生的边距为15dp。在计算链用于定位项目的剩余空间时，会同时考虑项目及其边距。剩余空间不包含边距。</p>
+<h3 id="Virtual-Helper-objects"><a href="#Virtual-Helper-objects" class="headerlink" title="Virtual Helper objects"></a>Virtual Helper objects</h3><p>除了之前详述的内在功能外，您还可以使用ConstraintLayout中的特殊帮助程序对象来帮助您进行布局。Guideline允许创建相对于ConstraintLayout容器定位的水平和垂直指南。然后可以通过将小部件约束到这样的指导来定位小部件。在1.1中，还增加了障碍和集团。</p>
+<h2 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h2><p>在1.1中我们暴露了约束优化器。您可以通过将标记<code>app：layout_optimizationLevel</code>添加到ConstraintLayout元素来决定应用哪些优化。</p>
+<ul>
+<li>none : 不应用优化</li>
+<li>standard : 默认。仅优化直接和障碍约束</li>
+<li>direct : 优化直接约束</li>
+<li>barrier :优化障碍限制</li>
+<li>chain : 优化链条约束（实验）</li>
+<li>dimensions : 优化维度度量（实验），减少匹配约束元素的度量数量</li>
+</ul>
+<p>此属性是隐藏的，因此您可以通过列出所需的优化来决定打开或关闭特定的优化。例如：<code>app：layout_optimizationLevel =“direct | barrier | chain”</code></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/year/09/23/jenkins打包/" rel="next" title="jenkins远程自动打包、多渠道打包">
+                <i class="fa fa-chevron-left"></i> jenkins远程自动打包、多渠道打包
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/logo.jpg"
+                alt="linlif" />
+            
+              <p class="site-author-name" itemprop="name">linlif</p>
+              <p class="site-description motion-element" itemprop="description">晚是全世界的晚，安是你的。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#相对属性"><span class="nav-text">相对属性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Margin属性"><span class="nav-text">Margin属性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#goneMargin属性"><span class="nav-text">goneMargin属性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#相对居中"><span class="nav-text">相对居中</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#相对距离按比例划分"><span class="nav-text">相对距离按比例划分</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#中心点定位"><span class="nav-text">中心点定位</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#特殊的可见属性"><span class="nav-text">特殊的可见属性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#尺寸限制"><span class="nav-text">尺寸限制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#控件约束"><span class="nav-text">控件约束</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#WRAP-CONTENT：强制约束"><span class="nav-text">WRAP_CONTENT：强制约束</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MATCH-CONSTRAINT"><span class="nav-text">MATCH_CONSTRAINT</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Min-and-Max"><span class="nav-text">Min and Max</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Percent-dimension-百分比"><span class="nav-text">Percent dimension 百分比</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Ratio-比例"><span class="nav-text">Ratio 比例</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Chains-链"><span class="nav-text">Chains 链</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#创建链："><span class="nav-text">创建链：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#链的头部"><span class="nav-text">链的头部</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#链中的边距"><span class="nav-text">链中的边距</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#链的形式"><span class="nav-text">链的形式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Weighted-chains-加权链"><span class="nav-text">Weighted chains 加权链</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Margins-和-chains-在-1-1版本"><span class="nav-text">Margins 和 chains(在 1.1版本)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Virtual-Helper-objects"><span class="nav-text">Virtual Helper objects</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优化"><span class="nav-text">优化</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">linlif</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/libs/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/libs/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/libs/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/libs/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/libs/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/libs/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/libs/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
