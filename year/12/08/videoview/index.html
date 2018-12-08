@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+<script>
+    (function(){
+        if(''){
+            if (prompt('密码！') !== ''){
+                alert('wrong passwaor');
+                history.back();
+            }
+        }
+    })();
+</script>
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/libs/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/libs/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="短篇, 博客" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="VideoView类的源码翻译和解析，对自己使用videoview会有很大的帮助，了解Google对MediaPlayer的封装思想也有助于去开发自己定义的视频播放功能。 注释部分：用于显示视频文件。 VideoView类可以从各种来源（例如资源或内容提供商）加载图像，负责从视频中计算测量值，以便可以在任何布局管理器中使用，并提供各种显示选项，如缩放和着色。 注意：进入后台时，VideoView不">
+<meta property="og:type" content="article">
+<meta property="og:title" content="VideoView源码全方位翻译&amp;解析">
+<meta property="og:url" content="http://yoursite.com/year/12/08/videoview/index.html">
+<meta property="og:site_name" content="一个短篇">
+<meta property="og:description" content="VideoView类的源码翻译和解析，对自己使用videoview会有很大的帮助，了解Google对MediaPlayer的封装思想也有助于去开发自己定义的视频播放功能。 注释部分：用于显示视频文件。 VideoView类可以从各种来源（例如资源或内容提供商）加载图像，负责从视频中计算测量值，以便可以在任何布局管理器中使用，并提供各种显示选项，如缩放和着色。 注意：进入后台时，VideoView不">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-12-08T09:35:19.582Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="VideoView源码全方位翻译&amp;解析">
+<meta name="twitter:description" content="VideoView类的源码翻译和解析，对自己使用videoview会有很大的帮助，了解Google对MediaPlayer的封装思想也有助于去开发自己定义的视频播放功能。 注释部分：用于显示视频文件。 VideoView类可以从各种来源（例如资源或内容提供商）加载图像，负责从视频中计算测量值，以便可以在任何布局管理器中使用，并提供各种显示选项，如缩放和着色。 注意：进入后台时，VideoView不">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.3',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/year/12/08/videoview/"/>
+
+
+
+
+
+  <title>VideoView源码全方位翻译&解析 | 一个短篇</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">一个短篇</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/year/12/08/videoview/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="linlif">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/logo.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="一个短篇">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">VideoView源码全方位翻译&解析</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-08T17:31:10+08:00">
+                2018-12-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>VideoView类的源码翻译和解析，对自己使用videoview会有很大的帮助，了解Google对MediaPlayer的封装思想也有助于去开发自己定义的视频播放功能。</p>
+<h2 id="注释部分："><a href="#注释部分：" class="headerlink" title="注释部分："></a>注释部分：</h2><p>用于显示视频文件。 <code>VideoView</code>类可以从各种来源（例如资源或内容提供商）加载图像，负责从视频中计算测量值，以便可以在任何布局管理器中使用，并提供各种显示选项，如缩放和着色。</p>
+<p>注意：进入后台时，<code>VideoView</code>不会保持其完整状态。特别是，它不会恢复当前播放状态，播放位置，所选曲目或通过<code>addSubtitleSource（）</code>添加的任何字幕轨道。应用程序应在<code>Activity.onSaveInstanceState（Bundle</code>）和<code>Activity.onRestoreInstanceState（Bundle）</code>中自行保存和恢复这些内容。</p>
+<p>另请注意，音频会话ID<code>（getAudioSessionId）</code>可能恢复<code>VideoView</code>时，从其先前返回的值更改。</p>
+<p>默认情况下，<code>VideoView</code>使用<code>AudioManage.AUDIOFOCUS_GAIN</code>请求音频焦点。使用<code>setAudioFocusRequest（int）</code>来改变这种行为。</p>
+<p>播放期间使用的默认<code>AudioAttributes</code>使用 <code>AudioAttributes.USAGE_MEDIA</code>和内容类型  <code>AudioAttributes.CONTENT_TYPE_MOVIE</code>，使用<code>setAudioAttributes（AudioAttributes）</code>来修改它们。</p>
+<h2 id="代码部分"><a href="#代码部分" class="headerlink" title="代码部分"></a>代码部分</h2><h3 id="继承关系"><a href="#继承关系" class="headerlink" title="继承关系"></a>继承关系</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">public class VideoView extends SurfaceView</span><br><span class="line">        implements MediaPlayerControl</span><br></pre></td></tr></table></figure>
+<p>  <code>VideoView</code>继承自<code>SurfaceView</code>，实现了<code>MediaController.MediaPlayerControl</code>的接口。可以理解为对视频播放做了自己的一层封装。  </p>
+<h3 id="内部变量"><a href="#内部变量" class="headerlink" title="内部变量"></a>内部变量</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">private static final int STATE_ERROR = -1;//播放发生异常</span><br><span class="line">private static final int STATE_IDLE = 0;//初始化状态</span><br><span class="line">private static final int STATE_PREPARING = 1;　//MediaPlayer正在加载视频的状态　</span><br><span class="line">private static final int STATE_PREPARED = 2;//视频资源准备完成</span><br><span class="line">private static final int STATE_PLAYING = 3;//调用videoview的start</span><br><span class="line">private static final int STATE_PAUSED = 4;//调用videoview的pause</span><br><span class="line">private static final int STATE_PLAYBACK_COMPLETED = 5;//播放完成的状态</span><br><span class="line">//记录播放器的状态</span><br><span class="line">private int mCurrentState = STATE_IDLE; </span><br><span class="line">private int mTargetState = STATE_IDLE;</span><br></pre></td></tr></table></figure>
+<p>注：<code>mCurrentState</code>是<code>VideoView</code>对象的当前状态，<code>mTargetState</code>是方法调用者打算访问的状态。例如，无论<code>VideoView</code>对象的当前状态如何，调用<code>pause（）</code>都将对象的目标状态置为<code>STATE_PAUSED</code></p>
+<p>主要功能部分</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">private SurfaceHolder mSurfaceHolder = null;// 显示图像</span><br><span class="line">private MediaPlayer mMediaPlayer = null; // 声音、播放</span><br><span class="line">private MediaController mMediaController; // 播放控制</span><br></pre></td></tr></table></figure>
+<p>其他变量：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">private int mAudioSession;//音频的sessionId</span><br><span class="line">private int         mVideoWidth;  // 视频宽度 在onVideoSizeChanged() 和 onPrepared() 中可以得到具体大小</span><br><span class="line">private int         mVideoHeight;  //视频高度</span><br><span class="line">private int         mSurfaceWidth; // Surface宽度  在SurfaceHolder.Callback.surfaceChanged() 中可以得到具体大小</span><br><span class="line">private int         mSurfaceHeight; // Surface高度</span><br><span class="line">private int         mSeekWhenPrepared;  // 在准备时记录位置</span><br></pre></td></tr></table></figure>
+<h3 id="构造方法"><a href="#构造方法" class="headerlink" title="构造方法"></a>构造方法</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">public VideoView(Context context) &#123;</span><br><span class="line">        this(context, null);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public VideoView(Context context, AttributeSet attrs) &#123;</span><br><span class="line">        this(context, attrs, 0);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public VideoView(Context context, AttributeSet attrs, int defStyleAttr) &#123;</span><br><span class="line">        this(context, attrs, defStyleAttr, 0);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>最终都会调用下面的构造方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"> public VideoView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) &#123;</span><br><span class="line">        super(context, attrs, defStyleAttr, defStyleRes);</span><br><span class="line">//初始化宽和高</span><br><span class="line">        mVideoWidth = 0;</span><br><span class="line">        mVideoHeight = 0;</span><br><span class="line"></span><br><span class="line">//创建AudioManager和AudioAttributes</span><br><span class="line">        mAudioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);</span><br><span class="line">        mAudioAttributes = new AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_MEDIA)</span><br><span class="line">                .setContentType(AudioAttributes.CONTENT_TYPE_MOVIE).build();</span><br><span class="line"></span><br><span class="line">// 通过SurfaceHolder去控制SurfaceView</span><br><span class="line">        getHolder().addCallback(mSHCallback);</span><br><span class="line">//忽略此值，此值在需要时自动设置。应该是系统版本兼容</span><br><span class="line">        getHolder().setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);</span><br><span class="line"></span><br><span class="line">//设置普通（物理）可以获取焦点</span><br><span class="line">        setFocusable(true);</span><br><span class="line">//设置触摸可以获取焦点</span><br><span class="line">        setFocusableInTouchMode(true);</span><br><span class="line">//获取焦点</span><br><span class="line">        requestFocus();</span><br><span class="line"></span><br><span class="line">//初始化播放器状态</span><br><span class="line">        mCurrentState = STATE_IDLE;</span><br><span class="line">        mTargetState = STATE_IDLE;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="onMeasure方法"><a href="#onMeasure方法" class="headerlink" title="onMeasure方法"></a>onMeasure方法</h3><p>根据视频的宽高比进行处理</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) &#123;</span><br><span class="line">    //Log.i(&quot;@@@@&quot;, &quot;onMeasure(&quot; + MeasureSpec.toString(widthMeasureSpec) + &quot;, &quot;</span><br><span class="line">    //        + MeasureSpec.toString(heightMeasureSpec) + &quot;)&quot;);</span><br><span class="line"></span><br><span class="line">    int width = getDefaultSize(mVideoWidth, widthMeasureSpec);</span><br><span class="line">    int height = getDefaultSize(mVideoHeight, heightMeasureSpec);</span><br><span class="line">    if (mVideoWidth &gt; 0 &amp;&amp; mVideoHeight &gt; 0) &#123;</span><br><span class="line"></span><br><span class="line">        int widthSpecMode = MeasureSpec.getMode(widthMeasureSpec);</span><br><span class="line">        int widthSpecSize = MeasureSpec.getSize(widthMeasureSpec);</span><br><span class="line">        int heightSpecMode = MeasureSpec.getMode(heightMeasureSpec);</span><br><span class="line">        int heightSpecSize = MeasureSpec.getSize(heightMeasureSpec);</span><br><span class="line"></span><br><span class="line">        if (widthSpecMode == MeasureSpec.EXACTLY &amp;&amp; heightSpecMode == MeasureSpec.EXACTLY) &#123;</span><br><span class="line">            // the size is fixed</span><br><span class="line">            width = widthSpecSize;</span><br><span class="line">            height = heightSpecSize;</span><br><span class="line"></span><br><span class="line">            // for compatibility, we adjust size based on aspect ratio</span><br><span class="line">            if ( mVideoWidth * height  &lt; width * mVideoHeight ) &#123;</span><br><span class="line">                //Log.i(&quot;@@@&quot;, &quot;image too wide, correcting&quot;);</span><br><span class="line">                width = height * mVideoWidth / mVideoHeight;</span><br><span class="line">            &#125; else if ( mVideoWidth * height  &gt; width * mVideoHeight ) &#123;</span><br><span class="line">                //Log.i(&quot;@@@&quot;, &quot;image too tall, correcting&quot;);</span><br><span class="line">                height = width * mVideoHeight / mVideoWidth;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; else if (widthSpecMode == MeasureSpec.EXACTLY) &#123;</span><br><span class="line">            // only the width is fixed, adjust the height to match aspect ratio if possible</span><br><span class="line">            width = widthSpecSize;</span><br><span class="line">            height = width * mVideoHeight / mVideoWidth;</span><br><span class="line">            if (heightSpecMode == MeasureSpec.AT_MOST &amp;&amp; height &gt; heightSpecSize) &#123;</span><br><span class="line">                // couldn&apos;t match aspect ratio within the constraints</span><br><span class="line">                height = heightSpecSize;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; else if (heightSpecMode == MeasureSpec.EXACTLY) &#123;</span><br><span class="line">            // only the height is fixed, adjust the width to match aspect ratio if possible</span><br><span class="line">            height = heightSpecSize;</span><br><span class="line">            width = height * mVideoWidth / mVideoHeight;</span><br><span class="line">            if (widthSpecMode == MeasureSpec.AT_MOST &amp;&amp; width &gt; widthSpecSize) &#123;</span><br><span class="line">                // couldn&apos;t match aspect ratio within the constraints</span><br><span class="line">                width = widthSpecSize;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            // neither the width nor the height are fixed, try to use actual video size</span><br><span class="line">            width = mVideoWidth;</span><br><span class="line">            height = mVideoHeight;</span><br><span class="line">            if (heightSpecMode == MeasureSpec.AT_MOST &amp;&amp; height &gt; heightSpecSize) &#123;</span><br><span class="line">                // too tall, decrease both width and height</span><br><span class="line">                height = heightSpecSize;</span><br><span class="line">                width = height * mVideoWidth / mVideoHeight;</span><br><span class="line">            &#125;</span><br><span class="line">            if (widthSpecMode == MeasureSpec.AT_MOST &amp;&amp; width &gt; widthSpecSize) &#123;</span><br><span class="line">                // too wide, decrease both width and height</span><br><span class="line">                width = widthSpecSize;</span><br><span class="line">                height = width * mVideoHeight / mVideoWidth;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        // no size yet, just adopt the given spec sizes</span><br><span class="line">    &#125;</span><br><span class="line">    setMeasuredDimension(width, height);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public int resolveAdjustedSize(int desiredSize, int measureSpec) &#123;</span><br><span class="line">    return getDefaultSize(desiredSize, measureSpec);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>取得调整后的尺寸。如果<code>measureSpec</code>对象传入的模式是<code>UNSPECIFIED</code>那么返回的是<code>desiredSize</code>。如果<code>measureSpec</code>对象传入的模式是AT_MOST，返回的将是<code>desiredSize</code>和<code>measureSpec对</code>象的尺寸两者中最小的那个。如果<code>measureSpec</code>对象传入的模式是<code>EXACTLY</code>，那么返回的是<code>measureSpec</code>对象中的尺寸大小值。<br>关于<code>MeasureSpec</code>类的额外说明：<code>MeasureSpec</code>是一个<code>android.view.View</code>的内部类。它封装了从父类传送到子类的布局要求信息。每个<code>MeasureSpec</code>对象描述了控件的高度或者宽度。<code>MeasureSpec</code>对象是由尺寸和模式组成的，有3个模式：<code>UNSPECIFIED、EXACTLY、AT_MOST</code>，这个对象由<code>MeasureSpec.makeMeasureSpec()</code>函数创建。</p>
+<h3 id="设置资源和初始化相应回调"><a href="#设置资源和初始化相应回调" class="headerlink" title="设置资源和初始化相应回调"></a>设置资源和初始化相应回调</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">//设置视频文件的路径</span><br><span class="line">public void setVideoPath(String path) &#123;</span><br><span class="line">    setVideoURI(Uri.parse(path));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//设置视频的url地址</span><br><span class="line">public void setVideoURI(Uri uri) &#123;</span><br><span class="line">    setVideoURI(uri, null);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//设置带有请求头的视频地址</span><br><span class="line">public void setVideoURI(Uri uri, Map&lt;String, String&gt; headers) &#123;</span><br><span class="line">//存储为内部变量</span><br><span class="line">    mUri = uri;</span><br><span class="line">    mHeaders = headers;</span><br><span class="line">//设置prepareed时的seek点为0</span><br><span class="line">    mSeekWhenPrepared = 0;</span><br><span class="line">请求视频</span><br><span class="line">    openVideo();</span><br><span class="line">//重新进行一次测量、布局、绘制</span><br><span class="line">    requestLayout();</span><br><span class="line">//重绘view</span><br><span class="line">    invalidate();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>设置播放时将请求哪种类型的音频焦点，或配置为不请求音频焦点。<br>例如，可以通过此类播放静音动画时使用此功能，并且不希望影响在后台播放的其他音频应用程序。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">public void setAudioFocusRequest(int focusGain) &#123;</span><br><span class="line">    if (focusGain != AudioManager.AUDIOFOCUS_NONE</span><br><span class="line">            &amp;&amp; focusGain != AudioManager.AUDIOFOCUS_GAIN</span><br><span class="line">            &amp;&amp; focusGain != AudioManager.AUDIOFOCUS_GAIN_TRANSIENT</span><br><span class="line">            &amp;&amp; focusGain != AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK</span><br><span class="line">            &amp;&amp; focusGain != AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_EXCLUSIVE) &#123;</span><br><span class="line">        throw new IllegalArgumentException(&quot;Illegal audio focus type &quot; + focusGain);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    mAudioFocusType = focusGain;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">//在回放视频时设置AudioAttributes</span><br><span class="line">public void setAudioAttributes(@NonNull AudioAttributes attributes) &#123;</span><br><span class="line">    if (attributes == null) &#123;</span><br><span class="line">        throw new IllegalArgumentException(&quot;Illegal null AudioAttributes&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    mAudioAttributes = attributes;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//添加外部字幕源文件</span><br><span class="line">public void addSubtitleSource(InputStream is, MediaFormat format) &#123;</span><br><span class="line">    if (mMediaPlayer == null) &#123;</span><br><span class="line">        mPendingSubtitleTracks.add(Pair.create(is, format));</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        try &#123;</span><br><span class="line">            mMediaPlayer.addSubtitleSource(is, format);</span><br><span class="line">        &#125; catch (IllegalStateException e) &#123;</span><br><span class="line">            mInfoListener.onInfo(</span><br><span class="line">                    mMediaPlayer, MediaPlayer.MEDIA_INFO_UNSUPPORTED_SUBTITLE, 0);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//停止播放视频（注意不是暂停）</span><br><span class="line">public void stopPlayback() &#123;</span><br><span class="line">    if (mMediaPlayer != null) &#123;</span><br><span class="line">        //暂停mediapalyer</span><br><span class="line">        mMediaPlayer.stop();</span><br><span class="line">        //释放mediapalyer的视频资源</span><br><span class="line">        mMediaPlayer.release();</span><br><span class="line">        mMediaPlayer = null;</span><br><span class="line">        //恢复默认状态</span><br><span class="line">        mCurrentState = STATE_IDLE;</span><br><span class="line">        mTargetState  = STATE_IDLE;</span><br><span class="line">        mAudioManager.abandonAudioFocus(null);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">//打开视频</span><br><span class="line">private void openVideo() &#123;</span><br><span class="line">    if (mUri == null || mSurfaceHolder == null) &#123;</span><br><span class="line">        // not ready for playback just yet, will try again later</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    // we shouldn&apos;t clear the target state, because somebody might have</span><br><span class="line">    // called start() previously</span><br><span class="line">    //释放资源，但不清除状态，因为有人可能先前调用了start（</span><br><span class="line">    release(false);</span><br><span class="line"></span><br><span class="line">//设置Audio的状态</span><br><span class="line">    if (mAudioFocusType != AudioManager.AUDIOFOCUS_NONE) &#123;</span><br><span class="line">        // TODO this should have a focus listener</span><br><span class="line">        mAudioManager.requestAudioFocus(null, mAudioAttributes, mAudioFocusType, 0 /*flags*/);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">//创建MediaPlayer</span><br><span class="line">    try &#123;</span><br><span class="line">        mMediaPlayer = new MediaPlayer();</span><br><span class="line">        // TODO: create SubtitleController in MediaPlayer, but we need</span><br><span class="line">        // a context for the subtitle renderers</span><br><span class="line">        //字幕相关</span><br><span class="line">        final Context context = getContext();</span><br><span class="line">        final SubtitleController controller = new SubtitleController(</span><br><span class="line">                context, mMediaPlayer.getMediaTimeProvider(), mMediaPlayer);</span><br><span class="line">        controller.registerRenderer(new WebVttRenderer(context));</span><br><span class="line">        controller.registerRenderer(new TtmlRenderer(context));</span><br><span class="line">        controller.registerRenderer(new Cea708CaptionRenderer(context));</span><br><span class="line">        controller.registerRenderer(new ClosedCaptionRenderer(context));</span><br><span class="line">        mMediaPlayer.setSubtitleAnchor(controller, this);</span><br></pre></td></tr></table></figure>
+<p>一个Session就是一个会话。每个会话都有一个独一无二的Id来标识。该Id的最终管理在AudioFlinger中。<br> 一个会话可以被多个AudioTrack对象和MediaPlayer共用。<br> 共用一个Session的AudioTrack和MediaPlayer共享相同的AudioEffect。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">if (mAudioSession != 0) &#123;</span><br><span class="line">    mMediaPlayer.setAudioSessionId(mAudioSession);</span><br><span class="line">&#125; else &#123;</span><br><span class="line">    mAudioSession = mMediaPlayer.getAudioSessionId();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line">//注册一个回调，当媒体文件被载入并准备播放时调用。</span><br><span class="line">        mMediaPlayer.setOnPreparedListener(mPreparedListener);</span><br><span class="line">//视频尺寸监听 </span><br><span class="line">        mMediaPlayer.setOnVideoSizeChangedListener(mSizeChangedListener);</span><br><span class="line">//注册一个回调，当媒体文件播放到末尾时调用。</span><br><span class="line">        mMediaPlayer.setOnCompletionListener(mCompletionListener);</span><br><span class="line">//注册一个回调，当播放或设置期间发生错误时调用。</span><br><span class="line">        mMediaPlayer.setOnErrorListener(mErrorListener);</span><br><span class="line">//注册一个回调，当播放或设置期间发生消息事件时调用。</span><br><span class="line">        mMediaPlayer.setOnInfoListener(mInfoListener);</span><br><span class="line">//网络流媒体的缓冲监听 </span><br><span class="line">        mMediaPlayer.setOnBufferingUpdateListener(mBufferingUpdateListener);</span><br><span class="line">        mCurrentBufferPercentage = 0;</span><br><span class="line">//设置播放资源</span><br><span class="line">        mMediaPlayer.setDataSource(mContext, mUri, mHeaders);</span><br><span class="line">// 设置播放界面 让SurfaceView进行画面显示</span><br><span class="line">        mMediaPlayer.setDisplay(mSurfaceHolder);</span><br><span class="line">//设置音频</span><br><span class="line">        mMediaPlayer.setAudioAttributes(mAudioAttributes);</span><br><span class="line">//保持屏幕常亮</span><br><span class="line">        mMediaPlayer.setScreenOnWhilePlaying(true);</span><br><span class="line">//准备播放异步加载视频资源</span><br><span class="line">        mMediaPlayer.prepareAsync();</span><br><span class="line"></span><br><span class="line">//添加字幕</span><br><span class="line">        for (Pair&lt;InputStream, MediaFormat&gt; pending: mPendingSubtitleTracks) &#123;</span><br><span class="line">            try &#123;</span><br><span class="line">                mMediaPlayer.addSubtitleSource(pending.first, pending.second);</span><br><span class="line">            &#125; catch (IllegalStateException e) &#123;</span><br><span class="line">                mInfoListener.onInfo(</span><br><span class="line">                        mMediaPlayer, MediaPlayer.MEDIA_INFO_UNSUPPORTED_SUBTITLE, 0);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        // we don&apos;t set the target state here either, but preserve the</span><br><span class="line">        // target state that was there before.</span><br><span class="line">//初始化状态</span><br><span class="line">        mCurrentState = STATE_PREPARING;</span><br><span class="line"></span><br><span class="line">// 如果已经调用过SetMediaController() 方法，这里会直接显示MediaController</span><br><span class="line">        attachMediaController();</span><br><span class="line">    &#125; catch (IOException ex) &#123;</span><br><span class="line">//异常处理</span><br><span class="line">        Log.w(TAG, &quot;Unable to open content: &quot; + mUri, ex);</span><br><span class="line">        mCurrentState = STATE_ERROR;</span><br><span class="line">        mTargetState = STATE_ERROR;</span><br><span class="line">        mErrorListener.onError(mMediaPlayer, MediaPlayer.MEDIA_ERROR_UNKNOWN, 0);</span><br><span class="line">        return;</span><br><span class="line">    &#125; catch (IllegalArgumentException ex) &#123;</span><br><span class="line">//异常处理</span><br><span class="line">        Log.w(TAG, &quot;Unable to open content: &quot; + mUri, ex);</span><br><span class="line">        mCurrentState = STATE_ERROR;</span><br><span class="line">        mTargetState = STATE_ERROR;</span><br><span class="line">        mErrorListener.onError(mMediaPlayer, MediaPlayer.MEDIA_ERROR_UNKNOWN, 0);</span><br><span class="line">        return;</span><br><span class="line">    &#125; finally &#123;</span><br><span class="line">//清空字幕</span><br><span class="line">        mPendingSubtitleTracks.clear();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>外部设置控制栏部分</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">public void setMediaController(MediaController controller) &#123;</span><br><span class="line">    if (mMediaController != null) &#123;</span><br><span class="line">        mMediaController.hide();</span><br><span class="line">    &#125;</span><br><span class="line">    mMediaController = controller;</span><br><span class="line">    attachMediaController();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">private void attachMediaController() &#123;</span><br><span class="line">    if (mMediaPlayer != null &amp;&amp; mMediaController != null) &#123;</span><br><span class="line">        // setMediaPlayer(MediaPlayerControl player), 让MediaPlayer相应的控制部分调用本类中的实现方法</span><br><span class="line">        mMediaController.setMediaPlayer(this);</span><br><span class="line">        View anchorView = this.getParent() instanceof View ?</span><br><span class="line">                (View)this.getParent() : this;</span><br><span class="line"></span><br><span class="line">        // 创建Controller并且依据AnchorView的位置进行显示</span><br><span class="line">        mMediaController.setAnchorView(anchorView);</span><br><span class="line">        mMediaController.setEnabled(isInPlaybackState());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="MediaPlayer必要监听"><a href="#MediaPlayer必要监听" class="headerlink" title="MediaPlayer必要监听"></a>MediaPlayer必要监听</h3><p>OnVideoSizeChangedListener</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">MediaPlayer.OnVideoSizeChangedListener mSizeChangedListener =</span><br><span class="line">    new MediaPlayer.OnVideoSizeChangedListener() &#123;</span><br><span class="line">        public void onVideoSizeChanged(MediaPlayer mp, int width, int height) &#123;</span><br><span class="line">            mVideoWidth = mp.getVideoWidth();</span><br><span class="line">            mVideoHeight = mp.getVideoHeight();</span><br><span class="line">            if (mVideoWidth != 0 &amp;&amp; mVideoHeight != 0) &#123;</span><br><span class="line">                // 这个方法是设置Surface分辨率，而不是设置视频播放窗口的大小，视频播放窗口大小是由SurfaceView的布局控制，要分清Surface与SurfaceView的区别，Surface是Window中整个的一个控件(句柄),</span><br><span class="line">                // 而SurfaceView是一个包含Surface的View，SurfaceView覆盖到Surface上(可以这样理解)，我们只能通过SurfaceView来看Surface中的内容,至于在SurfaceView显示之外的Surface我们是不可见的.</span><br><span class="line">                getHolder().setFixedSize(mVideoWidth, mVideoHeight);</span><br><span class="line">                requestLayout();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>OnPreparedListener</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line">MediaPlayer.OnPreparedListener mPreparedListener = new MediaPlayer.OnPreparedListener() &#123;</span><br><span class="line">    public void onPrepared(MediaPlayer mp) &#123;</span><br><span class="line">        mCurrentState = STATE_PREPARED;</span><br><span class="line"></span><br><span class="line">        // Get the capabilities of the player for this stream</span><br><span class="line">        Metadata data = mp.getMetadata(MediaPlayer.METADATA_ALL,</span><br><span class="line">                                  MediaPlayer.BYPASS_METADATA_FILTER);</span><br><span class="line"></span><br><span class="line">        if (data != null) &#123;</span><br><span class="line">            mCanPause = !data.has(Metadata.PAUSE_AVAILABLE)</span><br><span class="line">                    || data.getBoolean(Metadata.PAUSE_AVAILABLE);</span><br><span class="line">            mCanSeekBack = !data.has(Metadata.SEEK_BACKWARD_AVAILABLE)</span><br><span class="line">                    || data.getBoolean(Metadata.SEEK_BACKWARD_AVAILABLE);</span><br><span class="line">            mCanSeekForward = !data.has(Metadata.SEEK_FORWARD_AVAILABLE)</span><br><span class="line">                    || data.getBoolean(Metadata.SEEK_FORWARD_AVAILABLE);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            mCanPause = mCanSeekBack = mCanSeekForward = true;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        if (mOnPreparedListener != null) &#123;</span><br><span class="line">            mOnPreparedListener.onPrepared(mMediaPlayer);</span><br><span class="line">        &#125;</span><br><span class="line">        if (mMediaController != null) &#123;</span><br><span class="line">            mMediaController.setEnabled(true);</span><br><span class="line">        &#125;</span><br><span class="line">        mVideoWidth = mp.getVideoWidth();</span><br><span class="line">        mVideoHeight = mp.getVideoHeight();</span><br><span class="line"></span><br><span class="line">        int seekToPosition = mSeekWhenPrepared;  // mSeekWhenPrepared may be changed after seekTo() call</span><br><span class="line">        if (seekToPosition != 0) &#123;</span><br><span class="line">            seekTo(seekToPosition);</span><br><span class="line">        &#125;</span><br><span class="line">        if (mVideoWidth != 0 &amp;&amp; mVideoHeight != 0) &#123;</span><br><span class="line">            //Log.i(&quot;@@@@&quot;, &quot;video size: &quot; + mVideoWidth +&quot;/&quot;+ mVideoHeight);</span><br><span class="line">            getHolder().setFixedSize(mVideoWidth, mVideoHeight);</span><br><span class="line">            if (mSurfaceWidth == mVideoWidth &amp;&amp; mSurfaceHeight == mVideoHeight) &#123;</span><br><span class="line">                // We didn&apos;t actually change the size (it was already at the size</span><br><span class="line">                // we need), so we won&apos;t get a &quot;surface changed&quot; callback, so</span><br><span class="line">                // start the video here instead of in the callback.</span><br><span class="line">                if (mTargetState == STATE_PLAYING) &#123;</span><br><span class="line">                    start();</span><br><span class="line">                    if (mMediaController != null) &#123;</span><br><span class="line">                        mMediaController.show();</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125; else if (!isPlaying() &amp;&amp;</span><br><span class="line">                           (seekToPosition != 0 || getCurrentPosition() &gt; 0)) &#123;</span><br><span class="line">                   if (mMediaController != null) &#123;</span><br><span class="line">                       // Show the media controls when we&apos;re paused into a video and make &apos;em stick.</span><br><span class="line">                       mMediaController.show(0);</span><br><span class="line">                   &#125;</span><br><span class="line">               &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            // We don&apos;t know the video size yet, but should start anyway.</span><br><span class="line">            // The video size might be reported to us later.</span><br><span class="line">            if (mTargetState == STATE_PLAYING) &#123;</span><br><span class="line">                start();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>OnCompletionListener</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">private MediaPlayer.OnCompletionListener mCompletionListener =</span><br><span class="line">    new MediaPlayer.OnCompletionListener() &#123;</span><br><span class="line">    public void onCompletion(MediaPlayer mp) &#123;</span><br><span class="line">        mCurrentState = STATE_PLAYBACK_COMPLETED;</span><br><span class="line">        mTargetState = STATE_PLAYBACK_COMPLETED;</span><br><span class="line">        if (mMediaController != null) &#123;</span><br><span class="line">            mMediaController.hide();</span><br><span class="line">        &#125;</span><br><span class="line">        if (mOnCompletionListener != null) &#123;</span><br><span class="line">            mOnCompletionListener.onCompletion(mMediaPlayer);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>MediaPlayer.OnInfoListener, 媒体或其播放的一些信息和/或警告</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">private MediaPlayer.OnInfoListener mInfoListener =</span><br><span class="line">    new MediaPlayer.OnInfoListener() &#123;</span><br><span class="line">    public  boolean onInfo(MediaPlayer mp, int arg1, int arg2) &#123;</span><br><span class="line">        if (mOnInfoListener != null) &#123;</span><br><span class="line">            mOnInfoListener.onInfo(mp, arg1, arg2);</span><br><span class="line">        &#125;</span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>注册错误回调</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">private MediaPlayer.OnErrorListener mErrorListener =</span><br><span class="line">    new MediaPlayer.OnErrorListener() &#123;</span><br><span class="line">    public boolean onError(MediaPlayer mp, int framework_err, int impl_err) &#123;</span><br><span class="line">        Log.d(TAG, &quot;Error: &quot; + framework_err + &quot;,&quot; + impl_err);</span><br><span class="line">        mCurrentState = STATE_ERROR;</span><br><span class="line">        mTargetState = STATE_ERROR;</span><br><span class="line">        if (mMediaController != null) &#123;</span><br><span class="line">            mMediaController.hide();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        /* If an error handler has been supplied, use it and finish. */</span><br><span class="line">        if (mOnErrorListener != null) &#123;</span><br><span class="line">            if (mOnErrorListener.onError(mMediaPlayer, framework_err, impl_err)) &#123;</span><br><span class="line">                return true;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        /* Otherwise, pop up an error dialog so the user knows that</span><br><span class="line">         * something bad has happened. Only try and pop up the dialog</span><br><span class="line">         * if we&apos;re attached to a window. When we&apos;re going away and no</span><br><span class="line">         * longer have a window, don&apos;t bother showing the user an error.</span><br><span class="line">         */</span><br><span class="line">        if (getWindowToken() != null) &#123;</span><br><span class="line">            Resources r = mContext.getResources();</span><br><span class="line">            int messageId;</span><br><span class="line"></span><br><span class="line">            if (framework_err == MediaPlayer.MEDIA_ERROR_NOT_VALID_FOR_PROGRESSIVE_PLAYBACK) &#123;</span><br><span class="line">                messageId = com.android.internal.R.string.VideoView_error_text_invalid_progressive_playback;</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                messageId = com.android.internal.R.string.VideoView_error_text_unknown;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            new AlertDialog.Builder(mContext)</span><br><span class="line">                    .setMessage(messageId)</span><br><span class="line">                    .setPositiveButton(com.android.internal.R.string.VideoView_error_button,</span><br><span class="line">                            new DialogInterface.OnClickListener() &#123;</span><br><span class="line">                                public void onClick(DialogInterface dialog, int whichButton) &#123;</span><br><span class="line">                                    /* If we get here, there is no onError listener, so</span><br><span class="line">                                     * at least inform them that the video is over.</span><br><span class="line">                                     */</span><br><span class="line">                                    if (mOnCompletionListener != null) &#123;</span><br><span class="line">                                        mOnCompletionListener.onCompletion(mMediaPlayer);</span><br><span class="line">                                    &#125;</span><br><span class="line">                                &#125;</span><br><span class="line">                            &#125;)</span><br><span class="line">                    .setCancelable(false)</span><br><span class="line">                    .show();</span><br><span class="line">        &#125;</span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>注册视频缓冲流回调</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">private MediaPlayer.OnBufferingUpdateListener mBufferingUpdateListener =</span><br><span class="line">    new MediaPlayer.OnBufferingUpdateListener() &#123;</span><br><span class="line">    public void onBufferingUpdate(MediaPlayer mp, int percent) &#123;</span><br><span class="line">        mCurrentBufferPercentage = percent;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>提供给外部的几个回调的注册方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">public void setOnPreparedListener(MediaPlayer.OnPreparedListener l)</span><br><span class="line">&#123;</span><br><span class="line">    mOnPreparedListener = l;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">public void setOnCompletionListener(OnCompletionListener l)</span><br><span class="line">&#123;</span><br><span class="line">    mOnCompletionListener = l;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">public void setOnErrorListener(OnErrorListener l)</span><br><span class="line">&#123;</span><br><span class="line">    mOnErrorListener = l;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public void setOnInfoListener(OnInfoListener l) &#123;</span><br><span class="line">    mOnInfoListener = l;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="surface的callback"><a href="#surface的callback" class="headerlink" title="surface的callback"></a>surface的callback</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">SurfaceHolder.Callback mSHCallback = new SurfaceHolder.Callback()</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">//一旦发生surfaceChanged 回调videoview会从之前的位置播放</span><br><span class="line"></span><br><span class="line">    public void surfaceChanged(SurfaceHolder holder, int format,</span><br><span class="line">                                int w, int h)</span><br><span class="line">    &#123;</span><br><span class="line">        mSurfaceWidth = w;</span><br><span class="line">        mSurfaceHeight = h;</span><br><span class="line">        boolean isValidState =  (mTargetState == STATE_PLAYING);</span><br><span class="line">        boolean hasValidSize = (mVideoWidth == w &amp;&amp; mVideoHeight == h);</span><br><span class="line">        if (mMediaPlayer != null &amp;&amp; isValidState &amp;&amp; hasValidSize) &#123;</span><br><span class="line">            if (mSeekWhenPrepared != 0) &#123;</span><br><span class="line">                seekTo(mSeekWhenPrepared);</span><br><span class="line">            &#125;</span><br><span class="line">            start();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">//一旦发生surfaceCreated videoview会重新打开视频</span><br><span class="line">    public void surfaceCreated(SurfaceHolder holder)</span><br><span class="line">    &#123;</span><br><span class="line">        mSurfaceHolder = holder;</span><br><span class="line">        openVideo();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">//一旦发生surfaceDestroyed videoview会释放视频</span><br><span class="line"></span><br><span class="line">    public void surfaceDestroyed(SurfaceHolder holder)</span><br><span class="line">    &#123;</span><br><span class="line">        // after we return from this we can&apos;t use the surface any more</span><br><span class="line">        mSurfaceHolder = null;</span><br><span class="line">        if (mMediaController != null) mMediaController.hide();</span><br><span class="line">        release(true);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h3 id="Touch以及Key的监听"><a href="#Touch以及Key的监听" class="headerlink" title="Touch以及Key的监听"></a>Touch以及Key的监听</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">public boolean onTouchEvent(MotionEvent ev) &#123;</span><br><span class="line">    if (isInPlaybackState() &amp;&amp; mMediaController != null) &#123;</span><br><span class="line">        // 控制MediaController的显示与隐藏</span><br><span class="line">        toggleMediaControlsVisiblity();</span><br><span class="line">    &#125;</span><br><span class="line">    return false;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>实现这个方法去处理轨迹球的动作事件，轨迹球相对于上次事件移动的位置能用MotionEvent.getX() 和 MotionEvent.getY()函数取回。对应用户按下一次方向键， 他们通常作为一次移动处理（为了表现来自轨迹球的更小粒度的移动信息，他们返回小数）。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">public boolean onTrackballEvent(MotionEvent ev) &#123;</span><br><span class="line">    if (ev.getAction() == MotionEvent.ACTION_DOWN</span><br><span class="line">            &amp;&amp; isInPlaybackState() &amp;&amp; mMediaController != null) &#123;</span><br><span class="line">        toggleMediaControlsVisiblity();</span><br><span class="line">    &#125;</span><br><span class="line">    return super.onTrackballEvent(ev);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public boolean onKeyDown (int keyCode, KeyEvent event)</span><br><span class="line">KeyEvent.Callback.onKeyMultiple() 的默认实现。如果视图可用并可按， 当按下 KEYCODE_DPAD_CENTER 或 KEYCODE_ENTER 时执行视图的按下事件。</span><br><span class="line">参数</span><br><span class="line">keyCode   表示按下的键的、在 KEYCODE_ENTER 中定义的键盘代码</span><br><span class="line">event        KeyEvent 对象，定义了按钮动作</span><br><span class="line">返回值</span><br><span class="line">如果处理了事件，返回真。如果允许下一个事件接受器处理该事件，可以返回假</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">@Override</span><br><span class="line">public boolean onKeyDown(int keyCode, KeyEvent event)</span><br><span class="line">&#123;</span><br><span class="line">    boolean isKeyCodeSupported = keyCode != KeyEvent.KEYCODE_BACK &amp;&amp;</span><br><span class="line">                                 keyCode != KeyEvent.KEYCODE_VOLUME_UP &amp;&amp;</span><br><span class="line">                                 keyCode != KeyEvent.KEYCODE_VOLUME_DOWN &amp;&amp;</span><br><span class="line">                                 keyCode != KeyEvent.KEYCODE_VOLUME_MUTE &amp;&amp;</span><br><span class="line">                                 keyCode != KeyEvent.KEYCODE_MENU &amp;&amp;</span><br><span class="line">                                 keyCode != KeyEvent.KEYCODE_CALL &amp;&amp;</span><br><span class="line">                                 keyCode != KeyEvent.KEYCODE_ENDCALL;</span><br><span class="line">    if (isInPlaybackState() &amp;&amp; isKeyCodeSupported &amp;&amp; mMediaController != null) &#123;</span><br><span class="line">        if (keyCode == KeyEvent.KEYCODE_HEADSETHOOK ||</span><br><span class="line">                keyCode == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE) &#123;</span><br><span class="line">            if (mMediaPlayer.isPlaying()) &#123;</span><br><span class="line">                pause();</span><br><span class="line">                mMediaController.show();</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                start();</span><br><span class="line">                mMediaController.hide();</span><br><span class="line">            &#125;</span><br><span class="line">            return true;</span><br><span class="line">        &#125; else if (keyCode == KeyEvent.KEYCODE_MEDIA_PLAY) &#123;</span><br><span class="line">            if (!mMediaPlayer.isPlaying()) &#123;</span><br><span class="line">                start();</span><br><span class="line">                mMediaController.hide();</span><br><span class="line">            &#125;</span><br><span class="line">            return true;</span><br><span class="line">        &#125; else if (keyCode == KeyEvent.KEYCODE_MEDIA_STOP</span><br><span class="line">                || keyCode == KeyEvent.KEYCODE_MEDIA_PAUSE) &#123;</span><br><span class="line">            if (mMediaPlayer.isPlaying()) &#123;</span><br><span class="line">                pause();</span><br><span class="line">                mMediaController.show();</span><br><span class="line">            &#125;</span><br><span class="line">            return true;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            toggleMediaControlsVisiblity();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return super.onKeyDown(keyCode, event);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="控制和获取视频信息"><a href="#控制和获取视频信息" class="headerlink" title="控制和获取视频信息"></a>控制和获取视频信息</h3><p>release() 方法,在开始播放一个视频的时候会先调用该方法，然后重新创建一个，在SurfaceView销毁的时候也会调用该方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">/*</span><br><span class="line"> * release the media player in any state</span><br><span class="line"> */</span><br><span class="line">private void release(boolean cleartargetstate) &#123;</span><br><span class="line">    if (mMediaPlayer != null) &#123;</span><br><span class="line">        mMediaPlayer.reset();</span><br><span class="line">        mMediaPlayer.release();</span><br><span class="line">        mMediaPlayer = null;</span><br><span class="line">        mPendingSubtitleTracks.clear();</span><br><span class="line">        mCurrentState = STATE_IDLE;</span><br><span class="line">        if (cleartargetstate) &#123;</span><br><span class="line">            mTargetState  = STATE_IDLE;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br></pre></td><td class="code"><pre><span class="line">// 控制MediaController的显示与隐藏</span><br><span class="line">private void toggleMediaControlsVisiblity() &#123;</span><br><span class="line">    if (mMediaController.isShowing()) &#123;</span><br><span class="line">        mMediaController.hide();</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        mMediaController.show();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//挂起视频</span><br><span class="line">public void suspend() &#123;</span><br><span class="line">    release(false);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//重新打开视频</span><br><span class="line">public void resume() &#123;</span><br><span class="line">    openVideo();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//获取视频时长，返回毫秒</span><br><span class="line">@Override</span><br><span class="line">public int getDuration() &#123;</span><br><span class="line">    if (isInPlaybackState()) &#123;</span><br><span class="line">        return mMediaPlayer.getDuration();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return -1;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//获取当前播放进度</span><br><span class="line">@Override</span><br><span class="line">public int getCurrentPosition() &#123;</span><br><span class="line">    if (isInPlaybackState()) &#123;</span><br><span class="line">        return mMediaPlayer.getCurrentPosition();</span><br><span class="line">    &#125;</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//判断当前是否在播放</span><br><span class="line">@Override</span><br><span class="line">public boolean isPlaying() &#123;</span><br><span class="line">    return isInPlaybackState() &amp;&amp; mMediaPlayer.isPlaying();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//获取缓冲位置</span><br><span class="line">@Override</span><br><span class="line">public int getBufferPercentage() &#123;</span><br><span class="line">    if (mMediaPlayer != null) &#123;</span><br><span class="line">        return mCurrentBufferPercentage;</span><br><span class="line">    &#125;</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//获取是否在播放状态</span><br><span class="line">private boolean isInPlaybackState() &#123;</span><br><span class="line">    return (mMediaPlayer != null &amp;&amp;</span><br><span class="line">            mCurrentState != STATE_ERROR &amp;&amp;</span><br><span class="line">            mCurrentState != STATE_IDLE &amp;&amp;</span><br><span class="line">            mCurrentState != STATE_PREPARING);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//是否可以暂停</span><br><span class="line">@Override</span><br><span class="line">public boolean canPause() &#123;</span><br><span class="line">    return mCanPause;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//判断是否能够倒退</span><br><span class="line">@Override</span><br><span class="line">public boolean canSeekBackward() &#123;</span><br><span class="line">    return mCanSeekBack;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//判断是否可以快进</span><br><span class="line">@Override</span><br><span class="line">public boolean canSeekForward() &#123;</span><br><span class="line">    return mCanSeekForward;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//获取音频id</span><br><span class="line">@Override</span><br><span class="line">public int getAudioSessionId() &#123;</span><br><span class="line">    if (mAudioSession == 0) &#123;</span><br><span class="line">        MediaPlayer foo = new MediaPlayer();</span><br><span class="line">        mAudioSession = foo.getAudioSessionId();</span><br><span class="line">        foo.release();</span><br><span class="line">    &#125;</span><br><span class="line">    return mAudioSession;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br></pre></td><td class="code"><pre><span class="line">//当视图附属到一个窗口时, 将调用此方法</span><br><span class="line">@Override</span><br><span class="line">protected void onAttachedToWindow() &#123;</span><br><span class="line">    super.onAttachedToWindow();</span><br><span class="line"></span><br><span class="line">    if (mSubtitleWidget != null) &#123;</span><br><span class="line">        mSubtitleWidget.onAttachedToWindow();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//当视图从窗口分离时, 将调用此方法。</span><br><span class="line">@Override</span><br><span class="line">protected void onDetachedFromWindow() &#123;</span><br><span class="line">    super.onDetachedFromWindow();</span><br><span class="line"></span><br><span class="line">    if (mSubtitleWidget != null) &#123;</span><br><span class="line">        mSubtitleWidget.onDetachedFromWindow();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//当此视图分配大小和位置给它的每个子项时，从布局中调用。具有子项的派生类，应重载此方法，并对其每个子项上调用布局</span><br><span class="line">@Override</span><br><span class="line">protected void onLayout(boolean changed, int left, int top, int right, int bottom) &#123;</span><br><span class="line">    super.onLayout(changed, left, top, right, bottom);</span><br><span class="line"></span><br><span class="line">    if (mSubtitleWidget != null) &#123;</span><br><span class="line">        measureAndLayoutSubtitleWidget();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//手动将此视图 (及其所有子项) 渲染到指定的Canvas。在调用这个方法之前，视图必须已经完成了一个完整的布局。当实现一个视图是，实现onDraw(android.graphics.Canvas)方法， 而不是重载此方法。如果你需要重载此方法，请调用超类的版本（的实现）。</span><br><span class="line">@Override</span><br><span class="line">public void draw(Canvas canvas) &#123;</span><br><span class="line">    super.draw(canvas);</span><br><span class="line"></span><br><span class="line">    if (mSubtitleWidget != null) &#123;</span><br><span class="line">        final int saveCount = canvas.save();</span><br><span class="line">        canvas.translate(getPaddingLeft(), getPaddingTop());</span><br><span class="line">        mSubtitleWidget.draw(canvas);</span><br><span class="line">        canvas.restoreToCount(saveCount);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//强制所有重叠视图的测量和布局传递</span><br><span class="line">private void measureAndLayoutSubtitleWidget() &#123;</span><br><span class="line">    final int width = getWidth() - getPaddingLeft() - getPaddingRight();</span><br><span class="line">    final int height = getHeight() - getPaddingTop() - getPaddingBottom();</span><br><span class="line"></span><br><span class="line">    mSubtitleWidget.setSize(width, height);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/** @hide */</span><br><span class="line">@Override</span><br><span class="line">public void setSubtitleWidget(RenderingWidget subtitleWidget) &#123;</span><br><span class="line">    if (mSubtitleWidget == subtitleWidget) &#123;</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    final boolean attachedToWindow = isAttachedToWindow();</span><br><span class="line">    if (mSubtitleWidget != null) &#123;</span><br><span class="line">        if (attachedToWindow) &#123;</span><br><span class="line">            mSubtitleWidget.onDetachedFromWindow();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        mSubtitleWidget.setOnChangedListener(null);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    mSubtitleWidget = subtitleWidget;</span><br><span class="line"></span><br><span class="line">    if (subtitleWidget != null) &#123;</span><br><span class="line">        if (mSubtitlesChangedListener == null) &#123;</span><br><span class="line">            mSubtitlesChangedListener = new RenderingWidget.OnChangedListener() &#123;</span><br><span class="line">                @Override</span><br><span class="line">                public void onChanged(RenderingWidget renderingWidget) &#123;</span><br><span class="line">                    invalidate();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        setWillNotDraw(false);</span><br><span class="line">        subtitleWidget.setOnChangedListener(mSubtitlesChangedListener);</span><br><span class="line"></span><br><span class="line">        if (attachedToWindow) &#123;</span><br><span class="line">            subtitleWidget.onAttachedToWindow();</span><br><span class="line">            requestLayout();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        setWillNotDraw(true);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    invalidate();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/** @hide */</span><br><span class="line">@Override</span><br><span class="line">public Looper getSubtitleLooper() &#123;</span><br><span class="line">    return Looper.getMainLooper();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/year/12/05/ConstraintLayout/" rel="next" title="ConstraintLayout特性全方位解析">
+                <i class="fa fa-chevron-left"></i> ConstraintLayout特性全方位解析
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/logo.jpg"
+                alt="linlif" />
+            
+              <p class="site-author-name" itemprop="name">linlif</p>
+              <p class="site-description motion-element" itemprop="description">晚是全世界的晚，安是你的。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#注释部分："><span class="nav-text">注释部分：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代码部分"><span class="nav-text">代码部分</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#继承关系"><span class="nav-text">继承关系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内部变量"><span class="nav-text">内部变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#构造方法"><span class="nav-text">构造方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#onMeasure方法"><span class="nav-text">onMeasure方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设置资源和初始化相应回调"><span class="nav-text">设置资源和初始化相应回调</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MediaPlayer必要监听"><span class="nav-text">MediaPlayer必要监听</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#surface的callback"><span class="nav-text">surface的callback</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Touch以及Key的监听"><span class="nav-text">Touch以及Key的监听</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#控制和获取视频信息"><span class="nav-text">控制和获取视频信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他"><span class="nav-text">其他</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">linlif</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/libs/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/libs/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/libs/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/libs/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/libs/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/libs/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/libs/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

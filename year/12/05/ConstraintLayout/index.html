@@ -89,12 +89,12 @@
 
 
 
-<meta name="description" content="ConstraintLayout是Android Studio 2.2中主要的新增功能之一，也是Google在去年的I/O大会上重点宣传的一个功能。在渲染性能上有很多优势。具体可以看这篇文章：解析ConstraintLayout的性能优势 简介ConstraintLayout是集合了LinearLayout、RelativeLayout以及GridLayout所有特性的一种布局类型，在使用时上可以">
+<meta name="description" content="ConstraintLayout是Android Studio 2.2中主要的新增功能之一，也是Google在16年的I/O大会上重点宣传的一个功能。在渲染性能上有很多优势。具体可以看这篇文章：解析ConstraintLayout的性能优势 简介ConstraintLayout是集合了LinearLayout、RelativeLayout以及GridLayout所有特性的一种布局类型，在使用时上可">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ConstraintLayout特性全方位解析">
 <meta property="og:url" content="http://yoursite.com/year/12/05/ConstraintLayout/index.html">
 <meta property="og:site_name" content="一个短篇">
-<meta property="og:description" content="ConstraintLayout是Android Studio 2.2中主要的新增功能之一，也是Google在去年的I/O大会上重点宣传的一个功能。在渲染性能上有很多优势。具体可以看这篇文章：解析ConstraintLayout的性能优势 简介ConstraintLayout是集合了LinearLayout、RelativeLayout以及GridLayout所有特性的一种布局类型，在使用时上可以">
+<meta property="og:description" content="ConstraintLayout是Android Studio 2.2中主要的新增功能之一，也是Google在16年的I/O大会上重点宣传的一个功能。在渲染性能上有很多优势。具体可以看这篇文章：解析ConstraintLayout的性能优势 简介ConstraintLayout是集合了LinearLayout、RelativeLayout以及GridLayout所有特性的一种布局类型，在使用时上可">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout6.png">
 <meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout5.png">
@@ -106,10 +106,10 @@
 <meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout7.png">
 <meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout10.png">
 <meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout4.png">
-<meta property="og:updated_time" content="2018-12-05T09:37:23.182Z">
+<meta property="og:updated_time" content="2018-12-05T15:14:24.128Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ConstraintLayout特性全方位解析">
-<meta name="twitter:description" content="ConstraintLayout是Android Studio 2.2中主要的新增功能之一，也是Google在去年的I/O大会上重点宣传的一个功能。在渲染性能上有很多优势。具体可以看这篇文章：解析ConstraintLayout的性能优势 简介ConstraintLayout是集合了LinearLayout、RelativeLayout以及GridLayout所有特性的一种布局类型，在使用时上可以">
+<meta name="twitter:description" content="ConstraintLayout是Android Studio 2.2中主要的新增功能之一，也是Google在16年的I/O大会上重点宣传的一个功能。在渲染性能上有很多优势。具体可以看这篇文章：解析ConstraintLayout的性能优势 简介ConstraintLayout是集合了LinearLayout、RelativeLayout以及GridLayout所有特性的一种布局类型，在使用时上可">
 <meta name="twitter:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout6.png">
 
 
@@ -352,7 +352,7 @@
       
 
       
-        <p>ConstraintLayout是Android Studio 2.2中主要的新增功能之一，也是Google在去年的I/O大会上重点宣传的一个功能。在渲染性能上有很多优势。具体可以看这篇文章：<a href="https://mp.weixin.qq.com/s/gGR2itbY7hh9fo61SxaMQQ" target="_blank" rel="noopener">解析ConstraintLayout的性能优势</a></p>
+        <p>ConstraintLayout是Android Studio 2.2中主要的新增功能之一，也是Google在16年的I/O大会上重点宣传的一个功能。在渲染性能上有很多优势。具体可以看这篇文章：<a href="https://mp.weixin.qq.com/s/gGR2itbY7hh9fo61SxaMQQ" target="_blank" rel="noopener">解析ConstraintLayout的性能优势</a></p>
 <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>ConstraintLayout是集合了LinearLayout、RelativeLayout以及GridLayout所有特性的一种布局类型，在使用时上可以极大的简化层级嵌套，提高性能。</p>
 <p>首先 ConstraintLayout 是一个 ViewGroup，支持到API level 9 ，默认左上角开始布局，可以理解为一个framelayout。</p>
 <p>下面介绍它的所有属性</p>
@@ -396,16 +396,17 @@
 </ul>
 <p><img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout5.png" alt=""></p>
 <p>例如：B距离A 10dp，C距离B 10dp，当B不显示时C出现在B的位置。<br>按照之前的逻辑是B和C在一个布局下，然后父布局距离A10dp。现在可是少一层包裹，C设置 <code>layout_goneMarginLeft</code> 10dp即可。<br>详细理解可以看下面的<strong>特殊的可见属性</strong></p>
-<h2 id="相对居中"><a href="#相对居中" class="headerlink" title="相对居中"></a>相对居中</h2><p>ConstraintLayout的相对居中使用简单<br>``</p>
-<p><android.support.constraint.constraintlayout ...=""><br>             &lt;Button android:id=”@+id/button” …<br>                 app:layout_constraintLeft_toLeftOf=”parent”<br>                 app:layout_constraintRight_toRightOf=”parent/&gt;<br>         &lt;/&gt;<br>         ``</android.support.constraint.constraintlayout></p>
+<h2 id="相对居中"><a href="#相对居中" class="headerlink" title="相对居中"></a>相对居中</h2><p>ConstraintLayout的相对居中使用简单</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;android.support.constraint.ConstraintLayout ...&gt;</span><br><span class="line">             &lt;Button android:id=&quot;@+id/button&quot; ...</span><br><span class="line">                 app:layout_constraintLeft_toLeftOf=&quot;parent&quot;</span><br><span class="line">                 app:layout_constraintRight_toRightOf=&quot;parent/&gt;</span><br><span class="line">         &lt;/&gt;</span><br></pre></td></tr></table></figure>
 <p><img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout8.png" alt=""></p>
 <p>如果父布局的ConstraintLayout的宽度和A不同，则使用和<code>layout_constraintLeft_toLeftOf</code>和<code>layout_constraintRight_toRightOf</code>会使控件在相对控件的中间（水平居中和垂直居中同理）</p>
 <h2 id="相对距离按比例划分"><a href="#相对距离按比例划分" class="headerlink" title="相对距离按比例划分"></a>相对距离按比例划分</h2><ul>
 <li>layout_constraintHorizontal_bias</li>
 <li>layout_constraintVertical_bias</li>
 </ul>
-<p>例如:<br>``</p>
-<p><android.support.constraint.constraintlayout ...=""><br>             &lt;Button android:id=”@+id/button” …<br>                 app:layout_constraintHorizontal_bias=”0.3”<br>                 app:layout_constraintLeft_toLeftOf=”parent”<br>                 app:layout_constraintRight_toRightOf=”parent/&gt;<br>         &lt;/&gt;<br>         ``<br><img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout2.png" alt=""></android.support.constraint.constraintlayout></p>
+<p>例如:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;android.support.constraint.ConstraintLayout ...&gt;</span><br><span class="line">             &lt;Button android:id=&quot;@+id/button&quot; ...</span><br><span class="line">                 app:layout_constraintHorizontal_bias=&quot;0.3&quot;</span><br><span class="line">                 app:layout_constraintLeft_toLeftOf=&quot;parent&quot;</span><br><span class="line">                 app:layout_constraintRight_toRightOf=&quot;parent/&gt;</span><br><span class="line">         &lt;/&gt;</span><br></pre></td></tr></table></figure>
+<p><img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout2.png" alt=""></p>
 <p>A距离父布局左侧的距离是右侧的30%</p>
 <h2 id="中心点定位"><a href="#中心点定位" class="headerlink" title="中心点定位"></a>中心点定位</h2><ul>
 <li>layout_constraintCircle : 相对中心位置控件的id</li>
@@ -413,8 +414,7 @@
 <li>layout_constraintCircleAngle :中心位置的角度 0-360</li>
 </ul>
 <p>例如:</p>
-<p>``</p>
-<p><button android:id="@+id/buttonA" ...=""><br>  </button><button android:id="@+id/buttonB" ...="" app:layout_constraintcircle="@+id/buttonA" app:layout_constraintcircleradius="100dp" app:layout_constraintcircleangle="45"><br>``</button></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;Button android:id=&quot;@+id/buttonA&quot; ... /&gt;</span><br><span class="line">  &lt;Button android:id=&quot;@+id/buttonB&quot; ...</span><br><span class="line">      app:layout_constraintCircle=&quot;@+id/buttonA&quot;</span><br><span class="line">      app:layout_constraintCircleRadius=&quot;100dp&quot;</span><br><span class="line">      app:layout_constraintCircleAngle=&quot;45&quot; /&gt;</span><br></pre></td></tr></table></figure>
 <p> <img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout1.png" alt=""></p>
 <h2 id="特殊的可见属性"><a href="#特殊的可见属性" class="headerlink" title="特殊的可见属性"></a>特殊的可见属性</h2><p>设置了GONE的控件仍然是不可见的，但有两个特点：<br>· 在不居中，控件会被解析为一个点<br>· 如果它相对其他控件有设置，那么任何边距都会等于0</p>
 <p> <img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout9.png" alt=""></p>
@@ -442,13 +442,11 @@
 </ul>
 <h4 id="Min-and-Max"><a href="#Min-and-Max" class="headerlink" title="Min and Max"></a>Min and Max</h4><p>为min和max赋的值可以是dp，也可以是“wrap”（使用与WRAP_CONTENT相同的值）。</p>
 <h4 id="Percent-dimension-百分比"><a href="#Percent-dimension-百分比" class="headerlink" title="Percent dimension 百分比"></a>Percent dimension 百分比</h4><p>使用百分比需要以下设置<br>· 设置为<code>MATCH_CONSTRAINT</code><br>· 默认值设置为<code>app:layout_constraintWidth_default=&quot;percent&quot;</code>或者 <code>app:layout_constraintHeight_default=&quot;percent&quot;</code>（注意：这在1.1-beta1和1.1-beta2中是必需的，但如果定义了百分比属性，则在以下版本中不需要）<br><code>layout_constraintWidth_percent</code>或<code>layout_constraintHeight_percent</code>属性设置为0到1之间的值</p>
-<h4 id="Ratio-比例"><a href="#Ratio-比例" class="headerlink" title="Ratio 比例"></a>Ratio 比例</h4><p>可以将控件的布局大小为另一个大小的比率，需要将至少一个布局设置为0dp（即MATCH_CONSTRAINT），并将属性layout_constraintDimensionRatio设置为给定的比率。例如：<br><code>&lt;Button android:layout_width=&quot;wrap_content&quot;
-                   android:layout_height=&quot;0dp&quot;
-                   app:layout_constraintDimensionRatio=&quot;1:1&quot; /&gt;</code></p>
+<h4 id="Ratio-比例"><a href="#Ratio-比例" class="headerlink" title="Ratio 比例"></a>Ratio 比例</h4><p>可以将控件的布局大小为另一个大小的比率，需要将至少一个布局设置为0dp（即MATCH_CONSTRAINT），并将属性layout_constraintDimensionRatio设置为给定的比率。例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;Button android:layout_width=&quot;wrap_content&quot;</span><br><span class="line">                  android:layout_height=&quot;0dp&quot;</span><br><span class="line">                  app:layout_constraintDimensionRatio=&quot;1:1&quot; /&gt;</span><br></pre></td></tr></table></figure>
 <p>将按钮的高度设置为与其宽度相同。<br>比率可以设置为：<br>·  float值，表示宽度和高度之间的比率<br>·  <code>&quot;width:height”</code>形式的比例</p>
 <p>如果两个尺寸都设置为MATCH_CONSTRAINT（0dp），您也可以使用比率。在这种情况下，系统会设置满足所有约束的最大尺寸并保持指定的纵横比。要根据另一个特定边的尺寸约束一个特定边，可以预先附加W，“或H，分别约束宽度或高度。例如，如果一个维度受到两个目标的约束（例如，宽度为0dp并且以父布局为中心），则可以通过在前面添加字母W（用于约束宽度）或H（用于约束高度）来指示应该约束哪一侧。用逗号分隔：</p>
-<p>``</p>
-<p><button android:layout_width="0dp" android:layout_height="0dp" app:layout_constraintdimensionratio="H,16:9" app:layout_constraintbottom_tobottomof="parent" app:layout_constrainttop_totopof="parent"><br>       ``</button></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;Button android:layout_width=&quot;0dp&quot;</span><br><span class="line">                   android:layout_height=&quot;0dp&quot;</span><br><span class="line">                   app:layout_constraintDimensionRatio=&quot;H,16:9&quot;</span><br><span class="line">                   app:layout_constraintBottom_toBottomOf=&quot;parent&quot;</span><br><span class="line">                   app:layout_constraintTop_toTopOf=&quot;parent&quot;/&gt;</span><br></pre></td></tr></table></figure>
 <p>上面的button将按照16：9的比例设置按钮的高度，而按钮的宽度将匹配父布局。</p>
 <h2 id="Chains-链"><a href="#Chains-链" class="headerlink" title="Chains 链"></a>Chains 链</h2><p>链在单个轴（水平或垂直）上提供类似行的行为。另一个轴可以独立约束。</p>
 <h3 id="创建链："><a href="#创建链：" class="headerlink" title="创建链："></a>创建链：</h3><p>如果一组控件通过双向连接链接在一起，则它们被视为链（参见下图，显示最小链，具有两个小部件）。</p>
@@ -511,6 +509,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/year/12/08/videoview/" rel="prev" title="VideoView源码全方位翻译&解析">
+                VideoView源码全方位翻译&解析 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -591,7 +593,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-count">24</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

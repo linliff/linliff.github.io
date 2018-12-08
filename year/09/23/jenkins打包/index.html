@@ -126,7 +126,7 @@
 <meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/136.jpg">
 <meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/137.jpg">
 <meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/138.jpg">
-<meta property="og:updated_time" content="2018-12-05T09:29:12.705Z">
+<meta property="og:updated_time" content="2018-12-05T10:07:00.144Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="jenkins远程自动打包、多渠道打包">
 <meta name="twitter:description" content="Jenkins功能强大，可以使用它进行android项目的远程打包、多渠道打包工作，并且可以自动提交标签发送邮件。下面就介绍一下在实际项目中使用到的Jenkins自动打包教程。 Jenkins简介Jenkins是目前开源的应用中最广泛的持续集成工具，支持CI, CD。2.0开始支持Pipeline，使用基于Groovy的DSL，可以实现单个任务难以完成的复杂发布流程。其任何发布流程都可以表述为一段">
@@ -379,7 +379,8 @@
 <h3 id="2，安装Jenkins"><a href="#2，安装Jenkins" class="headerlink" title="2，安装Jenkins"></a>2，安装Jenkins</h3><p>点击下一步按照流程按照即可，不做赘述。</p>
 <h3 id="3，初始化Jenkins"><a href="#3，初始化Jenkins" class="headerlink" title="3，初始化Jenkins"></a>3，初始化Jenkins</h3><p>Jenkins安装成功后可以在本地访问 <a href="http://localhost:8080" target="_blank" rel="noopener">http://localhost:8080</a> </p>
 <h4 id="第一次初始化如图："><a href="#第一次初始化如图：" class="headerlink" title="第一次初始化如图："></a>第一次初始化如图：</h4><p><img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/3.png" alt="初始化"></p>
-<h4 id="解锁：安装提示路径打开文件，复制密码，点击继续"><a href="#解锁：安装提示路径打开文件，复制密码，点击继续" class="headerlink" title="解锁：安装提示路径打开文件，复制密码，点击继续"></a>解锁：安装提示路径打开文件，复制密码，点击继续</h4><p>按照弹框提示，找到该initialAdminPassword，填写Jenkins生成的key：<br><img src="https://img-blog.csdn.net/20170531110124090?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvYWl4aWFveWFuZzE2OA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="解锁"></p>
+<h4 id="解锁：安装提示路径打开文件，复制密码，点击继续"><a href="#解锁：安装提示路径打开文件，复制密码，点击继续" class="headerlink" title="解锁：安装提示路径打开文件，复制密码，点击继续"></a>解锁：安装提示路径打开文件，复制密码，点击继续</h4><p>按照弹框提示，找到该initialAdminPassword，填写Jenkins生成的key：</p>
+<p><img src="https://img-blog.csdn.net/20170531110124090?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvYWl4aWFveWFuZzE2OA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="解锁"></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">注：操作initialAdminPassword时的用户如果不是Jenkins用户可能会出现权限问题，需要处理下。</span><br></pre></td></tr></table></figure>
 <h4 id="插件选择"><a href="#插件选择" class="headerlink" title="插件选择"></a>插件选择</h4><p>推荐选择左边，安装官方推荐的插件，也可以选择右边只安装自己需要的插件。<br><img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/5.png" alt="选择插件"></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">注：Android打包必须插件包括git插件，gradle插件，其他按自己情况安装。</span><br></pre></td></tr></table></figure>
@@ -416,6 +417,14 @@
 <p>在shell里编写命令<br><img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/137.jpg" alt="shell"></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">注：执行shell的窗口可以上下移动，在Invoke Gradle上面的话会在代码编译前执行，在下面则会在编译完成后执行。</span><br></pre></td></tr></table></figure>
 <p>通过这一点，可以在执行代码build前后去处理一些初始化，比如编译前拿到自定义配置项去替换代码里的内容，编译后通过git提交tag、通过curl去触发某些接口，可以无限拓展。</p>
+<p>举例：打包成功后可以通过shell命令向钉钉群里发送消息：<br><code>curl -X &quot;POST&quot; &quot;https://oapi.dingtalk.com/robot/send?access_token=$DingDingId&quot; \
+     -H &quot;Content-Type: application/json&quot; \
+      -d &#39;
+  {&quot;msgtype&quot;: &quot;text&quot;, 
+    &quot;text&quot;: {
+         &quot;content&quot;: &quot;Android &#39;$BUILD_BRANCH&#39; 分支的&#39;$BUILD_TYPE&#39;测试包已打好，请下载测试：https://fir.im/androidXXX&quot;
+     }
+}&#39;</code></p>
 <h3 id="7，插件拓展"><a href="#7，插件拓展" class="headerlink" title="7，插件拓展"></a>7，插件拓展</h3><p>Jenkins的方便之处还在于它有很多插件可以使用。<br>比如可以下载fir的Jenkins插件，通过配置去把apk自动上传到fir上。<br><img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/138.jpg" alt="插件"></p>
 <h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>以上就是Jenkins在Android远程打包上的使用过程，主要写了环境的搭建和重要环节的配置。实际使用时需要配合这项目实际需求已经代码的构建情况去搭建一个最方便快捷的远程编译平台。</p>
 
@@ -535,7 +544,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-count">24</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
