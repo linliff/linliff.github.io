@@ -97,7 +97,7 @@
 <meta property="og:description" content="1.涉及到事件响应的常用方法构成　　用户在手指与屏幕接触过程中通过MotionEvent对象产生一系列事件，它有四种状态： 　　  MotionEvent.ACTION_DOWN　：手指按下屏幕的瞬间（一切事件的开始）  MotionEvent.ACTION_MOVE　：手指在屏幕上移动  MotionEvent.ACTION_UP　：手指离开屏幕瞬间  MotionEvent.ACTION_CA">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://img.blog.csdn.net/20160428161104339">
-<meta property="og:updated_time" content="2018-05-16T14:04:14.000Z">
+<meta property="og:updated_time" content="2020-05-18T05:09:06.532Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android View事件分发机制源码分析">
 <meta name="twitter:description" content="1.涉及到事件响应的常用方法构成　　用户在手指与屏幕接触过程中通过MotionEvent对象产生一系列事件，它有四种状态： 　　  MotionEvent.ACTION_DOWN　：手指按下屏幕的瞬间（一切事件的开始）  MotionEvent.ACTION_MOVE　：手指在屏幕上移动  MotionEvent.ACTION_UP　：手指离开屏幕瞬间  MotionEvent.ACTION_CA">
@@ -375,7 +375,7 @@
 <blockquote>
 <p>从以上过程中可以看出，dispatchTouchEvent无论返回true还是false，事件都不再进行分发，只有当其返回super.dispatchTouchEvent(ev)，才表明其具有向下层分发的愿望，但是是否能够分发成功，则需要经过事件拦截onInterceptTouchEvent的审核。事件是否向上传递处理是由onTouchEvent的返回值决定的。</p>
 </blockquote>
-<p><img src="http://img.blog.csdn.net/20160428161104339" alt="这里写图片描述"></p>
+<p><img src="http://img.blog.csdn.net/20160428161104339" alt="avatar"></p>
 <p>（图来自网络）</p>
 <h1 id="３-View源码分析"><a href="#３-View源码分析" class="headerlink" title="３.View源码分析"></a>３.View源码分析</h1><p>　　Android中ImageView、textView、Button等继承于View但没有重写的dispatchTouchEvent方法，所以都用的View的该方法进行事件分发。<br>　　<br>　　看View重要函数部分源码：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">public boolean dispatchTouchEvent(MotionEvent event) &#123;</span><br><span class="line">//返回true,表示该View内部消化掉了所有事件。返回false，表示View内部只处理了ACTION_DOWN事件，事件继续传递，向上级View(ViewGroup)传递。</span><br><span class="line"></span><br><span class="line">    if (mOnTouchListener != null &amp;&amp; (mViewFlags &amp; ENABLED_MASK) == ENABLED &amp;&amp;</span><br><span class="line">            mOnTouchListener.onTouch(this, event)) &#123;</span><br><span class="line">  //此处的onTouch方式就是回调的我们注册OnTouchListener时重写的onTouch()方法</span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br><span class="line">    return onTouchEvent(event);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>

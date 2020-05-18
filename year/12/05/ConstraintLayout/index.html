@@ -96,21 +96,21 @@
 <meta property="og:site_name" content="一个短篇">
 <meta property="og:description" content="ConstraintLayout是Android Studio 2.2中主要的新增功能之一，也是Google在16年的I/O大会上重点宣传的一个功能。在渲染性能上有很多优势。具体可以看这篇文章：解析ConstraintLayout的性能优势 简介ConstraintLayout是集合了LinearLayout、RelativeLayout以及GridLayout所有特性的一种布局类型，在使用时上可">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout6.png">
-<meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout5.png">
-<meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout8.png">
-<meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout2.png">
-<meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout1.png">
-<meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout9.png">
-<meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout3.png">
-<meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout7.png">
-<meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout10.png">
 <meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout4.png">
-<meta property="og:updated_time" content="2018-12-05T15:14:24.128Z">
+<meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout4.png">
+<meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout4.png">
+<meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout4.png">
+<meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout4.png">
+<meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout4.png">
+<meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout4.png">
+<meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout4.png">
+<meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout4.png">
+<meta property="og:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout4.png">
+<meta property="og:updated_time" content="2020-05-18T05:03:09.539Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ConstraintLayout特性全方位解析">
 <meta name="twitter:description" content="ConstraintLayout是Android Studio 2.2中主要的新增功能之一，也是Google在16年的I/O大会上重点宣传的一个功能。在渲染性能上有很多优势。具体可以看这篇文章：解析ConstraintLayout的性能优势 简介ConstraintLayout是集合了LinearLayout、RelativeLayout以及GridLayout所有特性的一种布局类型，在使用时上可">
-<meta name="twitter:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout6.png">
+<meta name="twitter:image" content="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout4.png">
 
 
 
@@ -371,7 +371,7 @@
 <li>layout_constraintEnd_toStartOf</li>
 <li>layout_constraintEnd_toEndOf</li>
 </ul>
-<p><img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout6.png" alt=""></p>
+<p><img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout4.png" alt=""></p>
 <p>看图可以知道：<br><code>layout_constraintBaseline_toBaselineOf</code> 代表内容水平对齐，并不是真正的水平对齐。</p>
 <p>要实现整个控件的水平对齐可以相对于同一个控件同时使用：<br><code>layout_constraintTop_toTopOf</code>和<code>layout_constraintBottom_toBottomOf</code></p>
 <p>同时图片可以看出属性里的start和left是同一个意思，right和end同一个意思，在使用时效果也是一样的。</p>
@@ -394,11 +394,11 @@
 <li>layout_goneMarginRight</li>
 <li>layout_goneMarginBottom</li>
 </ul>
-<p><img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout5.png" alt=""></p>
+<p><img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout4.png" alt=""></p>
 <p>例如：B距离A 10dp，C距离B 10dp，当B不显示时C出现在B的位置。<br>按照之前的逻辑是B和C在一个布局下，然后父布局距离A10dp。现在可是少一层包裹，C设置 <code>layout_goneMarginLeft</code> 10dp即可。<br>详细理解可以看下面的<strong>特殊的可见属性</strong></p>
 <h2 id="相对居中"><a href="#相对居中" class="headerlink" title="相对居中"></a>相对居中</h2><p>ConstraintLayout的相对居中使用简单</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;android.support.constraint.ConstraintLayout ...&gt;</span><br><span class="line">             &lt;Button android:id=&quot;@+id/button&quot; ...</span><br><span class="line">                 app:layout_constraintLeft_toLeftOf=&quot;parent&quot;</span><br><span class="line">                 app:layout_constraintRight_toRightOf=&quot;parent/&gt;</span><br><span class="line">         &lt;/&gt;</span><br></pre></td></tr></table></figure>
-<p><img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout8.png" alt=""></p>
+<p> <img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout4.png" alt=""></p>
 <p>如果父布局的ConstraintLayout的宽度和A不同，则使用和<code>layout_constraintLeft_toLeftOf</code>和<code>layout_constraintRight_toRightOf</code>会使控件在相对控件的中间（水平居中和垂直居中同理）</p>
 <h2 id="相对距离按比例划分"><a href="#相对距离按比例划分" class="headerlink" title="相对距离按比例划分"></a>相对距离按比例划分</h2><ul>
 <li>layout_constraintHorizontal_bias</li>
@@ -406,7 +406,7 @@
 </ul>
 <p>例如:</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;android.support.constraint.ConstraintLayout ...&gt;</span><br><span class="line">             &lt;Button android:id=&quot;@+id/button&quot; ...</span><br><span class="line">                 app:layout_constraintHorizontal_bias=&quot;0.3&quot;</span><br><span class="line">                 app:layout_constraintLeft_toLeftOf=&quot;parent&quot;</span><br><span class="line">                 app:layout_constraintRight_toRightOf=&quot;parent/&gt;</span><br><span class="line">         &lt;/&gt;</span><br></pre></td></tr></table></figure>
-<p><img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout2.png" alt=""></p>
+<p> <img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout4.png" alt=""></p>
 <p>A距离父布局左侧的距离是右侧的30%</p>
 <h2 id="中心点定位"><a href="#中心点定位" class="headerlink" title="中心点定位"></a>中心点定位</h2><ul>
 <li>layout_constraintCircle : 相对中心位置控件的id</li>
@@ -415,9 +415,9 @@
 </ul>
 <p>例如:</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;Button android:id=&quot;@+id/buttonA&quot; ... /&gt;</span><br><span class="line">  &lt;Button android:id=&quot;@+id/buttonB&quot; ...</span><br><span class="line">      app:layout_constraintCircle=&quot;@+id/buttonA&quot;</span><br><span class="line">      app:layout_constraintCircleRadius=&quot;100dp&quot;</span><br><span class="line">      app:layout_constraintCircleAngle=&quot;45&quot; /&gt;</span><br></pre></td></tr></table></figure>
-<p> <img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout1.png" alt=""></p>
+<p><img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout4.png" alt=""></p>
 <h2 id="特殊的可见属性"><a href="#特殊的可见属性" class="headerlink" title="特殊的可见属性"></a>特殊的可见属性</h2><p>设置了GONE的控件仍然是不可见的，但有两个特点：<br>· 在不居中，控件会被解析为一个点<br>· 如果它相对其他控件有设置，那么任何边距都会等于0</p>
-<p> <img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout9.png" alt=""></p>
+<p><img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout4.png" alt=""></p>
 <h2 id="尺寸限制"><a href="#尺寸限制" class="headerlink" title="尺寸限制"></a>尺寸限制</h2><ul>
 <li>android:minWidth set the minimum width for the layout</li>
 <li>android:minHeight set the minimum height for the layout</li>
@@ -426,7 +426,7 @@
 </ul>
 <p>当其尺寸设置为WRAP_CONTENT时，ConstraintLayout将使用这些最小和最大尺寸</p>
 <h3 id="控件约束"><a href="#控件约束" class="headerlink" title="控件约束"></a>控件约束</h3><p>可以通过以3种不同的方式设置<code>android：layout_width</code>和<code>android：layout_height</code>属性来指定控件的约束位置。<br>· 使用指定的值，如123dp<br>· 使用WRAP_CONTENT，它将要求窗口小部件计算自己的大小<br>· 使用0dp，相当于“MATCH_CONSTRAINT”</p>
-<p><img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout3.png" alt=""></p>
+<p> <img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout4.png" alt=""></p>
 <p>如上图，a为wrap_content，b为0dp，c为设置了margin和0dp</p>
 <p>注意：不建议对ConstraintLayout中的控件使用<code>MATCH_PARENT</code>。可以通过使用<code>MATCH_CONSTRAINT</code>来定义类似的属性，其中相应的左/右或上/下约束被设置为父布局。</p>
 <h3 id="WRAP-CONTENT：强制约束"><a href="#WRAP-CONTENT：强制约束" class="headerlink" title="WRAP_CONTENT：强制约束"></a>WRAP_CONTENT：强制约束</h3><p>在1.1之前的版本中设置为WRAP_CONTENT不会产生约束效果。添加以下相应的属性可以强制执行约束：</p>
@@ -450,9 +450,9 @@
 <p>上面的button将按照16：9的比例设置按钮的高度，而按钮的宽度将匹配父布局。</p>
 <h2 id="Chains-链"><a href="#Chains-链" class="headerlink" title="Chains 链"></a>Chains 链</h2><p>链在单个轴（水平或垂直）上提供类似行的行为。另一个轴可以独立约束。</p>
 <h3 id="创建链："><a href="#创建链：" class="headerlink" title="创建链："></a>创建链：</h3><p>如果一组控件通过双向连接链接在一起，则它们被视为链（参见下图，显示最小链，具有两个小部件）。</p>
-<p><img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout7.png" alt=""></p>
+<p><img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout4.png" alt=""></p>
 <h3 id="链的头部"><a href="#链的头部" class="headerlink" title="链的头部"></a>链的头部</h3><p>链由链的第一个元素（链的“头部”）上设置的属性控制</p>
-<p><img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout10.png" alt=""></p>
+<p><img src="https://coding.net/u/linlif/p/MdPic/git/raw/master/ConstraintLayout4.png" alt=""></p>
 <p>头部是水平链的最左侧控件，垂直链的最顶部控件。</p>
 <h3 id="链中的边距"><a href="#链中的边距" class="headerlink" title="链中的边距"></a>链中的边距</h3><p>如果在连接上指定了边距，则会考虑它们。在扩散链的情况下，将从分配的空间中扣除边距。</p>
 <h3 id="链的形式"><a href="#链的形式" class="headerlink" title="链的形式"></a>链的形式</h3><p>在链的第一个元素上设置属性<code>layout_constraintHorizontal_chainStyle</code>或<code>layout_constraintVertical_chainStyle</code>时，链的行为将根据指定的样式更改（默认为CHAIN_SPREAD）。</p>
