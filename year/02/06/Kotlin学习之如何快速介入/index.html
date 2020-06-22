@@ -89,17 +89,24 @@
 
 
 
-<meta name="description" content="对于Kotlin不需要再做介绍，做Android开发的应该都已经知道。对于大多数人而言Kotlin算得上是一门新的语言，需要去重新了解和学习，网上的资料一搜也一大把。针对有Java基础和经验的Android开发，如何快速得了解Kotlin的语法和特性，我总结了一些经验和方法。 1, 跟Java进行对比学习Java使用的地方，Kotlin对应是怎么写的，这样的学习方式更容易让我们去理解和记忆。针对这">
+<meta name="description" content="对于Kotlin不需要再做介绍，做Android开发的应该都已经知道。对于大多数人而言Kotlin算得上是一门新的语言，需要去重新了解和学习，网上的资料一搜也一大把。针对有Java基础和经验的Android开发，如何快速得了解Kotlin的语法和特性，我总结了一些经验和方法。 跟Java进行对比学习Java使用的地方，Kotlin对应是怎么写的，这样的学习方式更容易让我们去理解和记忆。针对这一方面">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Kotlin学习之如何快速介入">
 <meta property="og:url" content="http://yoursite.com/year/02/06/Kotlin学习之如何快速介入/index.html">
 <meta property="og:site_name" content="一个短篇">
-<meta property="og:description" content="对于Kotlin不需要再做介绍，做Android开发的应该都已经知道。对于大多数人而言Kotlin算得上是一门新的语言，需要去重新了解和学习，网上的资料一搜也一大把。针对有Java基础和经验的Android开发，如何快速得了解Kotlin的语法和特性，我总结了一些经验和方法。 1, 跟Java进行对比学习Java使用的地方，Kotlin对应是怎么写的，这样的学习方式更容易让我们去理解和记忆。针对这">
+<meta property="og:description" content="对于Kotlin不需要再做介绍，做Android开发的应该都已经知道。对于大多数人而言Kotlin算得上是一门新的语言，需要去重新了解和学习，网上的资料一搜也一大把。针对有Java基础和经验的Android开发，如何快速得了解Kotlin的语法和特性，我总结了一些经验和方法。 跟Java进行对比学习Java使用的地方，Kotlin对应是怎么写的，这样的学习方式更容易让我们去理解和记忆。针对这一方面">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-06-22T11:28:09.585Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/linliff/blogpic/master/kotlin/111.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/linliff/blogpic/master/kotlin/222.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/linliff/blogpic/master/kotlin/333.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/linliff/blogpic/master/kotlin/444.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/linliff/blogpic/master/kotlin/555.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/linliff/blogpic/master/kotlin/666.png">
+<meta property="og:updated_time" content="2020-06-22T12:22:18.981Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Kotlin学习之如何快速介入">
-<meta name="twitter:description" content="对于Kotlin不需要再做介绍，做Android开发的应该都已经知道。对于大多数人而言Kotlin算得上是一门新的语言，需要去重新了解和学习，网上的资料一搜也一大把。针对有Java基础和经验的Android开发，如何快速得了解Kotlin的语法和特性，我总结了一些经验和方法。 1, 跟Java进行对比学习Java使用的地方，Kotlin对应是怎么写的，这样的学习方式更容易让我们去理解和记忆。针对这">
+<meta name="twitter:description" content="对于Kotlin不需要再做介绍，做Android开发的应该都已经知道。对于大多数人而言Kotlin算得上是一门新的语言，需要去重新了解和学习，网上的资料一搜也一大把。针对有Java基础和经验的Android开发，如何快速得了解Kotlin的语法和特性，我总结了一些经验和方法。 跟Java进行对比学习Java使用的地方，Kotlin对应是怎么写的，这样的学习方式更容易让我们去理解和记忆。针对这一方面">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/linliff/blogpic/master/kotlin/111.png">
 
 
 
@@ -342,12 +349,22 @@
 
       
         <p>对于Kotlin不需要再做介绍，做Android开发的应该都已经知道。对于大多数人而言Kotlin算得上是一门新的语言，需要去重新了解和学习，网上的资料一搜也一大把。针对有Java基础和经验的Android开发，如何快速得了解Kotlin的语法和特性，我总结了一些经验和方法。</p>
-<h3 id="1-跟Java进行对比学习"><a href="#1-跟Java进行对比学习" class="headerlink" title="1, 跟Java进行对比学习"></a>1, 跟Java进行对比学习</h3><p>Java使用的地方，Kotlin对应是怎么写的，这样的学习方式更容易让我们去理解和记忆。针对这一方面，推荐一下扔物线写的kotlin基础特性系列 <a href="https://kaixue.io/" target="_blank" rel="noopener">https://kaixue.io/</a><br>下面也放一下我自己总结几个方面：</p>
-<p>· </p>
-<h3 id="2，next-方法"><a href="#2，next-方法" class="headerlink" title="2，next 方法"></a>2，next 方法</h3><p>next是一个死循环，用于获取msg对象然后进行发送处理<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">Message next() &#123;</span><br><span class="line">    //...</span><br><span class="line"></span><br><span class="line">    int pendingIdleHandlerCount = -1; // -1 only during first iteration</span><br><span class="line">    int nextPollTimeoutMillis = 0;</span><br><span class="line">    for (;;) &#123;</span><br><span class="line">        //...</span><br><span class="line"></span><br><span class="line">        synchronized (this) &#123;</span><br><span class="line">           </span><br><span class="line">            final long now = SystemClock.uptimeMillis();</span><br><span class="line">            Message prevMsg = null;</span><br><span class="line">            Message msg = mMessages;</span><br><span class="line">            if (msg != null &amp;&amp; msg.target == null) &#123;//①碰到同步屏障</span><br><span class="line">                </span><br><span class="line">                // do while循环遍历消息链表</span><br><span class="line">                // 跳出循环时，msg指向离表头最近的一个异步消息</span><br><span class="line">                do &#123;</span><br><span class="line">                    prevMsg = msg;</span><br><span class="line">                    msg = msg.next;</span><br><span class="line">                &#125; while (msg != null &amp;&amp; !msg.isAsynchronous());//②msg不是异步消息</span><br><span class="line">            &#125;</span><br><span class="line">            if (msg != null) &#123;</span><br><span class="line">                if (now &lt; msg.when) &#123;</span><br><span class="line">                    //...</span><br><span class="line">                &#125; else &#123;</span><br><span class="line">                </span><br><span class="line">                    mBlocked = false;</span><br><span class="line">                    if (prevMsg != null) &#123;</span><br><span class="line">                        //将msg从消息链表中移除</span><br><span class="line">                        prevMsg.next = msg.next;</span><br><span class="line">                    &#125; else &#123;</span><br><span class="line">                        mMessages = msg.next;</span><br><span class="line">                    &#125;</span><br><span class="line">                    msg.next = null;</span><br><span class="line">                    if (DEBUG) Log.v(TAG, &quot;Returning message: &quot; + msg);</span><br><span class="line">                    msg.markInUse();</span><br><span class="line">                    //返回异步消息</span><br><span class="line">                    return msg;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                // No more messages.</span><br><span class="line">                nextPollTimeoutMillis = -1;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            //...</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        //...</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>可以看到①注释的地方判断target为空，因为正常的handler发送消息target是不可能为空的，而postSyncBarrier设置的msg会走到这里来；②注释的地方判断是否为异步，这个属性默认是false postSyncBarrier 方法里并没有设置成true。所以遇到这个条件，next方法会调出循环导致消息队列后面的消息发送不到looper里，造成了“阻塞”</p>
-<h3 id="3，removeSyncBarrier-解除屏障"><a href="#3，removeSyncBarrier-解除屏障" class="headerlink" title="3，removeSyncBarrier 解除屏障"></a>3，removeSyncBarrier 解除屏障</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">synchronized (this) &#123;</span><br><span class="line">            Message prev = null;</span><br><span class="line">            Message p = mMessages;</span><br><span class="line">            while (p != null &amp;&amp; (p.target != null || p.arg1 != token)) &#123;</span><br><span class="line">                prev = p;</span><br><span class="line">                p = p.next;</span><br><span class="line">            &#125;</span><br><span class="line">            if (p == null) &#123;</span><br><span class="line">                throw new IllegalStateException(&quot;The specified message queue synchronization &quot;</span><br><span class="line">                        + &quot; barrier token has not been posted or has already been removed.&quot;);</span><br><span class="line">            &#125;</span><br><span class="line">            final boolean needWake;</span><br><span class="line">            if (prev != null) &#123;</span><br><span class="line">                prev.next = p.next;</span><br><span class="line">                needWake = false;</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                mMessages = p.next;</span><br><span class="line">                needWake = mMessages == null || mMessages.target != null;</span><br><span class="line">            &#125;</span><br><span class="line">            p.recycleUnchecked();</span><br><span class="line"></span><br><span class="line">            // If the loop is quitting then it is already awake.</span><br><span class="line">            // We can assume mPtr != 0 when mQuitting is false.</span><br><span class="line">            if (needWake &amp;&amp; !mQuitting) &#123;</span><br><span class="line">                nativeWake(mPtr);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
-<p>看最后一行代码调用了 nativeWake进行了唤起操作，也就是移除屏障消息后，会唤醒next，执行后续的消息队列</p>
+<h2 id="跟Java进行对比学习"><a href="#跟Java进行对比学习" class="headerlink" title="跟Java进行对比学习"></a>跟Java进行对比学习</h2><p>Java使用的地方，Kotlin对应是怎么写的，这样的学习方式更容易让我们去理解和记忆。针对这一方面，推荐一下扔物线写的kotlin基础特性系列 <a href="https://kaixue.io/" target="_blank" rel="noopener">https://kaixue.io/</a><br>下面也放一下我自己总结几个方面：</p>
+<ul>
+<li><p>文件<br><img src="https://raw.githubusercontent.com/linliff/blogpic/master/kotlin/111.png" alt="avatar"></p>
+</li>
+<li><p>main入口<br><img src="https://raw.githubusercontent.com/linliff/blogpic/master/kotlin/222.png" alt="avatar"></p>
+</li>
+<li><p>变量修饰符<br><img src="https://raw.githubusercontent.com/linliff/blogpic/master/kotlin/333.png" alt="avatar"></p>
+</li>
+<li><p>var和val<br><img src="https://raw.githubusercontent.com/linliff/blogpic/master/kotlin/444.png" alt="avatar"></p>
+</li>
+<li><p>lateinit<br><img src="https://raw.githubusercontent.com/linliff/blogpic/master/kotlin/555.png" alt="avatar"></p>
+</li>
+<li><p>常量<br><img src="https://raw.githubusercontent.com/linliff/blogpic/master/kotlin/666.png" alt="avatar"></p>
+</li>
+</ul>
+<p>这里先列举一部分，其余的可以搜索学习</p>
 
       
     </div>
@@ -465,7 +482,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">27</span>
+                  <span class="site-state-item-count">28</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -513,7 +530,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-跟Java进行对比学习"><span class="nav-text">1, 跟Java进行对比学习</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2，next-方法"><span class="nav-text">2，next 方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3，removeSyncBarrier-解除屏障"><span class="nav-text">3，removeSyncBarrier 解除屏障</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#跟Java进行对比学习"><span class="nav-text">跟Java进行对比学习</span></a></li></ol></div>
             
 
           </div>
