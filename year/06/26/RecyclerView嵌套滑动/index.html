@@ -89,17 +89,17 @@
 
 
 
-<meta name="description" content="kotlin官方文档对可见修饰符有这样一个描述： 类、对象、接口、构造函数、方法、属性和它们的 setter 都可以有 可见性修饰符。 （getter 总是与属性有着相同的可见性。） 在 Kotlin 中有这四个可见性修饰符：private、 protected、 internal 和 public。 如果没有显式指定修饰符的话，默认可见性是 public。 出于对java的理解，我们会理解为一个">
+<meta name="description" content="淘宝和京东首页的效果可以看做是上面一个RecyclerView下面一个ViewPager实现的，而ViewPager里面的RecyclerView要实现正常滑动效果就需要跟上面的RecyclerView做好衔接和冲突的处理，这里介绍一下两个RecyclerView比较完美的衔接方案 首先定义一个 ParentRecyclerView 和一个存放viewpage的容器，布局关系如下： 1234567">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Kotlin学习之理解public">
-<meta property="og:url" content="http://yoursite.com/year/03/23/Kotlin学习之-public-理解/index.html">
+<meta property="og:title" content="RecyclerView嵌套滑动实现淘宝京东首页效果">
+<meta property="og:url" content="http://yoursite.com/year/06/26/RecyclerView嵌套滑动/index.html">
 <meta property="og:site_name" content="一个短篇">
-<meta property="og:description" content="kotlin官方文档对可见修饰符有这样一个描述： 类、对象、接口、构造函数、方法、属性和它们的 setter 都可以有 可见性修饰符。 （getter 总是与属性有着相同的可见性。） 在 Kotlin 中有这四个可见性修饰符：private、 protected、 internal 和 public。 如果没有显式指定修饰符的话，默认可见性是 public。 出于对java的理解，我们会理解为一个">
+<meta property="og:description" content="淘宝和京东首页的效果可以看做是上面一个RecyclerView下面一个ViewPager实现的，而ViewPager里面的RecyclerView要实现正常滑动效果就需要跟上面的RecyclerView做好衔接和冲突的处理，这里介绍一下两个RecyclerView比较完美的衔接方案 首先定义一个 ParentRecyclerView 和一个存放viewpage的容器，布局关系如下： 1234567">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-06-23T10:20:25.212Z">
+<meta property="og:updated_time" content="2020-07-18T07:36:11.600Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Kotlin学习之理解public">
-<meta name="twitter:description" content="kotlin官方文档对可见修饰符有这样一个描述： 类、对象、接口、构造函数、方法、属性和它们的 setter 都可以有 可见性修饰符。 （getter 总是与属性有着相同的可见性。） 在 Kotlin 中有这四个可见性修饰符：private、 protected、 internal 和 public。 如果没有显式指定修饰符的话，默认可见性是 public。 出于对java的理解，我们会理解为一个">
+<meta name="twitter:title" content="RecyclerView嵌套滑动实现淘宝京东首页效果">
+<meta name="twitter:description" content="淘宝和京东首页的效果可以看做是上面一个RecyclerView下面一个ViewPager实现的，而ViewPager里面的RecyclerView要实现正常滑动效果就需要跟上面的RecyclerView做好衔接和冲突的处理，这里介绍一下两个RecyclerView比较完美的衔接方案 首先定义一个 ParentRecyclerView 和一个存放viewpage的容器，布局关系如下： 1234567">
 
 
 
@@ -129,13 +129,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/year/03/23/Kotlin学习之-public-理解/"/>
+  <link rel="canonical" href="http://yoursite.com/year/06/26/RecyclerView嵌套滑动/"/>
 
 
 
 
 
-  <title>Kotlin学习之理解public | 一个短篇</title>
+  <title>RecyclerView嵌套滑动实现淘宝京东首页效果 | 一个短篇</title>
   
 
 
@@ -252,7 +252,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/year/03/23/Kotlin学习之-public-理解/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/year/06/26/RecyclerView嵌套滑动/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="linlif">
@@ -269,7 +269,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Kotlin学习之理解public</h1>
+          <h1 class="post-title" itemprop="name headline">RecyclerView嵌套滑动实现淘宝京东首页效果</h1>
         
 
         <div class="post-meta">
@@ -281,8 +281,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-03-23T21:35:00+08:00">
-                2020-03-23
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-06-26T23:13:40+08:00">
+                2020-06-26
               </time>
             
 
@@ -304,8 +304,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Kotlin/" itemprop="url" rel="index">
-                    <span itemprop="name">Kotlin</span>
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
                   </a>
                 </span>
 
@@ -341,11 +341,19 @@
       
 
       
-        <p>kotlin官方文档对可见<a href="https://www.kotlincn.net/docs/reference/visibility-modifiers.html" target="_blank" rel="noopener">修饰符</a>有这样一个描述：</p>
-<p>类、对象、接口、构造函数、方法、属性和它们的 setter 都可以有 可见性修饰符。 （getter 总是与属性有着相同的可见性。） 在 Kotlin 中有这四个可见性修饰符：private、 protected、 internal 和 public。 如果没有显式指定修饰符的话，默认可见性是 public。</p>
-<p>出于对java的理解，我们会理解为一个变量的修饰符默认是public的，但在使用过程中或者查看字节码会发现默认修饰符不是public而是private，从而导致某些场景并不会达到我们想要的效果。比如在使用ARouter时，需要对变量加注解，而变量默认不是public的，会发生变异错误。</p>
-<p>这里并不是官方文档描述有误，而是对于可见修饰符的理解偏差，具体可以查看资料：理解 <a href="https://juejin.im/post/5caff657f265da0369028696" target="_blank" rel="noopener">Kotlin 中的属性（property）</a></p>
-<p>解决方案就是加上注解 @JvmField</p>
+        <p>淘宝和京东首页的效果可以看做是上面一个RecyclerView下面一个ViewPager实现的，而ViewPager里面的RecyclerView要实现正常滑动效果就需要跟上面的RecyclerView做好衔接和冲突的处理，这里介绍一下两个RecyclerView比较完美的衔接方案</p>
+<p>首先定义一个 ParentRecyclerView 和一个存放viewpage的容器，布局关系如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;com.jzyd.coupon.page.home.widget.ParentRecyclerView</span><br><span class="line">            android:id=&quot;@+id/erv&quot;</span><br><span class="line">            android:layout_width=&quot;match_parent&quot;</span><br><span class="line">            android:layout_height=&quot;match_parent&quot;</span><br><span class="line">            android:overScrollMode=&quot;never&quot; /&gt;</span><br><span class="line"></span><br><span class="line">        &lt;com.jzyd.coupon.page.main.home.newest.view.MainHomeNewestCatePageFrameLayout</span><br><span class="line">            android:id=&quot;@+id/flCatePageFrame&quot;</span><br><span class="line">            android:layout_width=&quot;match_parent&quot;</span><br><span class="line">            android:layout_height=&quot;match_parent&quot;</span><br><span class="line">            android:background=&quot;@android:color/holo_blue_light&quot; /&gt;</span><br></pre></td></tr></table></figure>
+<p>将真正的viewpager fragment绑定给容器</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"> mCatePageFragment = SqkbMainHomeCateFragment.newInstance(getActivity());</span><br><span class="line">        mCatePageFragment.setListener(this);</span><br><span class="line">        mCatePageFragment.setPingbackPage(mPingbackPage);</span><br><span class="line">        FragmentManager fm = getChildFragmentManager();</span><br><span class="line">        fm.beginTransaction().add(R.id.flCatePageFrame, mCatePageFragment).commitAllowingStateLoss();</span><br><span class="line"></span><br><span class="line">```    </span><br><span class="line"></span><br><span class="line">ParentRecyclerView的adapter添加一个空白的footer，监听ParentRecyclerView的滑动，让容器的坐标跟着footer走，关键代码：</span><br></pre></td></tr></table></figure>
+<p>  View footCovertView = mAdapter.getFooter().getConvertView();<br>            if (mCatePageFrame.getY() != footCovertView.getTop()) {<br>                mCatePageFrame.setY(footCovertView.getTop());<br>            }</p>
+<p>```</p>
+<p>这样就实现了下面的viewpager跟着ParentRecyclerView走。</p>
+<p>fling处理：<br>监听ParentRecyclerView的onScrollStateChanged，状态变为SCROLL_STATE_IDLE时，如果判断ParentRecyclerView已经滑动了底部，就把fling交给ChildRecyclerView处理</p>
+<p>ChildRecyclerView 带动 ParentRecyclerView滑动处理：首先在两个RecyclerView 的父view里进行逻辑操作。</p>
+<p>然后分两个场景<br>1，ChildRecyclerView没有fling状态时，也就是手指按在屏幕上滑动，这时候触发onNestedPreScroll，如果ParentRecyclerView滑到了底部，则调用ParentRecyclerView的scrollby</p>
+<p>2，ChildRecyclerView有fling状态时，首先回调onNestedPreFling，如果ChildRecyclerView滑到了顶部，说明需要把fling继续传给ParentRecyclerView，返回true，否则返回false，交给ChildRecyclerView自己处理</p>
+<p>最后一种场景，ChildRecyclerView fling到顶部，此时在滑动监听里回调idle，当加速度是正数，切ParentRecyclerView滑到了底部，则交给ParentRecyclerView处理。</p>
 
       
     </div>
@@ -370,8 +378,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/year/03/06/Handler屏障消息/" rel="next" title="探究Handler里的屏障消息">
-                <i class="fa fa-chevron-left"></i> 探究Handler里的屏障消息
+              <a href="/year/05/13/Android-小视频滑动/" rel="next" title="自定义LinearLayoutManager实现类抖音看视频效果">
+                <i class="fa fa-chevron-left"></i> 自定义LinearLayoutManager实现类抖音看视频效果
               </a>
             
           </div>
@@ -379,10 +387,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/year/05/13/Android-小视频滑动/" rel="prev" title="自定义LinearLayoutManager实现类抖音看视频效果">
-                自定义LinearLayoutManager实现类抖音看视频效果 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
