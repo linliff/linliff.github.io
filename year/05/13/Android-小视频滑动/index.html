@@ -89,19 +89,17 @@
 
 
 
-<meta name="description" content="git hook能够在发生某特定行为的时机，触发执行自定义的脚本。 1, 进入 hook目录没有此文件夹可以新建一个 1cd yourproject/.git/hooks/ 2，创建 pre-commit-msg 文件1cp prepare-commit-msg.sample prepare-commit-msg 3，复制以下内容到 prepare-commit-msg12345678910111">
+<meta name="description" content="要实现全屏类抖音的全屏滑动效果，方案有多个，第一个想到的就是viewpager，但是考虑到viewpager在视频上的体验和轻量级上并不是首选方案，而LayoutManager和SnapHelper的结合使用比较能完美的自定义出想要的效果。 SnapHelper 介绍SnapHelper旨在支持RecyclerView的对齐方式，也就是通过计算对齐RecyclerView中TargetView 的">
 <meta property="og:type" content="article">
-<meta property="og:title" content="通过 git hook 实现格式化 commit 信息">
-<meta property="og:url" content="http://yoursite.com/year/01/06/githook/index.html">
+<meta property="og:title" content="自定义LinearLayoutManager实现类抖音看视频效果">
+<meta property="og:url" content="http://yoursite.com/year/05/13/Android-小视频滑动/index.html">
 <meta property="og:site_name" content="一个短篇">
-<meta property="og:description" content="git hook能够在发生某特定行为的时机，触发执行自定义的脚本。 1, 进入 hook目录没有此文件夹可以新建一个 1cd yourproject/.git/hooks/ 2，创建 pre-commit-msg 文件1cp prepare-commit-msg.sample prepare-commit-msg 3，复制以下内容到 prepare-commit-msg12345678910111">
+<meta property="og:description" content="要实现全屏类抖音的全屏滑动效果，方案有多个，第一个想到的就是viewpager，但是考虑到viewpager在视频上的体验和轻量级上并不是首选方案，而LayoutManager和SnapHelper的结合使用比较能完美的自定义出想要的效果。 SnapHelper 介绍SnapHelper旨在支持RecyclerView的对齐方式，也就是通过计算对齐RecyclerView中TargetView 的">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://raw.githubusercontent.com/linliff/blogpic/master/githook.jpg">
-<meta property="og:updated_time" content="2020-06-22T12:09:18.541Z">
+<meta property="og:updated_time" content="2020-07-12T09:46:01.308Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="通过 git hook 实现格式化 commit 信息">
-<meta name="twitter:description" content="git hook能够在发生某特定行为的时机，触发执行自定义的脚本。 1, 进入 hook目录没有此文件夹可以新建一个 1cd yourproject/.git/hooks/ 2，创建 pre-commit-msg 文件1cp prepare-commit-msg.sample prepare-commit-msg 3，复制以下内容到 prepare-commit-msg12345678910111">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/linliff/blogpic/master/githook.jpg">
+<meta name="twitter:title" content="自定义LinearLayoutManager实现类抖音看视频效果">
+<meta name="twitter:description" content="要实现全屏类抖音的全屏滑动效果，方案有多个，第一个想到的就是viewpager，但是考虑到viewpager在视频上的体验和轻量级上并不是首选方案，而LayoutManager和SnapHelper的结合使用比较能完美的自定义出想要的效果。 SnapHelper 介绍SnapHelper旨在支持RecyclerView的对齐方式，也就是通过计算对齐RecyclerView中TargetView 的">
 
 
 
@@ -131,13 +129,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/year/01/06/githook/"/>
+  <link rel="canonical" href="http://yoursite.com/year/05/13/Android-小视频滑动/"/>
 
 
 
 
 
-  <title>通过 git hook 实现格式化 commit 信息 | 一个短篇</title>
+  <title>自定义LinearLayoutManager实现类抖音看视频效果 | 一个短篇</title>
   
 
 
@@ -254,7 +252,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/year/01/06/githook/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/year/05/13/Android-小视频滑动/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="linlif">
@@ -271,7 +269,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">通过 git hook 实现格式化 commit 信息</h1>
+          <h1 class="post-title" itemprop="name headline">自定义LinearLayoutManager实现类抖音看视频效果</h1>
         
 
         <div class="post-meta">
@@ -283,8 +281,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-01-06T13:41:10+08:00">
-                2020-01-06
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-05-13T22:13:03+08:00">
+                2020-05-13
               </time>
             
 
@@ -306,8 +304,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/技术/" itemprop="url" rel="index">
-                    <span itemprop="name">技术</span>
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
                   </a>
                 </span>
 
@@ -343,14 +341,137 @@
       
 
       
-        <p>git hook能够在发生某特定行为的时机，触发执行自定义的脚本。</p>
-<h3 id="1-进入-hook目录"><a href="#1-进入-hook目录" class="headerlink" title="1, 进入 hook目录"></a>1, 进入 hook目录</h3><p>没有此文件夹可以新建一个</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd yourproject/.git/hooks/</span><br></pre></td></tr></table></figure>
-<h2 id="2，创建-pre-commit-msg-文件"><a href="#2，创建-pre-commit-msg-文件" class="headerlink" title="2，创建 pre-commit-msg 文件"></a>2，创建 pre-commit-msg 文件</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cp prepare-commit-msg.sample prepare-commit-msg</span><br></pre></td></tr></table></figure>
-<h3 id="3，复制以下内容到-prepare-commit-msg"><a href="#3，复制以下内容到-prepare-commit-msg" class="headerlink" title="3，复制以下内容到 prepare-commit-msg"></a>3，复制以下内容到 prepare-commit-msg</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/env python</span><br><span class="line"></span><br><span class="line">import sys, os, re</span><br><span class="line">from subprocess import check_output</span><br><span class="line"></span><br><span class="line">commit_msg_filepath = sys.argv[1]</span><br><span class="line">if len(sys.argv) &gt; 2:</span><br><span class="line">    commit_type = sys.argv[2]</span><br><span class="line">else:</span><br><span class="line">    commit_type = &apos;&apos;</span><br><span class="line">if len(sys.argv) &gt; 3:</span><br><span class="line">    commit_hash = sys.argv[3]</span><br><span class="line">else:</span><br><span class="line">    commit_hash = &apos;&apos;</span><br><span class="line"></span><br><span class="line">branch = check_output([&apos;git&apos;, &apos;symbolic-ref&apos;, &apos;--short&apos;, &apos;HEAD&apos;]).strip()</span><br><span class="line"></span><br><span class="line">if &apos;/&apos; in branch:</span><br><span class="line">    branch_pmo = branch.split(&apos;/&apos;)[-1]</span><br><span class="line"></span><br><span class="line">    with open(commit_msg_filepath, &apos;r+&apos;) as f:</span><br><span class="line">        content = f.read()</span><br><span class="line">        f.seek(0, 0)</span><br><span class="line">        f.write(&quot;%s %s&quot; % (branch_pmo, content))</span><br></pre></td></tr></table></figure>
-<h3 id="4，-保存-prepare-commit-msg，正常提交代码"><a href="#4，-保存-prepare-commit-msg，正常提交代码" class="headerlink" title="4， 保存 prepare-commit-msg，正常提交代码"></a>4， 保存 prepare-commit-msg，正常提交代码</h3><h3 id="5，格式化有的提交信息"><a href="#5，格式化有的提交信息" class="headerlink" title="5，格式化有的提交信息"></a>5，格式化有的提交信息</h3><p><img src="https://raw.githubusercontent.com/linliff/blogpic/master/githook.jpg" alt="avatar"></p>
-<p><strong>注</strong>：提交没有生效可以修改prepare-commit-msg为可执行权限</p>
+        <p>要实现全屏类抖音的全屏滑动效果，方案有多个，第一个想到的就是viewpager，但是考虑到viewpager在视频上的体验和轻量级上并不是首选方案，而LayoutManager和SnapHelper的结合使用比较能完美的自定义出想要的效果。</p>
+<h2 id="SnapHelper-介绍"><a href="#SnapHelper-介绍" class="headerlink" title="SnapHelper 介绍"></a>SnapHelper 介绍</h2><p>SnapHelper旨在支持RecyclerView的对齐方式，也就是通过计算对齐RecyclerView中TargetView 的指定点或者容器中的任何像素点。</p>
+<h3 id="LinearSnapHelper-amp-PagerSnapHelper"><a href="#LinearSnapHelper-amp-PagerSnapHelper" class="headerlink" title="LinearSnapHelper &amp; PagerSnapHelper"></a>LinearSnapHelper &amp; PagerSnapHelper</h3><p>LinearSnapHelper可以使RecyclerView 的当前Item 居中显示（横向和竖向都支持），PagerSnapHelper可以像ViewPager一样的效果，每次只能滑动一页（LinearSnapHelper支持快速滑动）, PagerSnapHelper也是Item居中对齐。</p>
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><p>自定义ViewPagerLayoutManager 继承 LinearLayoutManager，在 onAttachedToWindow 时注入PagerSnapHelper </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">    public void onAttachedToWindow(RecyclerView view) &#123;</span><br><span class="line">        super.onAttachedToWindow(view);</span><br><span class="line">        mPagerSnapHelper.attachToRecyclerView(view);</span><br><span class="line">        this.mRecyclerView = view;</span><br><span class="line">  </span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>监听 onScrollStateChanged ，SCROLL_STATE_IDLE代表滑动停止<br>View viewIdle = mPagerSnapHelper.findSnapView(this);<br> int positionIdle = getPosition(viewIdle);<br>回调 onPageSelected 进行对应视频播放</p>
+<p>SCROLL_STATE_DRAGGING 和 SCROLL_STATE_SETTLING不需要做特殊处理</p>
+<p>scrollVerticallyBy和scrollHorizontallyBy监听保留滑动距离偏移量：mDrift</p>
+<p>实现OnChildAttachStateChangeListener：<br>onChildViewAttachedToWindow 时回调 onInitComplete 代表刚初始化<br>onChildViewDetachedFromWindow  回调 onPageRelease<br>其中 mDrift&gt;0是下一个，&lt;0是往回看</p>
+<p>完整代码</p>
+<pre><code>public class ViewPagerLayoutManager extends LinearLayoutManager {
+    private static final String TAG = &quot;ViewPagerLayoutManager&quot;;
+    private PagerSnapHelper mPagerSnapHelper;
+    private OnViewPagerListener mOnViewPagerListener;
+    private RecyclerView mRecyclerView;
+    private int mDrift;//位移，用来判断移动方向
 
+    public ViewPagerLayoutManager(Context context, int orientation) {
+        super(context, orientation, false);
+        init();
+    }
+
+    public ViewPagerLayoutManager(Context context, int orientation, boolean reverseLayout) {
+        super(context, orientation, reverseLayout);
+        init();
+    }
+
+    private void init() {
+        mPagerSnapHelper = new PagerSnapHelper();
+    }
+
+    @Override
+    public void onAttachedToWindow(RecyclerView view) {
+        super.onAttachedToWindow(view);
+        mPagerSnapHelper.attachToRecyclerView(view);
+        this.mRecyclerView = view;
+        mRecyclerView.addOnChildAttachStateChangeListener(mChildAttachStateChangeListener);
+    }
+
+
+    /**
+     * 滑动状态的改变
+     * 缓慢拖拽-&gt; SCROLL_STATE_DRAGGING
+     * 快速滚动-&gt; SCROLL_STATE_SETTLING
+     * 空闲状态-&gt; SCROLL_STATE_IDLE
+     * @param state
+     */
+    @Override
+    public void onScrollStateChanged(int state) {
+        switch (state) {
+            case RecyclerView.SCROLL_STATE_IDLE:
+                View viewIdle = mPagerSnapHelper.findSnapView(this);
+                int positionIdle = getPosition(viewIdle);
+                if (mOnViewPagerListener != null &amp;&amp; getChildCount() == 1) {
+                    mOnViewPagerListener.onPageSelected(positionIdle,positionIdle == getItemCount() - 1);
+                }
+                break;
+            case RecyclerView.SCROLL_STATE_DRAGGING:
+                               break;
+            case RecyclerView.SCROLL_STATE_SETTLING:
+
+                break;
+
+        }
+    }
+
+    /**
+     * 布局完成后调用
+     * @param state
+     */
+    @Override
+    public void onLayoutCompleted(RecyclerView.State state) {
+        super.onLayoutCompleted(state);
+        if (mOnViewPagerListener != null) mOnViewPagerListener.onLayoutComplete();
+    }
+
+    /**
+     * 监听竖直方向的相对偏移量
+     * @param dy
+     * @param recycler
+     * @param state
+     * @return
+     */
+    @Override
+    public int scrollVerticallyBy(int dy, RecyclerView.Recycler recycler, RecyclerView.State state) {
+        this.mDrift = dy;
+        return super.scrollVerticallyBy(dy, recycler, state);
+    }
+
+
+    /**
+     * 监听水平方向的相对偏移量
+     * @param dx
+     * @param recycler
+     * @param state
+     * @return
+     */
+    @Override
+    public int scrollHorizontallyBy(int dx, RecyclerView.Recycler recycler, RecyclerView.State state) {
+        this.mDrift = dx;
+        return super.scrollHorizontallyBy(dx, recycler, state);
+    }
+
+    /**
+     * 设置监听
+     * @param listener
+     */
+    public void setOnViewPagerListener(OnViewPagerListener listener){
+        this.mOnViewPagerListener = listener;
+    }
+
+    private RecyclerView.OnChildAttachStateChangeListener mChildAttachStateChangeListener = new RecyclerView.OnChildAttachStateChangeListener() {
+        @Override
+        public void onChildViewAttachedToWindow(View view) {
+            if (mOnViewPagerListener != null &amp;&amp; getChildCount() == 1) {
+                mOnViewPagerListener.onInitComplete();
+            }
+        }
+
+        @Override
+        public void onChildViewDetachedFromWindow(View view) {
+            if (mDrift &gt;= 0){
+                if (mOnViewPagerListener != null) mOnViewPagerListener.onPageRelease(true,getPosition(view));
+            }else {
+                if (mOnViewPagerListener != null) mOnViewPagerListener.onPageRelease(false,getPosition(view));
+            }
+
+        }
+    };
+}
+</code></pre>
       
     </div>
     
@@ -374,8 +495,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/year/12/08/videoview/" rel="next" title="VideoView源码全方位翻译&解析">
-                <i class="fa fa-chevron-left"></i> VideoView源码全方位翻译&解析
+              <a href="/year/03/23/Kotlin学习之-public-理解/" rel="next" title="Kotlin学习之理解public">
+                <i class="fa fa-chevron-left"></i> Kotlin学习之理解public
               </a>
             
           </div>
@@ -383,10 +504,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/year/02/06/Kotlin学习之如何快速介入/" rel="prev" title="Kotlin学习之如何快速介入">
-                Kotlin学习之如何快速介入 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -467,7 +584,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">31</span>
+                  <span class="site-state-item-count">32</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -515,7 +632,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-进入-hook目录"><span class="nav-text">1, 进入 hook目录</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2，创建-pre-commit-msg-文件"><span class="nav-text">2，创建 pre-commit-msg 文件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3，复制以下内容到-prepare-commit-msg"><span class="nav-text">3，复制以下内容到 prepare-commit-msg</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4，-保存-prepare-commit-msg，正常提交代码"><span class="nav-text">4， 保存 prepare-commit-msg，正常提交代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5，格式化有的提交信息"><span class="nav-text">5，格式化有的提交信息</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#SnapHelper-介绍"><span class="nav-text">SnapHelper 介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#LinearSnapHelper-amp-PagerSnapHelper"><span class="nav-text">LinearSnapHelper &amp; PagerSnapHelper</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实现"><span class="nav-text">实现</span></a></li></ol></div>
             
 
           </div>
